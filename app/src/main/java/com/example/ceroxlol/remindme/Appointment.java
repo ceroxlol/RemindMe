@@ -3,6 +3,7 @@ package com.example.ceroxlol.remindme;
 import android.location.Location;
 
 import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by Ceroxlol on 20.04.2017.
@@ -13,7 +14,7 @@ class Appointment {
     private String mName, mAppointmentText;
     private Location mLocation;
     private Boolean mHasTime;
-    private Date mAppointmentCreated, mAppointmentTime, mAppointmentRemindTime;
+    private Calendar mAppointmentCreated, mAppointmentTime, mAppointmentRemindTime;
     private int mPriority;
     private mAppointmentType mType;
     //private picture
@@ -24,7 +25,7 @@ class Appointment {
     }
 
     //without time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
+    public Appointment(int appointmentType, String name, String appointmentText, Location location, Calendar appointmentCreated)
     {
         this.mType = mAppointmentType.values()[appointmentType];
         this.mName = name;
@@ -35,7 +36,7 @@ class Appointment {
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public Appointment(int appointmentType, String name, String appointmentText, Location location, Calendar appointmentCreated, Calendar appointmentTime, Calendar appointmentRemindTime)
     {
         this.mType = mAppointmentType.values()[appointmentType];
         this.mName = name;
@@ -47,8 +48,7 @@ class Appointment {
         this.mHasTime = true;
     }
 
-    public boolean isInRangeForAppointment()
-    {
+    public void checkIfAppointmentIsMet(Location currentLocation) {
 
     }
 }
