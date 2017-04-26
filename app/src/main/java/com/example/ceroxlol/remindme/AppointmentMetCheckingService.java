@@ -3,6 +3,7 @@ package com.example.ceroxlol.remindme;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Message;
 
 /**
@@ -13,7 +14,8 @@ class AppointmentMetCheckingService extends Thread {
     private Appointment[] mAppointmentsToCheck;
     private GPSTracker mGPSTracker;
     private boolean run;
-    private Message mAppointMessage;
+    private Message mAppointmentMessage;
+    private Bundle mMessageData;
 
     private MainActivity mMainActivity;
 
@@ -28,7 +30,8 @@ class AppointmentMetCheckingService extends Thread {
         this.mGPSTracker = GPSTracker;
         this.mAppointmentsToCheck = appointmentsToCheck;
         this.mMainActivity = mainActivity;
-        this.mAppointMessage = new Message();
+        this.mAppointmentMessage = new Message();
+        this.mMessageData = new Bundle();
     }
 
     public void run() {
@@ -37,7 +40,13 @@ class AppointmentMetCheckingService extends Thread {
             for (Appointment appointment: mAppointmentsToCheck)
             {
                 if(appointment.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
-                    this.mMainActivity.alertView(appointment.getName(), appointment.getText());
+                    mMessageData.putString("name", appointment.getName());
+                    mMessageData.putString("text", appointment.getText());
+
+                    this.mAppointmentMessage.setData(this.mMessageData);
+                    //Message toSend = this.mMainActivity.mHandler.obtainMessage(1, this.mAppointmentMessage.obj);
+                    Message toSend = this.mMainActivity.mHandler.obtainMessage(1, "test");
+                    toSend.sendToTarget();
                 }
             }
             try {
