@@ -1,21 +1,17 @@
 package com.example.ceroxlol.remindme;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -25,8 +21,8 @@ import static android.content.ContentValues.TAG;
  * Created by Ceroxlol on 01.05.2017.
  */
 
-public class DBHelper extends SQLiteOpenHelper {
-    //TEST
+public class DBHelper /*extends SQLiteOpenHelper */{
+    /*//TEST
     private boolean test = true;
 
 
@@ -241,7 +237,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
-    }*/
+    }
 
 
     public ArrayList<Cursor> getData(String Query){
@@ -286,5 +282,5 @@ public class DBHelper extends SQLiteOpenHelper {
             alc.set(1,Cursor2);
             return alc;
         }
-    }
+    }*/
 }

@@ -1,10 +1,9 @@
 package com.example.ceroxlol.remindme;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Message;
+
+import DataHandler.Appointment;
 
 /**
  * Created by Ceroxlol on 22.04.2017.
@@ -40,8 +39,8 @@ class AppointmentMetCheckingService extends Thread {
             for (Appointment appointment: mAppointmentsToCheck)
             {
                 if(appointment.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
-                    mMessageData.putString("name", appointment.getName());
-                    mMessageData.putString("text", appointment.getText());
+                    mMessageData.putString("name", appointment.getmName());
+                    mMessageData.putString("text", appointment.getmAppointmentText());
 
                     this.mAppointmentMessage.setData(this.mMessageData);
                     //Message toSend = this.mMainActivity.mHandler.obtainMessage(1, this.mAppointmentMessage.obj);
