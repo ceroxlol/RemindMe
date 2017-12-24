@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Collection;
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
@@ -58,9 +57,10 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        this.finish();
+        finishActivity();
     }
 
+    //When finishing this acitivity, an acknowledge to the main acitivity is sent to refresh the appointment list
     private void finishActivity()
     {
         Intent i = new Intent();
