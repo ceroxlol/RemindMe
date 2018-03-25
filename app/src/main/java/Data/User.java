@@ -15,7 +15,7 @@ public class User implements Serializable {
     private int id;
     @DatabaseField(canBeNull = false)
     private String name;
-    @DatabaseField
+    @DatabaseField(canBeNull = false)
     private String password;
 
     //default ctor

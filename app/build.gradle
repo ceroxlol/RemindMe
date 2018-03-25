@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -31,4 +33,5 @@ dependencies {
     implementation files('libs/ormlite-core-5.0/ormlite-core-5.0.jar')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
 }

@@ -11,17 +11,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="66dp"
         android:layout_marginLeft="8dp"
-        android:text="Add"
+        android:layout_marginTop="8dp"
+        android:text="New appointment"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/button_add_new_location"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView_appointment_list" />
+
+    <Button
+        android:id="@+id/button_add_new_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="New Location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_add_new_appointment"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView_appointment_list" />
 
     <ScrollView
         android:id="@+id/scrollView_appointment_list"
         android:layout_width="365dp"
-        android:layout_height="393dp"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="16dp">
+        android:layout_height="395dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout_appointment_list"

@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme;
 
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,9 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     private EditText mEditTextAppointmentNote;
     private EditText mEditTextAppointmentName;
 
+
+    private Location mChosenLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         this.mDBHelper = MainActivity.mDatabaseHelper;
 
         //UI
-        this.mButtonChooseLocation = (Button) findViewById(R.id.buttonChooseLocation);
+        //this.mButtonChooseLocation = (Button) findViewById(R.id.buttonChooseLocation);
         this.mButtonSaveAppointment = (Button) findViewById(R.id.buttonSaveAppointment);
         this.mEditTextAppointmentNote = (EditText) findViewById(R.id.editTextAppointmentNote);
         this.mEditTextAppointmentName = (EditText) findViewById(R.id.editTextAppointmentName);
@@ -51,7 +55,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
     private void createNewAppointment()
     {
-        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(), mEditTextAppointmentNote.getText().toString(), null, Calendar.getInstance().getTime());
+        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(), mEditTextAppointmentNote.getText().toString(), mChosenLocation, Calendar.getInstance().getTime());
         try {
             mDBHelper.getDaoAppointment().create(appointment);
         } catch (SQLException e) {
@@ -66,5 +70,11 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         Intent i = new Intent();
         setResult(RESULT_OK,i);
         finish();
+    }
+
+    private void startChooseLocationActivity(View view)
+    {
+        //Intent intent = new Intent(this, ChooseLocationActivity.class);
+        //startActivity(intent);
     }
 }

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -20,6 +21,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import Data.Appointment;
+import Data.FavoriteLocation;
+import Data.VisitedLocation;
 import Data.User;
 
 /**
@@ -29,7 +32,7 @@ import Data.User;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     //Database variables
     private static final String DATABASE_NAME = "RemindMe.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static Gson gson;
 
     //DAO Objects to access the tables
@@ -38,6 +41,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private Dao<User, Integer> userDao = null;
     private RuntimeExceptionDao<User, Integer> userRuntimeDao = null;
+
+    private Dao<FavoriteLocation, Integer> favoriteLocationDao = null;
+    private RuntimeExceptionDao<FavoriteLocation, Integer> favoriteLocationRuntimeDao = null;
+
+    private Dao<VisitedLocation, Integer> visitedLocationDao = null;
+    private RuntimeExceptionDao<VisitedLocation, Integer> visitedLocationRuntimeDao = null;
 
     public DatabaseHelper(Context context){
         //TODO: Look if the app is performing good although no config is used
@@ -52,6 +61,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, Appointment.class);
             TableUtils.createTable(connectionSource, User.class);
+            TableUtils.createTable(connectionSource, FavoriteLocation.class);
+            TableUtils.createTable(connectionSource, VisitedLocation.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -73,6 +84,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, Appointment.class, true);
             TableUtils.dropTable(connectionSource, User.class, true);
+            TableUtils.dropTable(connectionSource, FavoriteLocation.class, true);
+            TableUtils.dropTable(connectionSource, VisitedLocation.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(sqLiteDatabase, connectionSource);
         } catch (SQLException e) {
@@ -95,17 +108,30 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
 
-    public Dao<User, Integer> getDaoUser() throws SQLException {
-        if (userDao == null) {
-            userDao = getDao(User.class);
+    public Dao<VisitedLocation, Integer> getDaoVisitedLocation() throws SQLException {
+        if (visitedLocationDao == null) {
+            visitedLocationDao = getDao(VisitedLocation.class);
         }
-        return userDao;
+        return visitedLocationDao;
     }
 
-    public RuntimeExceptionDao<User,Integer> getUserDao() {
-        if(userRuntimeDao == null)
-            userRuntimeDao = getRuntimeExceptionDao(User.class);
-        return userRuntimeDao;
+    public RuntimeExceptionDao<VisitedLocation,Integer> getVisitedLocationDao() {
+        if(visitedLocationRuntimeDao == null)
+            visitedLocationRuntimeDao = getRuntimeExceptionDao(VisitedLocation.class);
+        return visitedLocationRuntimeDao;
+    }
+
+    public Dao<FavoriteLocation, Integer> getDaoFavoriteLocation() throws SQLException {
+        if (favoriteLocationDao == null) {
+            favoriteLocationDao = getDao(FavoriteLocation.class);
+        }
+        return favoriteLocationDao;
+    }
+
+    public RuntimeExceptionDao<FavoriteLocation,Integer> getFavoriteLocationDao() {
+        if(favoriteLocationRuntimeDao == null)
+            favoriteLocationRuntimeDao = getRuntimeExceptionDao(FavoriteLocation.class);
+        return favoriteLocationRuntimeDao;
     }
 
     @Override

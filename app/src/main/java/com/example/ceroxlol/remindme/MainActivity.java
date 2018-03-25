@@ -21,9 +21,11 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import java.util.Calendar;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 
+import Data.FavoriteLocation;
 import DataHandler.Appointment;
 import DatabaseServices.DatabaseHelper;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     //UI
     private LinearLayout mAppointmentLinearLayout;
     private Button mAppointmentAddNew;
+    private Button mLocationAddNew;
 
     //Requests
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -91,11 +94,23 @@ public class MainActivity extends AppCompatActivity {
     private void initUI() {
         fillAppointmentScrollView();
 
-        //Initialize new Appointment
-        Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
+        //Initialize button click listener for new Appointment
         this.mAppointmentAddNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AddNewAppointmentActivity.class));
+            }
+        });
+        //Initialize button click listener for new Location
+        this.mLocationAddNew.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
+                LinkedList<FavoriteLocation> favoriteLocations = new LinkedList<>();
+                for (FavoriteLocation flocation :
+                        mDatabaseHelper.getFavoriteLocationDao()) {
+                    favoriteLocations.add(flocation);
+                }
+                i.putExtra("favorite_locations", favoriteLocations);
+                startActivity(i);
             }
         });
     }
@@ -153,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         //UI elements
         this.mAppointmentLinearLayout = (LinearLayout) findViewById(R.id.linearLayout_appointment_list);
         this.mAppointmentAddNew = (Button) findViewById(R.id.button_add_new_appointment);
+        this.mLocationAddNew = (Button) findViewById(R.id.button_add_new_location);
 
         //Database
         mDatabaseHelper = getDBHelper();
