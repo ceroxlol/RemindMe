@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Requests
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private final int REQUEST_NEW_FAVORITE_LOCATION = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         //Call program setup
         init();
     }
+
 
     private void init() {
 
@@ -100,17 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddNewAppointmentActivity.class));
             }
         });
-        //Initialize button click listener for new Location
+        //Initialize button click listener for new Location, receive a result for a new location
         this.mLocationAddNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
-                LinkedList<FavoriteLocation> favoriteLocations = new LinkedList<>();
-                for (FavoriteLocation flocation :
-                        mDatabaseHelper.getFavoriteLocationDao()) {
-                    favoriteLocations.add(flocation);
-                }
-                i.putExtra("favorite_locations", favoriteLocations);
-                startActivity(i);
+                startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
             }
         });
     }
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         return mDatabaseHelper;
     }
 
-    //Need another method to destroy the database connection aswell
+    //Need another method to destroy the database connection as well
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -207,7 +205,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        //In general always update the view
         if(resultCode == RESULT_OK)
             fillAppointmentScrollView();
+
+        if(requestCode == REQUEST_NEW_FAVORITE_LOCATION)
+        {
+            //Do something based on a new location
+        }
     }
 }

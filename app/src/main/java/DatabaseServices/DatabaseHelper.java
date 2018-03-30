@@ -1,5 +1,6 @@
 package DatabaseServices;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +30,7 @@ import Data.User;
  * Created by Ceroxlol on 18.12.2017.
  */
 
-public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
+public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializable {
     //Database variables
     private static final String DATABASE_NAME = "RemindMe.db";
     private static final int DATABASE_VERSION = 2;
@@ -72,9 +73,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         RuntimeExceptionDao<Appointment, Integer> dao = getDaoAppointmentRuntimeException();
         // create some entries in the onCreate
         Appointment appointment = new Appointment(1, "Test", "Test", null, Calendar.getInstance().getTime());
-        dao.create(appointment);
+        getDaoAppointmentRuntimeException().create(appointment);
         appointment = new Appointment(2, "Test2", "Test2", null, Calendar.getInstance().getTime());
-        dao.create(appointment);
+        getDaoAppointmentRuntimeException().create(appointment);
         Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate");
     }
 

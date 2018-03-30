@@ -1,6 +1,8 @@
 package com.example.ceroxlol.remindme;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -10,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -29,7 +33,10 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+
+import Data.FavoriteLocation;
 
 public class ChooseLocationActivity extends FragmentActivity implements OnMapReadyCallback,
         OnMarkerClickListener,
@@ -39,7 +46,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private UiSettings mUiSettings;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
-    private LinkedList<Location> mSavedLocationsList;
+    private Button mButtonSave;
+    private EditText mEditTextName;
+    private List<FavoriteLocation> mSavedLocationsList;
+    private LatLng mNewLocationToBeSaved;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -82,9 +92,31 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        mEditTextName = (EditText) findViewById(R.id.editTextLocationName);
         mTapTextView = (TextView) findViewById(R.id.tap_text);
+        mButtonSave = (Button) findViewById(R.id.buttonSaveLocation);
+        mButtonSave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(mNewLocationToBeSaved != null) {
+                    String favoriteLocationName = mEditTextName.getText().toString();
+                    if (favoriteLocationName != "") {
+                        //Save any set Markers
+                        MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
+                    }
+                    else
+                    {
+                        MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved));
+                    }
+                }
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+        });
 
-        mSavedLocationsList = (LinkedList<Location>) getIntent().getSerializableExtra("locations");
+        //Get all available favorite locations
+        mSavedLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDao().queryForAll();
     }
 
     /**
@@ -161,9 +193,12 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void setSavedMarkers() {
-        for (Location location :
+        if(mSavedLocationsList.isEmpty())
+            return;
+
+        for (FavoriteLocation location :
                 mSavedLocationsList) {
-            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng position = new LatLng(location.getLocation().getLatitude(), location.getLocation().getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(position));
         }
@@ -270,7 +305,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapClick(LatLng latLng) {
         //mTapTextView.setText("tapped, point=" + latLng);
+        mMap.clear();
+        setSavedMarkers();
         Marker marker = mMap.addMarker(new MarkerOptions()
             .position(latLng));
+        mNewLocationToBeSaved = marker.getPosition();
     }
 }
