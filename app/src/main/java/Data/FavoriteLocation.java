@@ -59,4 +59,8 @@ public class FavoriteLocation {
     public Location getLocation() {
         return location;
     }
+
+    public String getName(){return name;}
+
+    public Integer getID(){return id;}
 }

@@ -71,75 +71,75 @@ public class Appointment extends DataHandler.Appointment{
         this.id = id;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String mName) {
+    public void setName(String mName) {
         this.mName = mName;
     }
 
-    public String getmAppointmentText() {
+    public String getAppointmentText() {
         return mAppointmentText;
     }
 
-    public void setmAppointmentText(String mAppointmentText) {
+    public void setAppointmentText(String mAppointmentText) {
         this.mAppointmentText = mAppointmentText;
     }
 
-    public Location getmLocation() {
+    public Location getLocation() {
         return mLocation;
     }
 
-    public void setmLocation(Location mLocation) {
+    public void setLocation(Location mLocation) {
         this.mLocation = mLocation;
     }
 
-    public Boolean getmHasTime() {
+    public Boolean getHasTime() {
         return mHasTime;
     }
 
-    public void setmHasTime(Boolean mHasTime) {
+    public void setHasTime(Boolean mHasTime) {
         this.mHasTime = mHasTime;
     }
 
-    public Date getmAppointmentCreated() {
+    public Date getAppointmentCreated() {
         return mAppointmentCreated;
     }
 
-    public void setmAppointmentCreated(Date mAppointmentCreated) {
+    public void setAppointmentCreated(Date mAppointmentCreated) {
         this.mAppointmentCreated = mAppointmentCreated;
     }
 
-    public Date getmAppointmentTime() {
+    public Date getAppointmentTime() {
         return mAppointmentTime;
     }
 
-    public void setmAppointmentTime(Date mAppointmentTime) {
+    public void setAppointmentTime(Date mAppointmentTime) {
         this.mAppointmentTime = mAppointmentTime;
     }
 
-    public Date getmAppointmentRemindTime() {
+    public Date getAppointmentRemindTime() {
         return mAppointmentRemindTime;
     }
 
-    public void setmAppointmentRemindTime(Date mAppointmentRemindTime) {
+    public void setAppointmentRemindTime(Date mAppointmentRemindTime) {
         this.mAppointmentRemindTime = mAppointmentRemindTime;
     }
 
-    public int getmPriority() {
+    public int getPriority() {
         return mPriority;
     }
 
-    public void setmPriority(int mPriority) {
+    public void setPriority(int mPriority) {
         this.mPriority = mPriority;
     }
 
-    public int getmType() {
+    public int getType() {
         return mType;
     }
 
-    public void setmType(int mType) {
+    public void setType(int mType) {
         this.mType = mType;
     }
 }

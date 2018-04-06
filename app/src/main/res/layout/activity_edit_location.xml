@@ -6,7 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".EditLocationActivity">
 
+    <TextView
+        android:id="@+id/textViewMyLocations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="My Locations:"
+        app:layout_constraintBottom_toTopOf="@+id/scrollViewFavoriteLocations"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
+        android:id="@+id/scrollViewFavoriteLocations"
         android:layout_width="368dp"
         android:layout_height="466dp"
         android:layout_marginBottom="8dp"
@@ -22,6 +36,8 @@
             android:id="@+id/LinearLayoutLocations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+        </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import java.util.List;
 import Data.FavoriteLocation;
 import DataHandler.Appointment;
 import DatabaseServices.DatabaseHelper;
+import GUI.AppointmentsAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,13 +50,15 @@ public class MainActivity extends AppCompatActivity {
 
     //Appointments
     private Appointment[] mAppointments;
-    private List<Data.Appointment> mAppointmentList;
+    private ArrayList<Data.Appointment> mAppointmentList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
     //UI
     private LinearLayout mAppointmentLinearLayout;
     private Button mAppointmentAddNew;
     private Button mLocationAddNew;
+    private Button mLocationEdit;
+    private ArrayAdapter<Data.Appointment> mAppointmentArrayAdapter;
 
     //Requests
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -111,10 +115,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
             }
         });
+
+        this.mLocationEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, EditLocationActivity.class));
+            }
+        });
     }
 
     private void fillAppointmentScrollView()
     {
+        /*
         //Add appointments to the ScrollView
         TextView textViewAppointment = new TextView(MainActivity.this);
         //Clear the text Box first
@@ -129,6 +140,17 @@ public class MainActivity extends AppCompatActivity {
         }
         textViewAppointment.setText(testText);
         mAppointmentLinearLayout.addView(textViewAppointment);
+        */
+
+        if(mAppointmentArrayAdapter == null)
+            return;
+
+        for (int i=0; i<mAppointmentArrayAdapter.getCount(); i++)
+        {
+            View view = mAppointmentArrayAdapter.getView(i, null, null);
+            mAppointmentLinearLayout.addView(view);
+        }
+
     }
 
     private void initData() {
@@ -136,12 +158,13 @@ public class MainActivity extends AppCompatActivity {
         this.mAppointments = new Appointment[1];
         this.mAppointments[0] = new Appointment(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
 
-        mAppointmentList = Collections.emptyList();
         try {
-            mAppointmentList = getDBHelper().getDaoAppointment().queryForAll();
+            mAppointmentList = (ArrayList<Data.Appointment>) getDBHelper().getDaoAppointment().queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        this.mAppointmentArrayAdapter = new AppointmentsAdapter(this, mAppointmentList);
     }
 
     private void initClasses() {
@@ -167,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         this.mAppointmentLinearLayout = (LinearLayout) findViewById(R.id.linearLayout_appointment_list);
         this.mAppointmentAddNew = (Button) findViewById(R.id.button_add_new_appointment);
         this.mLocationAddNew = (Button) findViewById(R.id.button_add_new_location);
+        this.mLocationEdit = (Button) findViewById(R.id.buttonEditLocation);
 
         //Database
         mDatabaseHelper = getDBHelper();
