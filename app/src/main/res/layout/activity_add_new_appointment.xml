@@ -39,26 +39,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <CheckBox
-                android:text="Add due date"
+                android:id="@+id/checkBoxAddDueDate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                />
-            <Button
+                android:text="Add due date" />
+
+            <TextView
+                android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/buttonChooseFromMap"
-                android:text="choose date"
-                android:visibility="invisible"
-                />
+                android:layout_weight="1"
+                android:gravity="center" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewNewAppointment"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:hint="Type in your favorite location"/>
+                android:hint="Type in your favorite location" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

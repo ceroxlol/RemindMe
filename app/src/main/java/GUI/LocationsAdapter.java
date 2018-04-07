@@ -1,5 +1,6 @@
 package GUI;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -54,6 +55,7 @@ public class LocationsAdapter extends ArrayAdapter<FavoriteLocation> {
         favoriteLocationDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MainActivity.mDatabaseHelper.getFavoriteLocationDao().deleteById(favoriteLocation.getID());
+
             }
         });
 
