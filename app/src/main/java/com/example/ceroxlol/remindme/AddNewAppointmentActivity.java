@@ -62,7 +62,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         this.mButtonSaveAppointment = (Button) findViewById(R.id.buttonSaveAppointment);
         this.mEditTextAppointmentNote = (EditText) findViewById(R.id.editTextAppointmentNote);
         this.mEditTextAppointmentName = (EditText) findViewById(R.id.editTextAppointmentName);
-        this.mAutoCompleteTextViewNewAppointment = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewNewAppointment);
+        this.mAutoCompleteTextViewNewAppointment = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewLocation);
         this.mCheckBoxDueDate = (CheckBox) findViewById(R.id.checkBoxAddDueDate);
         this.mTextViewDate = (TextView) findViewById(R.id.textViewDate);
 
