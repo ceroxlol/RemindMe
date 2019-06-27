@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Ceroxlol on 20.04.2017.
  */
 
-public class Appointment{
+public class AppointmentHandler {
 
     private String mName;
     private String mAppointmentText;
@@ -21,13 +21,13 @@ public class Appointment{
     //private picture
 
     //default
-    public Appointment()
+    public AppointmentHandler()
     {
 
     }
 
     //without time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
+    public AppointmentHandler(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
     {
         this.mType = appointmentType;
         this.mName = name;
@@ -39,7 +39,7 @@ public class Appointment{
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public AppointmentHandler(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
     {
         this.mType = appointmentType;
         this.mName = name;
@@ -53,18 +53,18 @@ public class Appointment{
     }
 
     //Cast operator
-    public static final Appointment DataHandlerAppointmentToDataAppointment(final Data.Appointment appointment_to_be_casted){
-        Appointment appointment = new Appointment();
+    public static final AppointmentHandler DataHandlerAppointmentToDataAppointment(final Data.AppointmentHandler appointment_to_be_casted){
+        AppointmentHandler appointmentHandler = new AppointmentHandler();
         if(appointment_to_be_casted.getmHasTime()) {
-             appointment = new Appointment(appointment_to_be_casted.getmType(), appointment_to_be_casted.getmName(),
+             appointmentHandler = new AppointmentHandler(appointment_to_be_casted.getmType(), appointment_to_be_casted.getmName(),
                     appointment_to_be_casted.getmAppointmentText(), appointment_to_be_casted.getmLocation(), appointment_to_be_casted.getmAppointmentCreated(),
                     appointment_to_be_casted.getmAppointmentTime(), appointment_to_be_casted.getmAppointmentRemindTime());
         }
         else if(!appointment_to_be_casted.getmHasTime()){
-            appointment = new Appointment(appointment_to_be_casted.getmType(), appointment_to_be_casted.getmName(),
+            appointmentHandler = new AppointmentHandler(appointment_to_be_casted.getmType(), appointment_to_be_casted.getmName(),
                     appointment_to_be_casted.getmAppointmentText(), appointment_to_be_casted.getmLocation(), appointment_to_be_casted.getmAppointmentCreated());
             }
-            return appointment;
+            return appointmentHandler;
     }
 
     //Public methods

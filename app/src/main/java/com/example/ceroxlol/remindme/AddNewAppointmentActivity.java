@@ -1,7 +1,6 @@
 package com.example.ceroxlol.remindme;
 
 import android.app.DatePickerDialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
@@ -16,15 +15,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import Data.Appointment;
+import Data.AppointmentHandler;
 import Data.FavoriteLocation;
 import DatabaseServices.DatabaseHelper;
 
@@ -70,7 +67,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         this.mTextViewDate = (TextView) findViewById(R.id.textViewDate);
 
 
-        //Location
+        //LocationHandler
         List<FavoriteLocation> favoriteLocationsList = mDBHelper.getFavoriteLocationDao().queryForAll();
         String[] favoriteLocationNames = new String[favoriteLocationsList.size()];
         for (int i=0; i < favoriteLocationsList.size(); i++) {
@@ -107,7 +104,8 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
     private void createNewAppointment()
     {
-        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(), mEditTextAppointmentNote.getText().toString(), mChosenLocation, mTextViewDate.getText());
+        AppointmentHandler appointment = new AppointmentHandler(1, mEditTextAppointmentName.getText().toString(),
+                mEditTextAppointmentNote.getText().toString(), mChosenLocation, Calendar.getInstance().getTime());
         try {
             mDBHelper.getDaoAppointment().create(appointment);
         } catch (SQLException e) {

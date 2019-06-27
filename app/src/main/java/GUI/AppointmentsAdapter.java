@@ -1,33 +1,29 @@
 package GUI;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ceroxlol.remindme.EditSingleLocationActivity;
-import com.example.ceroxlol.remindme.MainActivity;
 import com.example.ceroxlol.remindme.R;
 
 import java.util.ArrayList;
 
-import Data.Appointment;
+import Data.AppointmentHandler;
 
-public class AppointmentsAdapter extends ArrayAdapter<Appointment> {
+public class AppointmentsAdapter extends ArrayAdapter<AppointmentHandler> {
 
-    public AppointmentsAdapter(@NonNull Context context, ArrayList<Appointment> data) {
+    public AppointmentsAdapter(@NonNull Context context, ArrayList<AppointmentHandler> data) {
         super(context, 0, data);
     }
 
     @Override
     public View getView(int i, View view, ViewGroup parent) {
         // Get the data item for this position
-        final Appointment appointment = getItem(i);
+        final AppointmentHandler appointment = getItem(i);
         // Check if an existing view is being reused, otherwise inflate the view
         if (view == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.appointments_layout, parent, false);

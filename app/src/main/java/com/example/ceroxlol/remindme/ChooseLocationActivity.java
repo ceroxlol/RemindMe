@@ -51,7 +51,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private List<FavoriteLocation> mSavedLocationsList;
     private LatLng mNewLocationToBeSaved;
 
-    // The entry point to the Fused Location Provider.
+    // The entry point to the Fused LocationHandler Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
@@ -62,7 +62,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private boolean mLocationPermissionGranted;
 
     // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
+    // location retrieved by the Fused LocationHandler Provider.
     private Location mLastKnownLocation;
 
     // Keys for storing activity state.
@@ -182,7 +182,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         // Prompt the user for permission.
         getLocationPermission();
 
-        // Turn on the My Location layer and the related control on the map.
+        // Turn on the My LocationHandler layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.

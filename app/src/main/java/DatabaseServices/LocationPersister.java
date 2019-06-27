@@ -39,11 +39,11 @@ public class LocationPersister extends StringType{
 
     @Override
     public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) throws SQLException {
-        /*String to_restore_object = gson.toJson(sqlArg, Location.class);
+        /*String to_restore_object = gson.toJson(sqlArg, LocationHandler.class);
         if (to_restore_object == null) {
             return null;
         } else {*/
-            //Location location = gson.fromJson(to_restore_object, Location.class);
+            //LocationHandler location = gson.fromJson(to_restore_object, LocationHandler.class);
             Location location = gson.fromJson(sqlArg.toString(), Location.class);
             return location;
         //}

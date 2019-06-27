@@ -3,14 +3,14 @@ package com.example.ceroxlol.remindme;
 import android.os.Bundle;
 import android.os.Message;
 
-import DataHandler.Appointment;
+import DataHandler.AppointmentHandler;
 
 /**
  * Created by Ceroxlol on 22.04.2017.
  */
 
 class AppointmentMetCheckingService extends Thread {
-    private Appointment[] mAppointmentsToCheck;
+    private AppointmentHandler[] mAppointmentsToCheck;
     private GPSTracker mGPSTracker;
     private boolean run;
     private Message mAppointmentMessage;
@@ -24,7 +24,7 @@ class AppointmentMetCheckingService extends Thread {
 
     }
 
-    public AppointmentMetCheckingService(GPSTracker GPSTracker, Appointment[] appointmentsToCheck, MainActivity mainActivity)
+    public AppointmentMetCheckingService(GPSTracker GPSTracker, AppointmentHandler[] appointmentsToCheck, MainActivity mainActivity)
     {
         this.mGPSTracker = GPSTracker;
         this.mAppointmentsToCheck = appointmentsToCheck;
@@ -36,11 +36,11 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while(run)
         {
-            for (Appointment appointment: mAppointmentsToCheck)
+            for (AppointmentHandler appointmentHandler : mAppointmentsToCheck)
             {
-                if(appointment.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
-                    mMessageData.putString("name", appointment.getmName());
-                    mMessageData.putString("text", appointment.getmAppointmentText());
+                if(appointmentHandler.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
+                    mMessageData.putString("name", appointmentHandler.getmName());
+                    mMessageData.putString("text", appointmentHandler.getmAppointmentText());
 
                     this.mAppointmentMessage.setData(this.mMessageData);
                     //Message toSend = this.mMainActivity.mHandler.obtainMessage(1, this.mAppointmentMessage.obj);

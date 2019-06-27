@@ -15,7 +15,7 @@
             android:id="@+id/textView_create_new_appointment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create new appointment"
+            android:text="Create new appointmentHandler"
             android:textSize="10pt"
             android:layout_gravity="center">
         </TextView>

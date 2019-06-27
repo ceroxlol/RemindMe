@@ -135,7 +135,7 @@ public class DBHelper /*extends SQLiteOpenHelper */{
         }
     }
 
-    public Appointment[] executeSelectAppointments(String statement, String[] conditions)
+    public AppointmentHandler[] executeSelectAppointments(String statement, String[] conditions)
     {
         // Create and/or open the database for writing
         SQLiteDatabase db = getWritableDatabase();
@@ -144,7 +144,7 @@ public class DBHelper /*extends SQLiteOpenHelper */{
         //Statement that will be executed onto the database
         String execute_statement = "";
 
-        List<Appointment> appointments = new ArrayList<Appointment>();
+        List<AppointmentHandler> appointments = new ArrayList<AppointmentHandler>();
 
         //Try to select
         try {
@@ -158,7 +158,7 @@ public class DBHelper /*extends SQLiteOpenHelper */{
                     execute_statement = "SELECT * FROM " + TABLE_APPOINTMENTS + "WHERE " + conditions[0] + ";";
                     break;
                 default:
-                    return (Appointment[]) appointments.toArray();
+                    return (AppointmentHandler[]) appointments.toArray();
             }
 
             Cursor cursor = db.rawQuery(execute_statement, null);
@@ -180,29 +180,29 @@ public class DBHelper /*extends SQLiteOpenHelper */{
     }
 
     //Helper function for casting the array list to an array
-    private Appointment[] convertArrayListToAppointmentArray(List<Appointment> appointments_array_list)
+    private AppointmentHandler[] convertArrayListToAppointmentArray(List<AppointmentHandler> appointments_array_list)
     {
-        Appointment[] appointments = new Appointment[appointments_array_list.size()];
+        AppointmentHandler[] appointments = new AppointmentHandler[appointments_array_list.size()];
 
         for (int i = 0; i < appointments.length; i++) {
-            appointments[i] = (Appointment) appointments_array_list.get(i);
+            appointments[i] = (AppointmentHandler) appointments_array_list.get(i);
         }
         return appointments;
     }
 
-    private Appointment insertCursorEntryIntoAppointment(Cursor cursor)
+    private AppointmentHandler insertCursorEntryIntoAppointment(Cursor cursor)
     {
         Gson gson = new Gson();
-        Appointment returnAppointment = gson.fromJson(cursor.getString(2), Appointment.class);
+        AppointmentHandler returnAppointment = gson.fromJson(cursor.getString(2), AppointmentHandler.class);
 
         return returnAppointment;
     }
 
 
-    public void insertNewAppointment(Appointment appointment) {
+    public void insertNewAppointment(AppointmentHandler appointment) {
         Gson gson = new GsonBuilder().create();
         //Gather Database objects
-        String toStoreObject = gson.toJson(appointment, Appointment.class);
+        String toStoreObject = gson.toJson(appointment, AppointmentHandler.class);
         String user = getUser();
 
         String[] table = {TABLE_APPOINTMENTS};
@@ -211,7 +211,7 @@ public class DBHelper /*extends SQLiteOpenHelper */{
     }
 
     //Call Select Statement for appointments assoiciated with this account and return the list sorted by ascending date
-    public Appointment[] getAppointments(String user)
+    public AppointmentHandler[] getAppointments(String user)
     {
         return executeSelectAppointments("SELECT*", new String[0]);
     }

@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.location.LocationHandler;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -35,7 +35,7 @@ public class GPSTracker extends Service implements LocationListener {
 
     boolean canGetLocation = false;
 
-    Location location; // location
+    LocationHandler location; // location
     double latitude; // latitude
     double longitude; // longitude
 
@@ -45,7 +45,7 @@ public class GPSTracker extends Service implements LocationListener {
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
 
-    // Declaring a Location Manager
+    // Declaring a LocationHandler Manager
     protected LocationManager locationManager;
 
     public GPSTracker(Context context) {
@@ -54,7 +54,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
 
-    public Location getLocation() {
+    public LocationHandler getLocation() {
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(LOCATION_SERVICE);
@@ -203,7 +203,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(LocationHandler location) {
 
     }
 

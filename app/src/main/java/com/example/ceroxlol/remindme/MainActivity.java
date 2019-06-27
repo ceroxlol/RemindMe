@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -16,20 +15,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 
-import Data.FavoriteLocation;
-import DataHandler.Appointment;
+import DataHandler.AppointmentHandler;
 import DatabaseServices.DatabaseHelper;
 import GUI.AppointmentsAdapter;
 
@@ -49,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private GPSTracker mGPSTracker;
 
     //Appointments
-    private Appointment[] mAppointments;
-    private ArrayList<Data.Appointment> mAppointmentList;
+    private AppointmentHandler[] mAppointmentHandlers;
+    private ArrayList<Data.AppointmentHandler> mAppointmentList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
     //UI
@@ -58,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mAppointmentAddNew;
     private Button mLocationAddNew;
     private Button mLocationEdit;
-    private ArrayAdapter<Data.Appointment> mAppointmentArrayAdapter;
+    private ArrayAdapter<Data.AppointmentHandler> mAppointmentArrayAdapter;
 
     //Requests
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -102,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
     private void initUI() {
         fillAppointmentScrollView();
 
-        //Initialize button click listener for new Appointment
+        //Initialize button click listener for new AppointmentHandler
         this.mAppointmentAddNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AddNewAppointmentActivity.class));
             }
         });
-        //Initialize button click listener for new Location, receive a result for a new location
+        //Initialize button click listener for new LocationHandler, receive a result for a new location
         this.mLocationAddNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
@@ -132,11 +126,11 @@ public class MainActivity extends AppCompatActivity {
         textViewAppointment.setText("");
         String testText = "";
         int appointmentListSize = mAppointmentList.size();
-        mAppointments = new Appointment[appointmentListSize];
+        mAppointmentHandlers = new AppointmentHandler[appointmentListSize];
         for (int i = 0; i < appointmentListSize; i++) {
-                    Data.Appointment appointment = mAppointmentList.get(i);
-                    mAppointments[i] = Appointment.DataHandlerAppointmentToDataAppointment(appointment);
-                    testText += mAppointments[i].getmAppointmentText() + "\n";
+                    Data.AppointmentHandler appointment = mAppointmentList.get(i);
+                    mAppointmentHandlers[i] = AppointmentHandler.DataHandlerAppointmentToDataAppointment(appointment);
+                    testText += mAppointmentHandlers[i].getmAppointmentText() + "\n";
         }
         textViewAppointment.setText(testText);
         mAppointmentLinearLayout.addView(textViewAppointment);
@@ -154,12 +148,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        //Right now, this method only creates a dummy Appointment, later it will read entries from the database
-        this.mAppointments = new Appointment[1];
-        this.mAppointments[0] = new Appointment(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
+        //Right now, this method only creates a dummy AppointmentHandler, later it will read entries from the database
+        this.mAppointmentHandlers = new AppointmentHandler[1];
+        this.mAppointmentHandlers[0] = new AppointmentHandler(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
 
         try {
-            mAppointmentList = (ArrayList<Data.Appointment>) getDBHelper().getDaoAppointment().queryForAll();
+            mAppointmentList = (ArrayList<Data.AppointmentHandler>) getDBHelper().getDaoAppointment().queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         this.mGPSTracker = new GPSTracker(this.getApplicationContext());
 
         //Init checker service thread for appointments met
-        this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this.mAppointments, this);
+        this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this.mAppointmentHandlers, this);
         //this.mAppointmentMetCheckingService.setRun(true);
         this.mAppointmentMetCheckingService.start();
 
@@ -190,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         this.mAppointmentLinearLayout = (LinearLayout) findViewById(R.id.linearLayout_appointment_list);
         this.mAppointmentAddNew = (Button) findViewById(R.id.button_add_new_appointment);
         this.mLocationAddNew = (Button) findViewById(R.id.button_add_new_location);
-        this.mLocationEdit = (Button) findViewById(R.id.buttonEditLocation);
+        this.mLocationEdit = (Button) findViewById(R.id.button_edit_location);
 
         //Database
         mDatabaseHelper = getDBHelper();

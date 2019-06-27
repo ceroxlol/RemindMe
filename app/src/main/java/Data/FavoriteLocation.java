@@ -15,7 +15,7 @@ import DatabaseServices.LocationPersister;
  * Created by Ceroxlol on 27.12.2017.
  */
 
-//Class for saving the favorite Location spots
+//Class for saving the favorite LocationHandler spots
 
 @DatabaseTable
 public class FavoriteLocation {

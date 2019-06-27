@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RemindMe.iml" filepath="$PROJECT_DIR$/RemindMe.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/ormlite-android-5.0/ormlite-android-5.0.iml" filepath="$PROJECT_DIR$/app/libs/ormlite-android-5.0/ormlite-android-5.0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/ormlite-core-5.0/ormlite-core-5.0.iml" filepath="$PROJECT_DIR$/app/libs/ormlite-core-5.0/ormlite-core-5.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ormlite-android-5.0/ormlite-android-5.0.iml" filepath="$PROJECT_DIR$/ormlite-android-5.0/ormlite-android-5.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ormlite-core-5.0/ormlite-core-5.0.iml" filepath="$PROJECT_DIR$/ormlite-core-5.0/ormlite-core-5.0.iml" />
     </modules>
   </component>
 </project>
