@@ -5,16 +5,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.DataSetObserver;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
@@ -28,6 +33,8 @@ import DatabaseServices.DatabaseHelper;
 import GUI.AppointmentsAdapter;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "TAGMainActivity";
 
     //PUBLIC
     //Message window handler
@@ -52,11 +59,15 @@ public class MainActivity extends AppCompatActivity {
     private Button mAppointmentAddNew;
     private Button mLocationAddNew;
     private Button mLocationEdit;
-    private ArrayAdapter<Data.AppointmentHandler> mAppointmentArrayAdapter;
+    private ListAdapter mAppointmentListAdapter;
+    private RecyclerView mListAppointmentsRecyclerView;
 
     //Requests
-    private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private final int REQUEST_APP_PERMISSIONS = 1;
     private final int REQUEST_NEW_FAVORITE_LOCATION = 10;
+    private final int REQUEST_EDIT_FAVORITE_LOCATION = 11;
+    private final int REQUEST_NEW_APPOINTMENT = 20;
+    private final int REQUEST_EDIT_APPOINTMENT = 21;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         //Call program setup
         init();
     }
-
 
     private void init() {
 
@@ -84,81 +94,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        //Check Storage permission for database purposes
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_APP_PERMISSIONS);
         }
+
     }
 
     private void initUI() {
         fillAppointmentScrollView();
 
-        //Initialize button click listener for new AppointmentHandler
-        this.mAppointmentAddNew.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddNewAppointmentActivity.class));
-            }
-        });
-        //Initialize button click listener for new LocationHandler, receive a result for a new location
-        this.mLocationAddNew.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
-                startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
-            }
+        this.mAppointmentAddNew.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
         });
 
-        this.mLocationEdit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, EditLocationActivity.class));
-            }
+        this.mLocationAddNew.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
+            startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
+        });
+
+        this.mLocationEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
         });
     }
 
     private void fillAppointmentScrollView()
     {
-        /*
-        //Add appointments to the ScrollView
-        TextView textViewAppointment = new TextView(MainActivity.this);
-        //Clear the text Box first
-        textViewAppointment.setText("");
-        String testText = "";
-        int appointmentListSize = mAppointmentList.size();
-        mAppointmentHandlers = new AppointmentHandler[appointmentListSize];
-        for (int i = 0; i < appointmentListSize; i++) {
-                    Data.AppointmentHandler appointment = mAppointmentList.get(i);
-                    mAppointmentHandlers[i] = AppointmentHandler.DataHandlerAppointmentToDataAppointment(appointment);
-                    testText += mAppointmentHandlers[i].getmAppointmentText() + "\n";
-        }
-        textViewAppointment.setText(testText);
-        mAppointmentLinearLayout.addView(textViewAppointment);
-        */
 
-        if(mAppointmentArrayAdapter == null)
+        if(mAppointmentListAdapter == null)
             return;
 
-        for (int i=0; i<mAppointmentArrayAdapter.getCount(); i++)
+        for (int i = 0; i< mAppointmentListAdapter.getCount(); i++)
         {
-            View view = mAppointmentArrayAdapter.getView(i, null, null);
+            View view = mAppointmentListAdapter.getView(i, null, null);
             mAppointmentLinearLayout.addView(view);
         }
 
+    }
+
+    private void loadAppointmentsFromDatabase{
+        try {
+            mAppointmentList = (ArrayList<Data.AppointmentHandler>) getDBHelper().getDaoAppointment().queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initData() {
         //Right now, this method only creates a dummy AppointmentHandler, later it will read entries from the database
         this.mAppointmentHandlers = new AppointmentHandler[1];
         this.mAppointmentHandlers[0] = new AppointmentHandler(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
-
-        try {
-            mAppointmentList = (ArrayList<Data.AppointmentHandler>) getDBHelper().getDaoAppointment().queryForAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        this.mAppointmentArrayAdapter = new AppointmentsAdapter(this, mAppointmentList);
+        this.mAppointmentListAdapter = new AppointmentsAdapter(this, mAppointmentList);
     }
 
     private void initClasses() {
@@ -181,13 +172,24 @@ public class MainActivity extends AppCompatActivity {
         };
 
         //UI elements
-        this.mAppointmentLinearLayout = (LinearLayout) findViewById(R.id.linearLayout_appointment_list);
-        this.mAppointmentAddNew = (Button) findViewById(R.id.button_add_new_appointment);
-        this.mLocationAddNew = (Button) findViewById(R.id.button_add_new_location);
-        this.mLocationEdit = (Button) findViewById(R.id.button_edit_location);
+        this.mListAppointmentsRecyclerView = findViewById(R.id.list_appointments_recycler_view);
+        this.mListAppointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.setuoListAppointmentsRecyclerView();
+        this.mAppointmentAddNew = findViewById(R.id.button_add_new_appointment);
+        this.mLocationAddNew = findViewById(R.id.button_add_new_location);
+        this.mLocationEdit = findViewById(R.id.button_edit_location);
 
         //Database
         mDatabaseHelper = getDBHelper();
+    }
+
+    private void setuoListAppointmentsRecyclerView() {
+        if(mAppointmentListAdapter == null)
+            //TODO:
+            //implement own ListAdapter class. Use links from Lennart to implement RecycleView
+            //mAppointmentListAdapter = new ListAdapter(mAppointmentList);
+
+
     }
 
     public DatabaseHelper getDBHelper() {
@@ -222,14 +224,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        //In general always update the view
-        if(resultCode == RESULT_OK)
-            fillAppointmentScrollView();
+        //super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d(TAG, "requestCode: " + requestCode + "  resultCode: " + resultCode);
+
+        if(requestCode == REQUEST_NEW_APPOINTMENT)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Log.d(TAG, "Successfully created new appointment.");
+                fillAppointmentScrollView();
+            }
+        }
 
         if(requestCode == REQUEST_NEW_FAVORITE_LOCATION)
         {
             //Do something based on a new location
         }
+    }
+
+    private void loadScrollView()
+    {
+
     }
 }
