@@ -20,7 +20,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import Data.AppointmentHandler;
+import Data.Appointment;
 import Data.FavoriteLocation;
 import Data.VisitedLocation;
 import Data.User;
@@ -32,12 +32,12 @@ import Data.User;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializable {
     //Database variables
     private static final String DATABASE_NAME = "RemindMe.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static Gson gson;
 
     //DAO Objects to access the tables
-    private Dao<AppointmentHandler, Integer> appointmentDao = null;
-    private RuntimeExceptionDao<AppointmentHandler, Integer> appointmentRuntimeDao = null;
+    private Dao<Appointment, Integer> appointmentDao = null;
+    private RuntimeExceptionDao<Appointment, Integer> appointmentRuntimeDao = null;
 
     private Dao<User, Integer> userDao = null;
     private RuntimeExceptionDao<User, Integer> userRuntimeDao = null;
@@ -59,7 +59,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
-            TableUtils.createTable(connectionSource, AppointmentHandler.class);
+            TableUtils.createTable(connectionSource, Appointment.class);
             TableUtils.createTable(connectionSource, User.class);
             TableUtils.createTable(connectionSource, FavoriteLocation.class);
             TableUtils.createTable(connectionSource, VisitedLocation.class);
@@ -69,11 +69,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
         }
 
         // here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<AppointmentHandler, Integer> dao = getDaoAppointmentRuntimeException();
+        RuntimeExceptionDao<Appointment, Integer> dao = getDaoAppointmentRuntimeException();
         // create some entries in the onCreate
-        AppointmentHandler appointment = new AppointmentHandler(1, "Test", "Test", null, Calendar.getInstance().getTime());
+        Appointment appointment = new Appointment(1, "Test", "Test", null, Calendar.getInstance().getTime());
         getDaoAppointmentRuntimeException().create(appointment);
-        appointment = new AppointmentHandler(2, "Test2", "Test2", null, Calendar.getInstance().getTime());
+        appointment = new Appointment(2, "Test2", "Test2", null, Calendar.getInstance().getTime());
         getDaoAppointmentRuntimeException().create(appointment);
         Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate");
     }
@@ -82,7 +82,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
         try {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
-            TableUtils.dropTable(connectionSource, AppointmentHandler.class, true);
+            TableUtils.dropTable(connectionSource, Appointment.class, true);
             TableUtils.dropTable(connectionSource, User.class, true);
             TableUtils.dropTable(connectionSource, FavoriteLocation.class, true);
             TableUtils.dropTable(connectionSource, VisitedLocation.class, true);
@@ -94,16 +94,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
         }
     }
 
-    public Dao<AppointmentHandler, Integer> getDaoAppointment() throws SQLException {
+    public Dao<Appointment, Integer> getDaoAppointment() throws SQLException {
         if (appointmentDao == null) {
-            appointmentDao = getDao(AppointmentHandler.class);
+            appointmentDao = getDao(Appointment.class);
         }
         return appointmentDao;
     }
 
-    public RuntimeExceptionDao<AppointmentHandler,Integer> getDaoAppointmentRuntimeException() {
+    public RuntimeExceptionDao<Appointment,Integer> getDaoAppointmentRuntimeException() {
         if(appointmentRuntimeDao == null)
-            appointmentRuntimeDao = getRuntimeExceptionDao(AppointmentHandler.class);
+            appointmentRuntimeDao = getRuntimeExceptionDao(Appointment.class);
         return appointmentRuntimeDao;
     }
 

@@ -13,7 +13,7 @@ import DatabaseServices.LocationPersister;
  * Created by Ceroxlol on 13.12.2017.
  */
 @DatabaseTable
-public class AppointmentHandler extends DataHandler.AppointmentHandler {
+public class Appointment extends DataHandler.AppointmentHandler {
 
     @DatabaseField(generatedId = true, columnName = "AppointmentID")
     private int id;
@@ -34,13 +34,13 @@ public class AppointmentHandler extends DataHandler.AppointmentHandler {
 
     private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
 
-    public AppointmentHandler()
+    public Appointment()
     {
         // ORMLite needs a no-arg constructor
     }
 
     //without time
-    public AppointmentHandler(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
+    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
     {
         this.mType = appointmentType;
         this.mName = name;
@@ -51,7 +51,7 @@ public class AppointmentHandler extends DataHandler.AppointmentHandler {
     }
 
     //with time
-    public AppointmentHandler(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
     {
         this.mType = appointmentType;
         this.mName = name;

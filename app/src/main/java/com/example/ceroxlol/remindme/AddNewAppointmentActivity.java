@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import Data.AppointmentHandler;
+import Data.Appointment;
 import Data.FavoriteLocation;
 import DatabaseServices.DatabaseHelper;
 
@@ -104,7 +104,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
     private void createNewAppointment()
     {
-        AppointmentHandler appointment = new AppointmentHandler(1, mEditTextAppointmentName.getText().toString(),
+        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
                 mEditTextAppointmentNote.getText().toString(), mChosenLocation, Calendar.getInstance().getTime());
         try {
             mDBHelper.getDaoAppointment().create(appointment);

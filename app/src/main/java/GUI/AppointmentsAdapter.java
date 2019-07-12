@@ -12,27 +12,27 @@ import com.example.ceroxlol.remindme.R;
 
 import java.util.ArrayList;
 
-import Data.AppointmentHandler;
+import Data.Appointment;
 
-public class AppointmentsAdapter extends ArrayAdapter<AppointmentHandler> {
+public class AppointmentsAdapter extends ArrayAdapter<Appointment> {
 
-    public AppointmentsAdapter(@NonNull Context context, ArrayList<AppointmentHandler> data) {
+    public AppointmentsAdapter(@NonNull Context context, ArrayList<Appointment> data) {
         super(context, 0, data);
     }
 
     @Override
     public View getView(int i, View view, ViewGroup parent) {
         // Get the data item for this position
-        final AppointmentHandler appointment = getItem(i);
+        final Appointment appointment = getItem(i);
         // Check if an existing view is being reused, otherwise inflate the view
         if (view == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.appointments_layout, parent, false);
         }
         // Lookup view for data population
-        TextView appointmentName = (TextView) view.findViewById(R.id.textViewAppointmentName);
-        TextView appointmentText = (TextView) view.findViewById(R.id.textViewAppointmentText);
-        TextView appointmentType = (TextView) view.findViewById(R.id.textViewAppointmentType);
-        TextView appointmentPrio = (TextView) view.findViewById(R.id.textViewAppointmentPrio);
+        TextView appointmentName = (TextView) view.findViewById(R.id.text_view_appointment_name);
+        TextView appointmentText = (TextView) view.findViewById(R.id.text_view_appointment_text);
+        TextView appointmentType = (TextView) view.findViewById(R.id.text_view_appointment_type);
+        TextView appointmentPrio = (TextView) view.findViewById(R.id.text_view_appointment_prio);
 
         // Populate the data into the template view using the data object
         appointmentName.setText(appointment.getName());

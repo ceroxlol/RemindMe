@@ -39,8 +39,8 @@ class AppointmentMetCheckingService extends Thread {
             for (AppointmentHandler appointmentHandler : mAppointmentsToCheck)
             {
                 if(appointmentHandler.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
-                    mMessageData.putString("name", appointmentHandler.getmName());
-                    mMessageData.putString("text", appointmentHandler.getmAppointmentText());
+                    mMessageData.putString("name", appointmentHandler.mAppointment.getName());
+                    mMessageData.putString("text", appointmentHandler.mAppointment.getAppointmentText());
 
                     this.mAppointmentMessage.setData(this.mMessageData);
                     //Message toSend = this.mMainActivity.mHandler.obtainMessage(1, this.mAppointmentMessage.obj);

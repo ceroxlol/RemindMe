@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,10 +15,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
@@ -28,9 +25,10 @@ import java.util.Calendar;
 import java.sql.SQLException;
 
 
+import Data.Appointment;
 import DataHandler.AppointmentHandler;
 import DatabaseServices.DatabaseHelper;
-import GUI.AppointmentsAdapter;
+import DataHandler.ListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Appointments
     private AppointmentHandler[] mAppointmentHandlers;
-    private ArrayList<Data.AppointmentHandler> mAppointmentList;
+    private ArrayList<Appointment> mAppointmentList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
     //UI
@@ -105,8 +103,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        fillAppointmentScrollView();
-
         this.mAppointmentAddNew.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
             startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
@@ -123,38 +119,39 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*
     private void fillAppointmentScrollView()
     {
 
         if(mAppointmentListAdapter == null)
             return;
 
-        for (int i = 0; i< mAppointmentListAdapter.getCount(); i++)
+        for (int i = 0; i< mAppointmentListAdapter.getItemCount(); i++)
         {
             View view = mAppointmentListAdapter.getView(i, null, null);
             mAppointmentLinearLayout.addView(view);
         }
 
     }
-
-    private void loadAppointmentsFromDatabase{
-        try {
-            mAppointmentList = (ArrayList<Data.AppointmentHandler>) getDBHelper().getDaoAppointment().queryForAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    */
 
     private void initData() {
-        //Right now, this method only creates a dummy AppointmentHandler, later it will read entries from the database
-        this.mAppointmentHandlers = new AppointmentHandler[1];
-        this.mAppointmentHandlers[0] = new AppointmentHandler(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
-        this.mAppointmentListAdapter = new AppointmentsAdapter(this, mAppointmentList);
+        //Right now, this method only creates a dummy Appointment, later it will read entries from the database
+//        this.mAppointmentHandlers = new AppointmentHandler[1];
+//        this.mAppointmentHandlers[0] = new AppointmentHandler(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
+        //this.mAppointmentListAdapter = new AppointmentsAdapter(this, mAppointmentList);
     }
 
     private void initClasses() {
         //Init GPS Tracker
         this.mGPSTracker = new GPSTracker(this.getApplicationContext());
+
+        //Database
+        mDatabaseHelper = getDBHelper();
+
+        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
+        //TODO:
+        //Setup AppointmentHandlers to be filled by AppointmentList
 
         //Init checker service thread for appointments met
         this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this.mAppointmentHandlers, this);
@@ -174,21 +171,15 @@ public class MainActivity extends AppCompatActivity {
         //UI elements
         this.mListAppointmentsRecyclerView = findViewById(R.id.list_appointments_recycler_view);
         this.mListAppointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.setuoListAppointmentsRecyclerView();
         this.mAppointmentAddNew = findViewById(R.id.button_add_new_appointment);
         this.mLocationAddNew = findViewById(R.id.button_add_new_location);
         this.mLocationEdit = findViewById(R.id.button_edit_location);
 
-        //Database
-        mDatabaseHelper = getDBHelper();
-    }
-
-    private void setuoListAppointmentsRecyclerView() {
         if(mAppointmentListAdapter == null)
-            //TODO:
-            //implement own ListAdapter class. Use links from Lennart to implement RecycleView
-            //mAppointmentListAdapter = new ListAdapter(mAppointmentList);
-
+        {
+            mAppointmentListAdapter = new ListAdapter(this.mAppointmentList);
+            mListAppointmentsRecyclerView.setAdapter(mAppointmentListAdapter);
+        }
 
     }
 
@@ -224,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        //super.onActivityResult(requestCode, resultCode, data);
-
         Log.d(TAG, "requestCode: " + requestCode + "  resultCode: " + resultCode);
 
         if(requestCode == REQUEST_NEW_APPOINTMENT)
@@ -233,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK)
             {
                 Log.d(TAG, "Successfully created new appointment.");
-                fillAppointmentScrollView();
+                this.refreshAppointmentList();
             }
         }
 
@@ -243,8 +232,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadScrollView()
+    private void refreshAppointmentList()
     {
-
+        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
+        this.mAppointmentListAdapter.notifyDataSetChanged();
     }
 }
