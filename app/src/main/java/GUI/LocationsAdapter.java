@@ -1,9 +1,7 @@
 package GUI;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ceroxlol.remindme.ChooseLocationActivity;
-import com.example.ceroxlol.remindme.EditLocationActivity;
 import com.example.ceroxlol.remindme.EditSingleLocationActivity;
 import com.example.ceroxlol.remindme.MainActivity;
 import com.example.ceroxlol.remindme.R;
@@ -37,7 +33,7 @@ public class LocationsAdapter extends ArrayAdapter<FavoriteLocation> {
         final FavoriteLocation favoriteLocation = getItem(i);
         // Check if an existing view is being reused, otherwise inflate the view
         if (view == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.locations_layout, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.layout_locations_list, parent, false);
         }
         // Lookup view for data population
         TextView favoriteLocationName = (TextView) view.findViewById(R.id.textViewFavoriteLocation);

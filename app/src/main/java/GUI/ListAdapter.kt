@@ -1,4 +1,4 @@
-package DataHandler
+package GUI
 
 import Data.Appointment
 import android.support.v7.widget.RecyclerView
@@ -26,7 +26,7 @@ class ListAdapter(private val list: List<Appointment>)
 }
 
 class AppointmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.appointments_layout, parent, false)) {
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.layout_appointments_main_activity, parent, false)) {
     private var mTextViewAppointmentName: TextView? = null
     private var mTextViewAppointmentText: TextView? = null
     private var mTextViewAppointmentType: TextView? = null

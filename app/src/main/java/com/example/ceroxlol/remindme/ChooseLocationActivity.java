@@ -1,6 +1,5 @@
 package com.example.ceroxlol.remindme;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,7 +32,6 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import Data.FavoriteLocation;
@@ -82,7 +80,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        setContentView(R.layout.activity_choose_location);
+        setContentView(R.layout.activity_add_new_location);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -166,7 +164,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
             @Override
             public View getInfoContents(Marker marker) {
                 // Inflate the layouts for the info window, title and snippet.
-                View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
+                View infoWindow = getLayoutInflater().inflate(R.layout.layout_custom_info_contents,
                         (FrameLayout) findViewById(R.id.map), false);
 
                 TextView title = ((TextView) infoWindow.findViewById(R.id.title));

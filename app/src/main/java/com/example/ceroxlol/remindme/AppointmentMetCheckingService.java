@@ -1,16 +1,16 @@
 package com.example.ceroxlol.remindme;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Message;
 
-import DataHandler.AppointmentHandler;
+import Data.Appointment;
 
 /**
  * Created by Ceroxlol on 22.04.2017.
  */
 
 class AppointmentMetCheckingService extends Thread {
-    private AppointmentHandler[] mAppointmentsToCheck;
     private GPSTracker mGPSTracker;
     private boolean run;
     private Message mAppointmentMessage;
@@ -24,10 +24,9 @@ class AppointmentMetCheckingService extends Thread {
 
     }
 
-    public AppointmentMetCheckingService(GPSTracker GPSTracker, AppointmentHandler[] appointmentsToCheck, MainActivity mainActivity)
+    public AppointmentMetCheckingService(GPSTracker GPSTracker, MainActivity mainActivity)
     {
         this.mGPSTracker = GPSTracker;
-        this.mAppointmentsToCheck = appointmentsToCheck;
         this.mMainActivity = mainActivity;
         this.mAppointmentMessage = new Message();
         this.mMessageData = new Bundle();
@@ -36,20 +35,20 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while(run)
         {
-            for (AppointmentHandler appointmentHandler : mAppointmentsToCheck)
+            for (Appointment appointment : this.mMainActivity.getDBHelper().getDaoAppointmentRuntimeException().queryForAll())
             {
-                if(appointmentHandler.checkIfAppointmentDistanceIsMet(mGPSTracker.getLocation())) {
-                    mMessageData.putString("name", appointmentHandler.mAppointment.getName());
-                    mMessageData.putString("text", appointmentHandler.mAppointment.getAppointmentText());
+                if(checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation())) {
+                    mMessageData.putString("name", appointment.getName());
+                    mMessageData.putString("text", appointment.getAppointmentText());
 
                     this.mAppointmentMessage.setData(this.mMessageData);
-                    //Message toSend = this.mMainActivity.mHandler.obtainMessage(1, this.mAppointmentMessage.obj);
-                    Message toSend = this.mMainActivity.mHandler.obtainMessage(1, "test");
+                    //Message toSend = this.mMainActivity.mMessageHandler.obtainMessage(1, this.mAppointmentMessage.obj);
+                    Message toSend = this.mMainActivity.mMessageHandler.obtainMessage(1, "test");
                     toSend.sendToTarget();
                 }
             }
             try {
-                this.sleep(1000);
+                this.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -58,5 +57,11 @@ class AppointmentMetCheckingService extends Thread {
 
     public void setRun(boolean run) {
         this.run = run;
+    }
+
+    private boolean checkIfAppointmentDistanceIsMet(Appointment appointment, Location currentLocation) {
+        if(appointment.getLocation().distanceTo(currentLocation) < 50)
+            return true;
+        return false;
     }
 }

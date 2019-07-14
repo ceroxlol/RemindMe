@@ -14,21 +14,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.sql.SQLException;
 
 
 import Data.Appointment;
-import DataHandler.AppointmentHandler;
 import DatabaseServices.DatabaseHelper;
-import DataHandler.ListAdapter;
+import GUI.ListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     //PUBLIC
     //Message window handler
-    public Handler mHandler;
+    public Handler mMessageHandler;
     //Enum for Type
     public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
     //Database
@@ -48,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private GPSTracker mGPSTracker;
 
     //Appointments
-    private AppointmentHandler[] mAppointmentHandlers;
     private ArrayList<Appointment> mAppointmentList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
@@ -119,26 +114,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*
-    private void fillAppointmentScrollView()
-    {
-
-        if(mAppointmentListAdapter == null)
-            return;
-
-        for (int i = 0; i< mAppointmentListAdapter.getItemCount(); i++)
-        {
-            View view = mAppointmentListAdapter.getView(i, null, null);
-            mAppointmentLinearLayout.addView(view);
-        }
-
-    }
-    */
-
     private void initData() {
         //Right now, this method only creates a dummy Appointment, later it will read entries from the database
-//        this.mAppointmentHandlers = new AppointmentHandler[1];
-//        this.mAppointmentHandlers[0] = new AppointmentHandler(1, "Test", "This is a test appointment.", mGPSTracker.getLocation(), Calendar.getInstance().getTime());
         //this.mAppointmentListAdapter = new AppointmentsAdapter(this, mAppointmentList);
     }
 
@@ -147,19 +124,17 @@ public class MainActivity extends AppCompatActivity {
         this.mGPSTracker = new GPSTracker(this.getApplicationContext());
 
         //Database
-        mDatabaseHelper = getDBHelper();
+        getDBHelper();
 
         this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
-        //TODO:
-        //Setup AppointmentHandlers to be filled by AppointmentList
 
         //Init checker service thread for appointments met
-        this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this.mAppointmentHandlers, this);
+        this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
         //this.mAppointmentMetCheckingService.setRun(true);
         this.mAppointmentMetCheckingService.start();
 
         //Init message handler for showing message on the main ui thread
-        mHandler = new Handler(Looper.getMainLooper()) {
+        mMessageHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
                 // This is where you do your work in the UI thread.
@@ -235,6 +210,6 @@ public class MainActivity extends AppCompatActivity {
     private void refreshAppointmentList()
     {
         this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
-        this.mAppointmentListAdapter.notifyDataSetChanged();
+        this.mAppointmentListAdapter.notifyItemInserted(mAppointmentList.size() -1);
     }
 }

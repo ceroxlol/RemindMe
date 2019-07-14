@@ -13,7 +13,7 @@ import DatabaseServices.LocationPersister;
  * Created by Ceroxlol on 13.12.2017.
  */
 @DatabaseTable
-public class Appointment extends DataHandler.AppointmentHandler {
+public class Appointment{
 
     @DatabaseField(generatedId = true, columnName = "AppointmentID")
     private int id;
