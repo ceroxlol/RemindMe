@@ -93,4 +93,9 @@
     <string name="title_activity_choose_location">Choose location via gmaps</string>
     <string name="tap_instructions" />
     <string name="Save">Save</string>
+    <string name="set_location_name">Set location name</string>
+    <string name="new_location">New Location</string>
+    <string name="new_appointment">New appointment</string>
+    <string name="edit_appointment">Edit Appointment</string>
+    <string name="edit_location">Edit Location</string>
 </resources>

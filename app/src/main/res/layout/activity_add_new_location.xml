@@ -20,10 +20,11 @@
         android:id="@+id/buttonSaveLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/Save"
-        android:layout_gravity="bottom|right"/>
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="3dp"/>
 
     <EditText
         android:id="@+id/editTextLocationName"
@@ -32,9 +33,12 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text=""
-        android:hint="Set location name"
-        android:layout_gravity="bottom|left"
+        android:hint="@string/set_location_name"
+        android:layout_gravity="bottom|start"
         android:background="@color/white"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="3dp"
+        android:importantForAutofill="no" />
 
 </FrameLayout>
