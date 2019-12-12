@@ -30,8 +30,6 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ceroxlol.remindme.DBHelper;
-
 import DatabaseServices.DatabaseHelper;
 
 public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
