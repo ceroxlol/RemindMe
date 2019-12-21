@@ -3,6 +3,7 @@ package com.example.ceroxlol.remindme;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -10,10 +11,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,14 +26,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
@@ -68,7 +72,6 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private static final String KEY_LOCATION = "location";
 
 
-    private TextView mTapTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,27 +93,24 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        mEditTextName = (EditText) findViewById(R.id.editTextLocationName);
-        mTapTextView = (TextView) findViewById(R.id.tap_text);
-        mButtonSave = (Button) findViewById(R.id.buttonSaveLocation);
-        mButtonSave.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(mNewLocationToBeSaved != null) {
-                    String favoriteLocationName = mEditTextName.getText().toString();
-                    if (favoriteLocationName != "") {
-                        //Save any set Markers
-                        MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
-                    }
-                    else
-                    {
-                        MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved));
-                    }
+        mEditTextName = findViewById(R.id.editTextLocationName);
+        mButtonSave = findViewById(R.id.buttonSaveLocation);
+        mButtonSave.setOnClickListener(v -> {
+            if(mNewLocationToBeSaved != null) {
+                String favoriteLocationName = mEditTextName.getText().toString();
+                if (favoriteLocationName != "") {
+                    //Save any set Markers
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
                 }
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                else
+                {
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved));
+                }
             }
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
         });
 
         //Get all available favorite locations
@@ -165,12 +165,12 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
             public View getInfoContents(Marker marker) {
                 // Inflate the layouts for the info window, title and snippet.
                 View infoWindow = getLayoutInflater().inflate(R.layout.layout_custom_info_contents,
-                        (FrameLayout) findViewById(R.id.map), false);
+                        findViewById(R.id.map), false);
 
-                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
+                TextView title = infoWindow.findViewById(R.id.title);
                 title.setText(marker.getTitle());
 
-                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
+                TextView snippet = infoWindow.findViewById(R.id.snippet);
                 snippet.setText(marker.getSnippet());
 
                 return infoWindow;
@@ -194,11 +194,18 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         if(mSavedLocationsList.isEmpty())
             return;
 
-        for (FavoriteLocation location :
-                mSavedLocationsList) {
+        for (FavoriteLocation location : mSavedLocationsList) {
             LatLng position = new LatLng(location.getLocation().getLatitude(), location.getLocation().getLongitude());
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(position));
+            IconGenerator iconFactory = new IconGenerator(this);
+            MarkerOptions markerOptions = new MarkerOptions().
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(location.getName()))).
+                    position(position).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+            Marker marker = mMap.addMarker(markerOptions);
+            /*Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .title(location.getName()));*/
+            //marker.showInfoWindow();
         }
     }
 
@@ -210,21 +217,18 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         try {
             if(mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                        } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
+                locationResult.addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        mLastKnownLocation = task.getResult();
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
             }
@@ -302,7 +306,6 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public void onMapClick(LatLng latLng) {
-        //mTapTextView.setText("tapped, point=" + latLng);
         mMap.clear();
         setSavedMarkers();
         Marker marker = mMap.addMarker(new MarkerOptions()
