@@ -301,7 +301,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        return true;
     }
 
     @Override
