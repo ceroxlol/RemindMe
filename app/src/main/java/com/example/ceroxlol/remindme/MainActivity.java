@@ -2,7 +2,6 @@ package com.example.ceroxlol.remindme;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
-import GUI.ListAdapter;
+import GUI.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
     //UI
     private LinearLayout mAppointmentLinearLayout;
     private Button mAppointmentAddNew;
+    private Button mAppointmentEdit;
     private Button mLocationAddNew;
     private Button mLocationEdit;
-    private ListAdapter mAppointmentListAdapter;
+    private RecyclerViewListAdapterAppointments mAppointmentRecyclerViewListAdapterAppointments;
     private RecyclerView mListAppointmentsRecyclerView;
 
     //Requests
@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
         //Init components
         initClasses();
 
-        //Initial calls
-        initData();
-
         //Init UI
         initUI();
     }
@@ -103,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
         });
 
+        this.mAppointmentEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
+        });
+
         this.mLocationAddNew.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
             startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
@@ -112,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
             startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
         });
-    }
-
-    private void initData() {
-        //Right now, this method only creates a dummy Appointment, later it will read entries from the database
-        //this.mAppointmentListAdapter = new AppointmentsAdapter(this, mAppointmentList);
     }
 
     private void initClasses() {
@@ -144,16 +141,17 @@ public class MainActivity extends AppCompatActivity {
         };
 
         //UI elements
-        this.mListAppointmentsRecyclerView = findViewById(R.id.list_appointments_recycler_view);
+        this.mListAppointmentsRecyclerView = findViewById(R.id.listAppointmentsRecyclerView);
         this.mListAppointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.mAppointmentAddNew = findViewById(R.id.button_add_new_appointment);
-        this.mLocationAddNew = findViewById(R.id.button_add_new_location);
-        this.mLocationEdit = findViewById(R.id.button_edit_location);
+        this.mAppointmentAddNew = findViewById(R.id.buttonAddNewAppointment);
+        this.mAppointmentEdit = findViewById(R.id.buttonEditAppointment);
+        this.mLocationAddNew = findViewById(R.id.buttonAddNewLocation);
+        this.mLocationEdit = findViewById(R.id.buttonEditLocation);
 
-        if(mAppointmentListAdapter == null)
+        if(mAppointmentRecyclerViewListAdapterAppointments == null)
         {
-            mAppointmentListAdapter = new ListAdapter(this.mAppointmentList);
-            mListAppointmentsRecyclerView.setAdapter(mAppointmentListAdapter);
+            mAppointmentRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentList);
+            mListAppointmentsRecyclerView.setAdapter(mAppointmentRecyclerViewListAdapterAppointments);
         }
 
     }
@@ -181,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setTitle(message.getData().getString("name"))
                 .setMessage(message.getData().getString("text"))
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialoginterface, int i) {
-                    }
+                .setPositiveButton("Ok", (dialoginterface, i) -> {
                 }).show();
     }
 
@@ -210,6 +206,6 @@ public class MainActivity extends AppCompatActivity {
     private void refreshAppointmentList()
     {
         this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
-        this.mAppointmentListAdapter.notifyItemInserted(mAppointmentList.size() -1);
+        this.mAppointmentRecyclerViewListAdapterAppointments.notifyItemInserted(mAppointmentList.size() -1);
     }
 }

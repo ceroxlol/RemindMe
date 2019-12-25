@@ -99,4 +99,6 @@
     <string name="edit_appointment">Edit Appointment</string>
     <string name="edit_location">Edit Location</string>
     <string name="my_locations">My Locations:</string>
+    <string name="title_activity_edit_appointment">EditAppointmentActivity</string>
+    <string name="appointments">Appointments:</string>
 </resources>

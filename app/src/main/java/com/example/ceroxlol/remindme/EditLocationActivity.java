@@ -1,27 +1,22 @@
 package com.example.ceroxlol.remindme;
 
-import android.database.DataSetObserver;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Data.FavoriteLocation;
-import GUI.LocationsAdapter;
+import GUI.ArrayAdapterLocations;
 
 public class EditLocationActivity extends AppCompatActivity {
 
     private LinearLayout mLinearLayoutLocations;
-    private ArrayList<FavoriteLocation> mFavoriteLocations;
-    private ArrayAdapter<FavoriteLocation> mFavoriteLocationsArrayAdapter;
+    private ArrayList<FavoriteLocation> mLocations;
+    private ArrayAdapter<FavoriteLocation> mLocationsArrayAdapter;
     private ScrollView mScrollViewFavoriteLocations;
 
     @Override
@@ -29,21 +24,18 @@ public class EditLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_location);
 
-        mFavoriteLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDao().queryForAll();
-        mFavoriteLocationsArrayAdapter = new LocationsAdapter(this, mFavoriteLocations);
-        //GUI stuff
-        mLinearLayoutLocations = (LinearLayout) findViewById(R.id.LinearLayoutLocations);
-        mScrollViewFavoriteLocations = (ScrollView) findViewById(R.id.scrollViewFavoriteLocations);
-
-
+        mLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDao().queryForAll();
+        mLocationsArrayAdapter = new ArrayAdapterLocations(this, mLocations);
+        mLinearLayoutLocations = findViewById(R.id.LinearLayoutEditLocationsLocations);
+        mScrollViewFavoriteLocations = findViewById(R.id.scrollViewEditLocationsLocations);
         
         fillLinearLayoutLocations();
     }
 
     private void fillLinearLayoutLocations() {
-        for (int i=0; i < mFavoriteLocationsArrayAdapter.getCount(); i++)
+        for (int i = 0; i < mLocationsArrayAdapter.getCount(); i++)
         {
-            View view = mFavoriteLocationsArrayAdapter.getView(i, null, null);
+            View view = mLocationsArrayAdapter.getView(i, null, null);
             mLinearLayoutLocations.addView(view);
         }
     }

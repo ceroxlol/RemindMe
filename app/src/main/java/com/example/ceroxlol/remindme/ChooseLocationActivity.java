@@ -89,7 +89,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //Taken from https://developers.google.com/maps/documentation/android-api/current-place-tutorial
+        // Taken from https://developers.google.com/maps/documentation/android-api/current-place-tutorial
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 

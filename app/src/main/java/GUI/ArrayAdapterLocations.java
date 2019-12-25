@@ -17,15 +17,14 @@ import java.util.ArrayList;
 
 import Data.FavoriteLocation;
 
-public class LocationsAdapter extends ArrayAdapter<FavoriteLocation> {
+public class ArrayAdapterLocations extends ArrayAdapter<FavoriteLocation> {
     private Context context;
 
-    public LocationsAdapter(Context context, ArrayList<FavoriteLocation> data)
+    public ArrayAdapterLocations(Context context, ArrayList<FavoriteLocation> data)
     {
         super(context, 0, data);
         this.context = context;
     }
-
 
     @Override
     public View getView(int i, View view, ViewGroup parent) {
@@ -36,24 +35,17 @@ public class LocationsAdapter extends ArrayAdapter<FavoriteLocation> {
             view = LayoutInflater.from(getContext()).inflate(R.layout.layout_locations_list, parent, false);
         }
         // Lookup view for data population
-        TextView favoriteLocationName = (TextView) view.findViewById(R.id.textViewFavoriteLocation);
-        Button favoriteLocationEdit = (Button) view.findViewById(R.id.buttonEditFavoriteLocation);
-        Button favoriteLocationDelete = (Button) view.findViewById(R.id.buttonDeleteFavoriteLocation);
+        TextView favoriteLocationName = view.findViewById(R.id.textViewFavoriteLocation);
+        Button favoriteLocationEdit = view.findViewById(R.id.buttonEditFavoriteLocation);
+        Button favoriteLocationDelete = view.findViewById(R.id.buttonDeleteFavoriteLocation);
         // Populate the data into the template view using the data object
         favoriteLocationName.setText(favoriteLocation.getName());
-        favoriteLocationEdit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(getContext(), EditSingleLocationActivity.class);
-                i.putExtra("FavoriteLocationID", favoriteLocation.getID());
-                context.startActivity(i);
-            }
+        favoriteLocationEdit.setOnClickListener(v -> {
+            Intent i1 = new Intent(getContext(), EditSingleLocationActivity.class);
+            i1.putExtra("FavoriteLocationID", favoriteLocation.getID());
+            context.startActivity(i1);
         });
-        favoriteLocationDelete.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MainActivity.mDatabaseHelper.getFavoriteLocationDao().deleteById(favoriteLocation.getID());
-
-            }
-        });
+        favoriteLocationDelete.setOnClickListener(v -> MainActivity.mDatabaseHelper.getFavoriteLocationDao().deleteById(favoriteLocation.getID()));
 
         // Return the completed view to render on screen
         return view;

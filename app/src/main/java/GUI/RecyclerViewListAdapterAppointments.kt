@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.example.ceroxlol.remindme.R
 
 
-class ListAdapter(private val list: List<Appointment>)
+class RecyclerViewListAdapterAppointments(private val list: List<Appointment>)
     : RecyclerView.Adapter<AppointmentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
