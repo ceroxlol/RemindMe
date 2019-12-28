@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
-import GUI.RecyclerViewListAdapterAppointments;
+import Adapter.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         //Database
         getDBHelper();
 
-        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
+        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
 
         //Init checker service thread for appointments met
         this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshAppointmentList()
     {
-        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getDaoAppointmentRuntimeException().queryForAll();
+        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
         this.mAppointmentRecyclerViewListAdapterAppointments.notifyItemInserted(mAppointmentList.size() -1);
     }
 }

@@ -68,7 +68,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
 
         //LocationHandler
-        List<FavoriteLocation> favoriteLocationsList = mDBHelper.getFavoriteLocationDao().queryForAll();
+        List<FavoriteLocation> favoriteLocationsList = mDBHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
         String[] favoriteLocationNames = new String[favoriteLocationsList.size()];
         for (int i=0; i < favoriteLocationsList.size(); i++) {
             favoriteLocationNames[i] = favoriteLocationsList.get(i).getName();
@@ -107,7 +107,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
                 mEditTextAppointmentNote.getText().toString(), mChosenLocation, Calendar.getInstance().getTime());
         try {
-            mDBHelper.getDaoAppointment().create(appointment);
+            mDBHelper.getAppointmentDao().create(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
         }

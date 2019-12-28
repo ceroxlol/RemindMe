@@ -1,4 +1,4 @@
-package GUI;
+package Adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +45,7 @@ public class ArrayAdapterLocations extends ArrayAdapter<FavoriteLocation> {
             i1.putExtra("FavoriteLocationID", favoriteLocation.getID());
             context.startActivity(i1);
         });
-        favoriteLocationDelete.setOnClickListener(v -> MainActivity.mDatabaseHelper.getFavoriteLocationDao().deleteById(favoriteLocation.getID()));
+        favoriteLocationDelete.setOnClickListener(v -> MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getID()));
 
         // Return the completed view to render on screen
         return view;

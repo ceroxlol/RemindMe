@@ -5,29 +5,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import java.util.ArrayList;
 
+import Adapter.ArrayAdapterLocations;
 import Data.FavoriteLocation;
-import GUI.ArrayAdapterLocations;
 
 public class EditLocationActivity extends AppCompatActivity {
 
     private LinearLayout mLinearLayoutLocations;
     private ArrayList<FavoriteLocation> mLocations;
     private ArrayAdapter<FavoriteLocation> mLocationsArrayAdapter;
-    private ScrollView mScrollViewFavoriteLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_location);
 
-        mLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDao().queryForAll();
+        mLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
         mLocationsArrayAdapter = new ArrayAdapterLocations(this, mLocations);
-        mLinearLayoutLocations = findViewById(R.id.LinearLayoutEditLocationsLocations);
-        mScrollViewFavoriteLocations = findViewById(R.id.scrollViewEditLocationsLocations);
+        mLinearLayoutLocations = findViewById(R.id.linearLayoutEditLocationsLocations);
         
         fillLinearLayoutLocations();
     }

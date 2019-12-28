@@ -8,6 +8,6 @@ public class EditSingleLocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_single_location);
+        setContentView(R.layout.content_edit_single_location);
     }
 }

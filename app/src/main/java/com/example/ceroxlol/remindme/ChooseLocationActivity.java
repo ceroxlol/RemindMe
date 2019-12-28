@@ -3,7 +3,6 @@ package com.example.ceroxlol.remindme;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -11,12 +10,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -100,11 +96,11 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 String favoriteLocationName = mEditTextName.getText().toString();
                 if (favoriteLocationName != "") {
                     //Save any set Markers
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
                 }
                 else
                 {
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDao().create(new FavoriteLocation(mNewLocationToBeSaved));
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved));
                 }
             }
             Intent returnIntent = new Intent();
@@ -114,7 +110,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         });
 
         //Get all available favorite locations
-        mSavedLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDao().queryForAll();
+        mSavedLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
     }
 
     /**

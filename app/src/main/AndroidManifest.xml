@@ -13,6 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".EditSingleAppointmentActivity"
+            android:label="@string/title_activity_edit_single_appointment"
+            android:parentActivityName=".EditAppointmentActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.ceroxlol.remindme.EditAppointmentActivity" />
+        </activity>
+        <activity
             android:name=".EditAppointmentActivity"
             android:label="@string/title_activity_edit_appointment"
             android:parentActivityName=".MainActivity"

@@ -101,4 +101,5 @@
     <string name="my_locations">My Locations:</string>
     <string name="title_activity_edit_appointment">EditAppointmentActivity</string>
     <string name="appointments">Appointments:</string>
+    <string name="title_activity_edit_single_appointment">EditSingleAppointmentActivity</string>
 </resources>

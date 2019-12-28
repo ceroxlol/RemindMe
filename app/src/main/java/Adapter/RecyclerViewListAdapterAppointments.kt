@@ -1,4 +1,4 @@
-package GUI
+package Adapter
 
 import Data.Appointment
 import android.support.v7.widget.RecyclerView

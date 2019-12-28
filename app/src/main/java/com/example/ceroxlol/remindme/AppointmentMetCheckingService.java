@@ -35,7 +35,7 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while(run)
         {
-            for (Appointment appointment : this.mMainActivity.getDBHelper().getDaoAppointmentRuntimeException().queryForAll())
+            for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll())
             {
                 if(checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation())) {
                     mMessageData.putString("name", appointment.getName());

@@ -69,12 +69,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
         }
 
         // here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<Appointment, Integer> dao = getDaoAppointmentRuntimeException();
+        RuntimeExceptionDao<Appointment, Integer> dao = getAppointmentDaoRuntimeException();
         // create some entries in the onCreate
         Appointment appointment = new Appointment(1, "Test", "Test", null, Calendar.getInstance().getTime());
-        getDaoAppointmentRuntimeException().create(appointment);
+        getAppointmentDaoRuntimeException().create(appointment);
         appointment = new Appointment(2, "Test2", "Test2", null, Calendar.getInstance().getTime());
-        getDaoAppointmentRuntimeException().create(appointment);
+        getAppointmentDaoRuntimeException().create(appointment);
         Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate");
     }
 
@@ -94,41 +94,41 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
         }
     }
 
-    public Dao<Appointment, Integer> getDaoAppointment() throws SQLException {
+    public Dao<Appointment, Integer> getAppointmentDao() throws SQLException {
         if (appointmentDao == null) {
             appointmentDao = getDao(Appointment.class);
         }
         return appointmentDao;
     }
 
-    public RuntimeExceptionDao<Appointment,Integer> getDaoAppointmentRuntimeException() {
+    public RuntimeExceptionDao<Appointment,Integer> getAppointmentDaoRuntimeException() {
         if(appointmentRuntimeDao == null)
             appointmentRuntimeDao = getRuntimeExceptionDao(Appointment.class);
         return appointmentRuntimeDao;
     }
 
 
-    public Dao<VisitedLocation, Integer> getDaoVisitedLocation() throws SQLException {
+    public Dao<VisitedLocation, Integer> getVisitedLocationDao() throws SQLException {
         if (visitedLocationDao == null) {
             visitedLocationDao = getDao(VisitedLocation.class);
         }
         return visitedLocationDao;
     }
 
-    public RuntimeExceptionDao<VisitedLocation,Integer> getVisitedLocationDao() {
+    public RuntimeExceptionDao<VisitedLocation,Integer> getVisitedLocationDaoRuntimeException() {
         if(visitedLocationRuntimeDao == null)
             visitedLocationRuntimeDao = getRuntimeExceptionDao(VisitedLocation.class);
         return visitedLocationRuntimeDao;
     }
 
-    public Dao<FavoriteLocation, Integer> getDaoFavoriteLocation() throws SQLException {
+    public Dao<FavoriteLocation, Integer> getFavoriteLocationDao() throws SQLException {
         if (favoriteLocationDao == null) {
             favoriteLocationDao = getDao(FavoriteLocation.class);
         }
         return favoriteLocationDao;
     }
 
-    public RuntimeExceptionDao<FavoriteLocation,Integer> getFavoriteLocationDao() {
+    public RuntimeExceptionDao<FavoriteLocation,Integer> getFavoriteLocationDaoRuntimeException() {
         if(favoriteLocationRuntimeDao == null)
             favoriteLocationRuntimeDao = getRuntimeExceptionDao(FavoriteLocation.class);
         return favoriteLocationRuntimeDao;
