@@ -6,4 +6,97 @@
     android:layout_height="match_parent"
     tools:context=".EditSingleAppointmentActivity">
 
+    <TextView
+        android:id="@+id/text_view_single_appointment_appointment_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/edit_text_single_appointment_appointment_name"
+        android:labelFor="@id/edit_text_single_appointment_appointment_name"/>
+
+    <TextView
+        android:id="@+id/text_view_single_appointment_appointment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_colon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_name"
+        app:layout_constraintBottom_toBottomOf="@id/edit_text_single_appointment_appointment_text"
+        android:labelFor="@id/edit_text_single_appointment_appointment_text"/>
+
+    <TextView
+        android:id="@+id/text_view_single_appointment_appointment_locations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/locations_colon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_single_appointment_locations"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier_single_appointment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="text_view_single_appointment_appointment_name" />
+
+    <EditText
+        android:id="@+id/edit_text_single_appointment_appointment_name"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        android:inputType="none"
+        android:autofillHints="" />
+
+    <TextView
+        android:id="@+id/text_view_single_appointment_appointment_has_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@id/spinner_single_appointment_locations"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text" />
+
+    <EditText
+        android:id="@+id/edit_text_single_appointment_appointment_text"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_name"
+        android:layout_width="0dp"
+        android:autofillHints=""
+        android:inputType="none" />
+
+    <Spinner
+        android:id="@+id/spinner_single_appointment_locations"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text" />
+
+    <CheckBox
+        android:id="@+id/check_box_single_appointment_has_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/has_time"
+        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_single_appointment_locations" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/check_box_single_appointment_has_time"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_single_appointment_locations" />
 </android.support.constraint.ConstraintLayout>
