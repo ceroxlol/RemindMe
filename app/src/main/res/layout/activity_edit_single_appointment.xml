@@ -86,7 +86,7 @@
 
     <CheckBox
         android:id="@+id/check_box_single_appointment_has_time"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/has_time"
         app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
@@ -94,8 +94,10 @@
         app:layout_constraintTop_toBottomOf="@id/spinner_single_appointment_locations" />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/text_view_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
         app:layout_constraintLeft_toRightOf="@id/check_box_single_appointment_has_time"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinner_single_appointment_locations" />
