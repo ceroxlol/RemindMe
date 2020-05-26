@@ -27,7 +27,7 @@ import Adapter.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TAGMainActivity";
+    private static final String TAG = "MainActivity";
 
     //PUBLIC
     //Message window handler
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     //Enum for Type
     public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
     //Database
-    //private DBHelper mDBHelper;
     public static DatabaseHelper mDatabaseHelper = null;
 
     //PRIVATE
