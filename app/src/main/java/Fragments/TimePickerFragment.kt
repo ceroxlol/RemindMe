@@ -2,7 +2,6 @@ package Fragments
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.widget.TextView
 import android.app.DialogFragment
 import android.app.Dialog
 import android.content.DialogInterface
@@ -11,9 +10,11 @@ import java.util.Calendar
 import android.widget.TimePicker
 import android.widget.Toast
 import com.example.ceroxlol.remindme.R
+import java.text.SimpleDateFormat
+import kotlin.math.min
 
 
-class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+class TimePickerFragment(private val year: Int, private val month: Int, private val day: Int) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
     private lateinit var calendar:Calendar
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -33,7 +34,7 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
                 this, // TimePickerDialog.OnTimeSetListener
                 hour, // Hour of day
                 minute, // Minute
-                false // Is 24 hour view
+                true // Is 24 hour view
         )
     }
 
@@ -41,7 +42,7 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         // Do something with the returned time
         val button:Button = activity.findViewById(R.id.button_single_appointment_date) as Button
-        button.text = button.text.toString() + " ${getHourAMPM(hourOfDay)}:$minute ${getAMPM(hourOfDay)}"
+        button.text = formatDate(year, month, day, hourOfDay, minute)
     }
 
 
@@ -54,17 +55,12 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     }
 
 
-    // Custom method to get AM PM value from provided hour
-    private fun getAMPM(hour:Int):String{
-        return if(hour>11)"PM" else "AM"
-    }
+    // Custom method to format date
+    private fun formatDate(year:Int, month:Int, day:Int, hourOfDay: Int, minute: Int):String{
+        // Create a Date variable/object with user chosen date
+        calendar.set(year, month, day, hourOfDay, minute, 0)
+        val chosenDate = calendar.time
 
-
-    // Custom method to get hour for AM PM time format
-    private fun getHourAMPM(hour:Int):Int{
-        // Return the hour value for AM PM time format
-        var modifiedHour = if (hour>11)hour-12 else hour
-        if (modifiedHour == 0){modifiedHour = 12}
-        return modifiedHour
+        return SimpleDateFormat("dd MM yyyy HH:mm").format(chosenDate)
     }
 }

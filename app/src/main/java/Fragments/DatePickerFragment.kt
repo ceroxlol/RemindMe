@@ -7,11 +7,11 @@ import android.widget.TextView
 import android.widget.DatePicker
 import android.widget.Toast
 import com.example.ceroxlol.remindme.R
-import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 
-class DatePickerFragment() : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var calendar:Calendar
 
@@ -47,9 +47,9 @@ class DatePickerFragment() : DialogFragment(), DatePickerDialog.OnDateSetListene
         ).show()
 
         // Display the selected date in text view
-        activity.findViewById<TextView>(R.id.button_single_appointment_date).text = formatDate(year,month,day)
+        //activity.findViewById<TextView>(R.id.button_single_appointment_date).text = formatDate(year,month,day)
 
-        val timePickerFragment = TimePickerFragment()
+        val timePickerFragment = TimePickerFragment(year, month, day)
         timePickerFragment.show(fragmentManager, "Time Picker")
     }
 
@@ -60,9 +60,7 @@ class DatePickerFragment() : DialogFragment(), DatePickerDialog.OnDateSetListene
         calendar.set(year, month, day, 0, 0, 0)
         val chosenDate = calendar.time
 
-        // Format the date picker selected date
-        val df = DateFormat.getDateInstance(DateFormat.MEDIUM)
-        return df.format(chosenDate)
+        return SimpleDateFormat("dd MM yyyy HH:mm").format(chosenDate)
     }
 
     override fun onCancel(dialog: DialogInterface?) {
