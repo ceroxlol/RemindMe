@@ -2,6 +2,7 @@ package Data;
 
 import android.location.Location;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -25,8 +26,14 @@ public class Appointment{
     private Location mLocation;
     @DatabaseField
     private Boolean mHasTime;
-    @DatabaseField
-    private Date mAppointmentCreated, mAppointmentTime, mAppointmentRemindTime;
+
+    //DATE FORMAT: dd/MM/yyyy HH mm
+    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
+    private Date mAppointmentCreated;
+    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
+    private Date mAppointmentTime;
+    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
+    private Date mAppointmentRemindTime;
     @DatabaseField
     private int mPriority;
     @DatabaseField

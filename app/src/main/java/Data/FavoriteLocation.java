@@ -63,4 +63,10 @@ public class FavoriteLocation {
     public String getName(){return name;}
 
     public Integer getID(){return id;}
+
+    //For displaying the name in the ArrayAdapterLocationsListSpinner class
+    public String toString()
+    {
+        return this.name;
+    }
 }

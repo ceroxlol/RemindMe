@@ -102,4 +102,9 @@
     <string name="title_activity_edit_appointment">EditAppointmentActivity</string>
     <string name="appointments">Appointments:</string>
     <string name="title_activity_edit_single_appointment">EditSingleAppointmentActivity</string>
+    <string name="name">Name:</string>
+    <string name="text_colon">Text:</string>
+    <string name="locations_colon">Locations:</string>
+    <string name="has_time">has time</string>
+    <string name="no_date">No date</string>
 </resources>
