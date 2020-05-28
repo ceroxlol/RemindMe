@@ -1,6 +1,6 @@
 package com.example.ceroxlol.remindme
 
-import Adapter.ArrayAdapterAppointments
+import adapter.ArrayAdapterAppointments
 import Data.Appointment
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

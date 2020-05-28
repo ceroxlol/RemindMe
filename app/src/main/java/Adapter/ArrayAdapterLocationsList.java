@@ -1,4 +1,4 @@
-package Adapter;
+package adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +17,10 @@ import java.util.ArrayList;
 
 import Data.FavoriteLocation;
 
-public class ArrayAdapterLocations extends ArrayAdapter<FavoriteLocation> {
+public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
     private Context context;
 
-    public ArrayAdapterLocations(Context context, ArrayList<FavoriteLocation> data)
+    public ArrayAdapterLocationsList(Context context, ArrayList<FavoriteLocation> data)
     {
         super(context, 0, data);
         this.context = context;

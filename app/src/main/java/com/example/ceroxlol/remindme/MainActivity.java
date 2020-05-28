@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
-import Adapter.RecyclerViewListAdapterAppointments;
+import adapter.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     //Message window handler
     public Handler mMessageHandler;
     //Enum for Type
-    public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
+    public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
     //Database
     public static DatabaseHelper mDatabaseHelper = null;
 

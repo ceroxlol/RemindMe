@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
-import Adapter.ArrayAdapterLocations;
+import adapter.ArrayAdapterLocationsList;
 import Data.FavoriteLocation;
 
 public class EditLocationActivity extends AppCompatActivity {
@@ -23,7 +23,7 @@ public class EditLocationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_location);
 
         mLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
-        mLocationsArrayAdapter = new ArrayAdapterLocations(this, mLocations);
+        mLocationsArrayAdapter = new ArrayAdapterLocationsList(this, mLocations);
         mLinearLayoutLocations = findViewById(R.id.linearLayoutEditLocationsLocations);
         
         fillLinearLayoutLocations();
