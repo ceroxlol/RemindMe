@@ -90,29 +90,6 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_APP_PERMISSIONS);
         }
-
-    }
-
-    private void initUI() {
-        this.mAppointmentAddNew.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
-            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
-        });
-
-        this.mAppointmentEdit.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
-            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
-        });
-
-        this.mLocationAddNew.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
-            startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
-        });
-
-        this.mLocationEdit.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
-            startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
-        });
     }
 
     private void initClasses() {
@@ -152,7 +129,28 @@ public class MainActivity extends AppCompatActivity {
             mAppointmentRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentList);
             mListAppointmentsRecyclerView.setAdapter(mAppointmentRecyclerViewListAdapterAppointments);
         }
+    }
 
+    private void initUI() {
+        this.mAppointmentAddNew.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
+        });
+
+        this.mAppointmentEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
+        });
+
+        this.mLocationAddNew.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
+            startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
+        });
+
+        this.mLocationEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
+        });
     }
 
     public DatabaseHelper getDBHelper() {
