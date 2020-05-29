@@ -24,9 +24,10 @@ public class Appointment{
     private String mAppointmentText;
     @DatabaseField(persisterClass = LocationPersister.class)
     private Location mLocation;
+    /*@DatabaseField(foreign = true)
+    private FavoriteLocation mFavoriteLocation;*/
     @DatabaseField
     private Boolean mHasTime;
-
     //DATE FORMAT: dd/MM/yyyy HH mm
     @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
     private Date mAppointmentCreated;

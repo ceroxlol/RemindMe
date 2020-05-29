@@ -42,7 +42,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         this.mButtonSingleAppointmentSave = findViewById(R.id.buttonSingleAppointmentSave)
 
         this.mButtonSingleAppointmentDate.setOnClickListener {
-            val datePickerDialog = DatePickerFragment()
+            val datePickerDialog = DatePickerFragment(R.id.buttonSingleAppointmentDate)
             datePickerDialog.show(fragmentManager, "Date Picker")
         }
 
