@@ -1,5 +1,6 @@
 package Fragments
 
+import android.annotation.SuppressLint
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.app.DialogFragment
@@ -11,10 +12,10 @@ import android.widget.TimePicker
 import android.widget.Toast
 import com.example.ceroxlol.remindme.R
 import java.text.SimpleDateFormat
-import kotlin.math.min
 
 
-class TimePickerFragment(private val year: Int, private val month: Int, private val day: Int) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+@SuppressLint("ValidFragment")
+class TimePickerFragment(private val dateButtonId:Int, private val year: Int, private val month: Int, private val day: Int) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
     private lateinit var calendar:Calendar
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -41,7 +42,7 @@ class TimePickerFragment(private val year: Int, private val month: Int, private 
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         // Do something with the returned time
-        val button:Button = activity.findViewById(R.id.button_single_appointment_date) as Button
+        val button:Button = activity.findViewById(dateButtonId) as Button
         button.text = formatDate(year, month, day, hourOfDay, minute)
     }
 
@@ -49,7 +50,7 @@ class TimePickerFragment(private val year: Int, private val month: Int, private 
     // When user cancel the time picker dialog
     override fun onCancel(dialog: DialogInterface?) {
         Toast.makeText(activity,"Canceled.",Toast.LENGTH_SHORT).show()
-        val button:Button = activity.findViewById(R.id.button_single_appointment_date) as Button
+        val button:Button = activity.findViewById(dateButtonId) as Button
         button.text = "@string/no_date"
         super.onCancel(dialog)
     }

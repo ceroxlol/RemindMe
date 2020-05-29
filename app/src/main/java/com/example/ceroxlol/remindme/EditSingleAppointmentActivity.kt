@@ -35,11 +35,11 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_single_appointment)
 
-        this.mButtonSingleAppointmentDate = findViewById(R.id.button_single_appointment_date)
-        this.mEditTextSingleAppointmentAppointmentName = findViewById(R.id.edit_text_single_appointment_appointment_name)
-        this.mEditTextSingleAppointmentAppointmentText = findViewById(R.id.edit_text_single_appointment_appointment_text)
-        this.mSpinnerSingleAppointmentLocations = findViewById(R.id.spinner_single_appointment_locations)
-        this.mButtonSingleAppointmentSave = findViewById(R.id.button_single_appointment_save)
+        this.mButtonSingleAppointmentDate = findViewById(R.id.buttonSingleAppointmentDate)
+        this.mEditTextSingleAppointmentAppointmentName = findViewById(R.id.editTextSingleAppointmentAppointmentName)
+        this.mEditTextSingleAppointmentAppointmentText = findViewById(R.id.editTextSingleAppointmentAppointmentText)
+        this.mSpinnerSingleAppointmentLocations = findViewById(R.id.spinnerSingleAppointmentLocations)
+        this.mButtonSingleAppointmentSave = findViewById(R.id.buttonSingleAppointmentSave)
 
         this.mButtonSingleAppointmentDate.setOnClickListener {
             val datePickerDialog = DatePickerFragment()
