@@ -1,8 +1,10 @@
 package Fragments
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.DatePicker
 import android.widget.Toast
@@ -11,7 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 
-class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+@SuppressLint("ValidFragment")
+class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var calendar:Calendar
 
@@ -46,10 +49,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
                 ,Toast.LENGTH_SHORT
         ).show()
 
-        // Display the selected date in text view
-        //activity.findViewById<TextView>(R.id.button_single_appointment_date).text = formatDate(year,month,day)
-
-        val timePickerFragment = TimePickerFragment(year, month, day)
+        val timePickerFragment = TimePickerFragment(dateButtonID, year, month, day)
         timePickerFragment.show(fragmentManager, "Time Picker")
     }
 
@@ -64,7 +64,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     }
 
     override fun onCancel(dialog: DialogInterface?) {
-        activity.findViewById<TextView>(R.id.button_single_appointment_date).text = "@string/no_date"
+        activity.findViewById<TextView>(dateButtonID).text = R.string.no_date.toString()
         Toast.makeText(getActivity(),"Date Picker Canceled.", Toast.LENGTH_SHORT).show()
     }
 }

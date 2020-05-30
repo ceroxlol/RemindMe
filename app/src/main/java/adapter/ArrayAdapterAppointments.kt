@@ -37,6 +37,7 @@ class ArrayAdapterAppointments(context: Context,
         }
         buttonDeleteAppointment?.setOnClickListener{
             MainActivity.mDatabaseHelper.appointmentDao.deleteById(appointment.id)
+            //TODO: Refresh the list
         }
 
         return rowView

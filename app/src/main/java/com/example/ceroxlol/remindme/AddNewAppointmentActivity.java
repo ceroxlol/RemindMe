@@ -1,50 +1,35 @@
 package com.example.ceroxlol.remindme;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.location.Location;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
 import java.util.Locale;
 
 import Data.Appointment;
 import Data.FavoriteLocation;
 import DatabaseServices.DatabaseHelper;
+import Fragments.DatePickerFragment;
+import adapter.ArrayAdapterLocationsListSpinner;
 
 public class AddNewAppointmentActivity extends AppCompatActivity {
 
     private DatabaseHelper mDBHelper;
 
-    //UI Elements
-    private Button mButtonChooseLocation;
-    private Button mButtonSaveAppointment;
-
-    private EditText mEditTextAppointmentNote;
+    private Button mButtonAppointmentDate;
+    private Button mButtonAppointmentSave;
+    private EditText mEditTextAppointmentText;
     private EditText mEditTextAppointmentName;
-    private TextView mTextViewDate;
-
-    private AutoCompleteTextView mAutoCompleteTextViewNewAppointment;
-
-    private CheckBox mCheckBoxDueDate;
-
-
-    private Location mChosenLocation;
-    private DatePickerDialog mDatePickerDialog;
-    private SimpleDateFormat mDateFormatter;
+    private Spinner mSpinnerAddAppointmentLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,80 +42,62 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     private void init() {
         this.mDBHelper = MainActivity.mDatabaseHelper;
 
-        //UI
-        this.mButtonChooseLocation = (Button) findViewById(R.id.buttonChooseLocation);
-        this.mButtonSaveAppointment = (Button) findViewById(R.id.buttonSaveAppointment);
-        this.mEditTextAppointmentNote = (EditText) findViewById(R.id.editTextAppointmentNote);
-        this.mEditTextAppointmentName = (EditText) findViewById(R.id.editTextAppointmentName);
-        this.mAutoCompleteTextViewNewAppointment = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewLocation);
-        this.mCheckBoxDueDate = (CheckBox) findViewById(R.id.checkBoxAddDueDate);
-        this.mTextViewDate = (TextView) findViewById(R.id.textViewDate);
+        this.mEditTextAppointmentName = findViewById(R.id.editTextAddAppointmentAppointmentName);
+        this.mEditTextAppointmentText = findViewById(R.id.editTextAddAppointmentAppointmentText);
+        this.mButtonAppointmentDate = findViewById(R.id.buttonAddAppointmentDate);
+        this.mButtonAppointmentSave = findViewById(R.id.buttonAddAppointmentSave);
+        this.mSpinnerAddAppointmentLocations = findViewById(R.id.spinnerAddAppointmentLocations);
 
-
-        //LocationHandler
-        List<FavoriteLocation> favoriteLocationsList = mDBHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
-        String[] favoriteLocationNames = new String[favoriteLocationsList.size()];
-        for (int i=0; i < favoriteLocationsList.size(); i++) {
-            favoriteLocationNames[i] = favoriteLocationsList.get(i).getName();
-        }
-
-        ArrayAdapter<String> favoriteLocations = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, favoriteLocationNames);
-        mAutoCompleteTextViewNewAppointment.setAdapter(favoriteLocations);
-
-        //Date
-        mDateFormatter = new SimpleDateFormat("dd-mm-yyyy", Locale.GERMANY);
-        setDateTimeField();
-
-        //Listener
-        this.mButtonSaveAppointment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createNewAppointment();
-            }
+        this.mButtonAppointmentDate.setOnClickListener(view -> {
+            DatePickerFragment datePickerDialog = new DatePickerFragment(R.id.buttonAddAppointmentDate);
+            datePickerDialog.show(getFragmentManager(), "Date Picker");
         });
 
-        this.mCheckBoxDueDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    mDatePickerDialog.show();
-                }
-                else
-                    mTextViewDate.setText("");
-            }
+        this.mButtonAppointmentSave.setOnClickListener(v -> {
+            saveNewAppointment();
+            finishActivity();
         });
+
+        loadLocations();
     }
 
-    private void createNewAppointment()
-    {
-        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
-                mEditTextAppointmentNote.getText().toString(), mChosenLocation, Calendar.getInstance().getTime());
+    private void loadLocations() {
+        ArrayList<FavoriteLocation> locations = (ArrayList<FavoriteLocation>) mDBHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        ArrayAdapterLocationsListSpinner adapter = new ArrayAdapterLocationsListSpinner(this, locations);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        this.mSpinnerAddAppointmentLocations.setAdapter(adapter);
+    }
+
+    private void saveNewAppointment() {
+        FavoriteLocation favoriteLocation = (FavoriteLocation) this.mSpinnerAddAppointmentLocations.getSelectedItem();
+        Date remindTime = null;
+        Appointment appointment;
+
+        try {
+            remindTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.mButtonAppointmentDate.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (remindTime != null)
+            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
+                mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
+                null, remindTime);
+        else
+            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
+                    mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
+
         try {
             mDBHelper.getAppointmentDao().create(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        finishActivity();
     }
 
     //When finishing this acitivity, an acknowledge to the main acitivity is sent to refresh the appointment list
-    private void finishActivity()
-    {
+    private void finishActivity() {
         Intent i = new Intent();
-        setResult(RESULT_OK,i);
+        setResult(RESULT_OK, i);
         finish();
-    }
-
-    private void setDateTimeField() {
-        Calendar newCalendar = Calendar.getInstance();
-        mDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                mTextViewDate.setText(mDateFormatter.format(newDate.getTime()));
-            }
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 }

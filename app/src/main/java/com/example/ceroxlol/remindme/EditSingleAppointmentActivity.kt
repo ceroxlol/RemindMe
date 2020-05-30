@@ -35,14 +35,14 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_single_appointment)
 
-        this.mButtonSingleAppointmentDate = findViewById(R.id.button_single_appointment_date)
-        this.mEditTextSingleAppointmentAppointmentName = findViewById(R.id.edit_text_single_appointment_appointment_name)
-        this.mEditTextSingleAppointmentAppointmentText = findViewById(R.id.edit_text_single_appointment_appointment_text)
-        this.mSpinnerSingleAppointmentLocations = findViewById(R.id.spinner_single_appointment_locations)
-        this.mButtonSingleAppointmentSave = findViewById(R.id.button_single_appointment_save)
+        this.mButtonSingleAppointmentDate = findViewById(R.id.buttonSingleAppointmentDate)
+        this.mEditTextSingleAppointmentAppointmentName = findViewById(R.id.editTextSingleAppointmentAppointmentName)
+        this.mEditTextSingleAppointmentAppointmentText = findViewById(R.id.editTextSingleAppointmentAppointmentText)
+        this.mSpinnerSingleAppointmentLocations = findViewById(R.id.spinnerSingleAppointmentLocations)
+        this.mButtonSingleAppointmentSave = findViewById(R.id.buttonSingleAppointmentSave)
 
         this.mButtonSingleAppointmentDate.setOnClickListener {
-            val datePickerDialog = DatePickerFragment()
+            val datePickerDialog = DatePickerFragment(R.id.buttonSingleAppointmentDate)
             datePickerDialog.show(fragmentManager, "Date Picker")
         }
 
@@ -69,12 +69,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val date_String = this.mButtonSingleAppointmentDate.text.toString()
         val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
         appointment.appointmentRemindTime = date
+        appointment.favoriteLocation = this.mSpinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
+
         MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
         Log.i(TAG, "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentRemindTime}")
     }
 
     private fun loadAppointment(id: Int) {
         appointment = MainActivity.mDatabaseHelper.appointmentDao.queryForId(id)
+
         this.mEditTextSingleAppointmentAppointmentName.setText(appointment.name)
         this.mEditTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
         if (appointment.appointmentRemindTime != null) {
@@ -96,5 +99,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val adapter = ArrayAdapterLocationsListSpinner(this, locations)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         this.mSpinnerSingleAppointmentLocations.adapter = adapter
+        val position = getFavoriteLocationPositionWithID(locations)
+        this.mSpinnerSingleAppointmentLocations.setSelection(position)
+    }
+
+    private fun getFavoriteLocationPositionWithID(locations: ArrayList<FavoriteLocation>): Int {
+        locations.forEach{location ->
+            if(location.id == appointment.favoriteLocation.id)
+                return locations.indexOf(location)
+        }
+        return 0
     }
 }

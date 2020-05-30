@@ -90,29 +90,6 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_APP_PERMISSIONS);
         }
-
-    }
-
-    private void initUI() {
-        this.mAppointmentAddNew.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
-            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
-        });
-
-        this.mAppointmentEdit.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
-            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
-        });
-
-        this.mLocationAddNew.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
-            startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
-        });
-
-        this.mLocationEdit.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
-            startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
-        });
     }
 
     private void initClasses() {
@@ -126,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Init checker service thread for appointments met
         this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
-        //this.mAppointmentMetCheckingService.setRun(true);
+        this.mAppointmentMetCheckingService.setRun(true);
         this.mAppointmentMetCheckingService.start();
 
         //Init message handler for showing message on the main ui thread
@@ -152,7 +129,57 @@ public class MainActivity extends AppCompatActivity {
             mAppointmentRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentList);
             mListAppointmentsRecyclerView.setAdapter(mAppointmentRecyclerViewListAdapterAppointments);
         }
+    }
 
+    private void initUI() {
+        this.mAppointmentAddNew.setOnClickListener(v -> {
+            if(!checkIfLocationsAreAvailable())
+            {
+                showAlertDialog("No locations available",
+                        "In order to create appointments you need to have locations first. Please create one.");
+            }
+            else
+            {Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);}
+        });
+
+        this.mAppointmentEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
+        });
+
+        this.mLocationAddNew.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
+            startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
+        });
+
+        this.mLocationEdit.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
+            startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
+        });
+    }
+
+    private void showAlertDialog(String title, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        //alertDialog.setIcon(R.drawable.delete);
+
+        // On pressing OK button
+        alertDialog.setPositiveButton("OK", null);
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+    private boolean checkIfLocationsAreAvailable() {
+        return this.getDBHelper().getFavoriteLocationDaoRuntimeException().queryForAll().size() != 0;
     }
 
     public DatabaseHelper getDBHelper() {

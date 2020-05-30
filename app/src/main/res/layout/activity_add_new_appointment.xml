@@ -9,88 +9,108 @@
     tools:context="com.example.ceroxlol.remindme.AddNewAppointmentActivity">
 
     <TextView
-        android:id="@+id/textView_create_new_appointment"
+        android:id="@+id/textViewCreateNewAppointment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new appointment"
         android:textSize="10pt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/barrierAddAppointment"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/editTextAppointmentName"
+        app:layout_constraintBottom_toTopOf="@id/editTextAddAppointmentAppointmentName"
         />
-
-    <EditText
-        android:id="@+id/editTextAppointmentName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Appointment name"
-        android:inputType="text"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView_create_new_appointment"
-        app:layout_constraintBottom_toTopOf="@id/editTextAppointmentNote"/>
-
-    <EditText
-        android:id="@+id/editTextAppointmentNote"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:hint="Appointment note"
-        android:inputType="text"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextAppointmentName"
-        app:layout_constraintBottom_toTopOf="@id/autoCompleteTextViewLocation"
-        />
-
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextViewLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Type in your favorite location"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/buttonChooseLocation"
-        app:layout_constraintTop_toBottomOf="@id/editTextAppointmentNote"
-        app:layout_constraintBottom_toTopOf="@id/checkBoxAddDueDate"/>
-
-    <Button
-        android:id="@+id/buttonChooseLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="choose location"
-        android:layout_marginTop="20dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/autoCompleteTextViewLocation"
-        app:layout_constraintTop_toBottomOf="@id/editTextAppointmentNote" />
-
-    <CheckBox
-        android:id="@+id/checkBoxAddDueDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Add due date"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/autoCompleteTextViewLocation"
-        app:layout_constraintRight_toLeftOf="@id/textViewDate"/>
 
     <TextView
-        android:id="@+id/textViewDate"
+        android:id="@+id/textViewAddAppointmentAppointmentName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="10pt"
-        android:layout_marginRight="10dp"
-        app:layout_constraintLeft_toRightOf="@id/checkBoxAddDueDate"
+        android:text="@string/name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrierAddAppointment"
+        app:layout_constraintTop_toBottomOf="@id/textViewCreateNewAppointment"
+        app:layout_constraintBottom_toBottomOf="@id/editTextAddAppointmentAppointmentName"
+        android:labelFor="@id/editTextAddAppointmentAppointmentName"/>
+
+    <TextView
+        android:id="@+id/textViewAddAppointmentAppointmentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_colon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrierAddAppointment"
+        app:layout_constraintTop_toBottomOf="@id/editTextAddAppointmentAppointmentName"
+        app:layout_constraintBottom_toBottomOf="@id/editTextAddAppointmentAppointmentText"
+        android:labelFor="@id/editTextAddAppointmentAppointmentText"/>
+
+    <TextView
+        android:id="@+id/textViewAddAppointmentAppointmentLocations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/locations_colon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrierAddAppointment"
+        app:layout_constraintTop_toBottomOf="@id/editTextAddAppointmentAppointmentText"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerAddAppointmentLocations"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrierAddAppointment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="textViewAddAppointmentAppointmentName" />
+
+    <EditText
+        android:id="@+id/editTextAddAppointmentAppointmentName"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrierAddAppointment"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonChooseLocation"
-        />
+        app:layout_constraintTop_toBottomOf="@id/textViewCreateNewAppointment"
+        android:layout_width="0dp"
+        android:inputType="none"
+        android:autofillHints="" />
+
+    <TextView
+        android:id="@+id/textViewAddAppointmentAppointmentHasTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@id/spinnerAddAppointmentLocations"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrierAddAppointment"
+        app:layout_constraintTop_toBottomOf="@id/editTextAddAppointmentAppointmentText" />
+
+    <EditText
+        android:id="@+id/editTextAddAppointmentAppointmentText"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrierAddAppointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextAddAppointmentAppointmentName"
+        android:layout_width="0dp"
+        android:autofillHints=""
+        android:inputType="none" />
+
+    <Spinner
+        android:id="@+id/spinnerAddAppointmentLocations"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/barrierAddAppointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextAddAppointmentAppointmentText" />
 
     <Button
-        android:id="@+id/buttonSaveAppointment"
+        android:id="@+id/buttonAddAppointmentDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/no_date"
+        app:layout_constraintLeft_toRightOf="@+id/barrierAddAppointment"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerAddAppointmentLocations" />
+
+
+    <Button
+        android:id="@+id/buttonAddAppointmentSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"

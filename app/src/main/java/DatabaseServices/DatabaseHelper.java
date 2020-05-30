@@ -32,7 +32,7 @@ import Data.User;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializable {
     //Database variables
     private static final String DATABASE_NAME = "RemindMe.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
     public static Gson gson;
 
     //DAO Objects to access the tables
@@ -67,15 +67,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializa
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
         }
-
-        // here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<Appointment, Integer> dao = getAppointmentDaoRuntimeException();
-        // create some entries in the onCreate
-        Appointment appointment = new Appointment(1, "Test", "Test", null, Calendar.getInstance().getTime());
-        getAppointmentDaoRuntimeException().create(appointment);
-        appointment = new Appointment(2, "Test2", "Test2", null, Calendar.getInstance().getTime());
-        getAppointmentDaoRuntimeException().create(appointment);
-        Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate");
     }
 
     @Override

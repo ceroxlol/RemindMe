@@ -7,95 +7,85 @@
     tools:context=".EditSingleAppointmentActivity">
 
     <TextView
-        android:id="@+id/text_view_single_appointment_appointment_name"
+        android:id="@+id/textViewSingleAppointmentAppointmentName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
+        app:layout_constraintRight_toLeftOf="@id/barrierSingleAppointment"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/edit_text_single_appointment_appointment_name"
-        android:labelFor="@id/edit_text_single_appointment_appointment_name"/>
+        app:layout_constraintBottom_toBottomOf="@id/editTextSingleAppointmentAppointmentName"
+        android:labelFor="@id/editTextSingleAppointmentAppointmentName"/>
 
     <TextView
-        android:id="@+id/text_view_single_appointment_appointment_text"
+        android:id="@+id/textViewSingleAppointmentAppointmentText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_colon"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_name"
-        app:layout_constraintBottom_toBottomOf="@id/edit_text_single_appointment_appointment_text"
-        android:labelFor="@id/edit_text_single_appointment_appointment_text"/>
+        app:layout_constraintRight_toLeftOf="@id/barrierSingleAppointment"
+        app:layout_constraintTop_toBottomOf="@id/editTextSingleAppointmentAppointmentName"
+        app:layout_constraintBottom_toBottomOf="@id/editTextSingleAppointmentAppointmentText"
+        android:labelFor="@id/editTextSingleAppointmentAppointmentText"/>
 
     <TextView
-        android:id="@+id/text_view_single_appointment_appointment_locations"
+        android:id="@+id/textViewSingleAppointmentAppointmentLocations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/locations_colon"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_single_appointment_locations"/>
+        app:layout_constraintRight_toLeftOf="@id/barrierSingleAppointment"
+        app:layout_constraintTop_toBottomOf="@id/editTextSingleAppointmentAppointmentText"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerSingleAppointmentLocations"/>
 
     <android.support.constraint.Barrier
-        android:id="@+id/barrier_single_appointment"
+        android:id="@+id/barrierSingleAppointment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:barrierDirection="end"
-        app:constraint_referenced_ids="text_view_single_appointment_appointment_name" />
+        app:constraint_referenced_ids="textViewSingleAppointmentAppointmentName" />
 
     <EditText
-        android:id="@+id/edit_text_single_appointment_appointment_name"
+        android:id="@+id/editTextSingleAppointmentAppointmentName"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintLeft_toRightOf="@id/barrierSingleAppointment"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
         android:inputType="none"
         android:autofillHints="" />
 
-    <TextView
-        android:id="@+id/text_view_single_appointment_appointment_has_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="@id/spinner_single_appointment_locations"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/barrier_single_appointment"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text" />
-
     <EditText
-        android:id="@+id/edit_text_single_appointment_appointment_text"
+        android:id="@+id/editTextSingleAppointmentAppointmentText"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintLeft_toRightOf="@id/barrierSingleAppointment"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_name"
+        app:layout_constraintTop_toBottomOf="@id/editTextSingleAppointmentAppointmentName"
         android:layout_width="0dp"
         android:autofillHints=""
         android:inputType="none" />
 
     <Spinner
-        android:id="@+id/spinner_single_appointment_locations"
+        android:id="@+id/spinnerSingleAppointmentLocations"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/barrier_single_appointment"
+        app:layout_constraintLeft_toRightOf="@id/barrierSingleAppointment"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_single_appointment_appointment_text" />
+        app:layout_constraintTop_toBottomOf="@id/editTextSingleAppointmentAppointmentText" />
 
     <Button
-        android:id="@+id/button_single_appointment_date"
+        android:id="@+id/buttonSingleAppointmentDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFFFFF"
         android:text="@string/no_date"
-        app:layout_constraintLeft_toRightOf="@+id/barrier_single_appointment"
+        app:layout_constraintLeft_toRightOf="@+id/barrierSingleAppointment"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_single_appointment_locations" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerSingleAppointmentLocations" />
 
     <Button
-        android:id="@+id/button_single_appointment_save"
+        android:id="@+id/buttonSingleAppointmentSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Save"

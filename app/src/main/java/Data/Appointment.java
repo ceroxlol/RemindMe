@@ -24,9 +24,10 @@ public class Appointment{
     private String mAppointmentText;
     @DatabaseField(persisterClass = LocationPersister.class)
     private Location mLocation;
+    @DatabaseField(foreign = true)
+    private FavoriteLocation mFavoriteLocation;
     @DatabaseField
     private Boolean mHasTime;
-
     //DATE FORMAT: dd/MM/yyyy HH mm
     @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
     private Date mAppointmentCreated;
@@ -38,6 +39,8 @@ public class Appointment{
     private int mPriority;
     @DatabaseField
     private int mType;
+    @DatabaseField(canBeNull = false, defaultValue = "false")
+    private boolean mAcknowledged;
 
     private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
 
@@ -47,23 +50,25 @@ public class Appointment{
     }
 
     //without time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated)
     {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
-        this.mLocation = location;
+        this.mLocation = favoriteLocation.getLocation();
+        this.mFavoriteLocation = favoriteLocation;
         this.mAppointmentCreated = appointmentCreated;
         this.mHasTime = false;
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
     {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
-        this.mLocation = location;
+        this.mLocation = favoriteLocation.getLocation();
+        this.mFavoriteLocation = favoriteLocation;
         this.mAppointmentCreated = appointmentCreated;
         this.mAppointmentTime = appointmentTime;
         this.mAppointmentRemindTime = appointmentRemindTime;
@@ -149,4 +154,12 @@ public class Appointment{
     public void setType(int mType) {
         this.mType = mType;
     }
+
+    public FavoriteLocation getFavoriteLocation() {return mFavoriteLocation;}
+
+    public void setFavoriteLocation(FavoriteLocation location) {this.mFavoriteLocation = location;}
+
+    public boolean getAcknowledged() {return this.mAcknowledged;}
+
+    public void setAcknowledged(boolean acknowledged) {this.mAcknowledged = acknowledged;}
 }
