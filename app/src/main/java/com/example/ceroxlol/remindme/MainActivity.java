@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUI() {
         this.mAppointmentAddNew.setOnClickListener(v -> {
+            //TODO: If no location is available yet, don't start the activity. Show warning instead.
             Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
             startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
         });

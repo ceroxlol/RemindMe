@@ -100,13 +100,17 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 }
                 else
                 {
+                    //TODO: This case shouldn't happen
                     MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved));
                 }
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+            else{
+                //TODO:Warning that no marker was set and thus a marker needs to be placed first
+            }
         });
 
         //Get all available favorite locations
