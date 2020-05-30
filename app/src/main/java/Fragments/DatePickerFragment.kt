@@ -64,7 +64,7 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
     }
 
     override fun onCancel(dialog: DialogInterface?) {
-        activity.findViewById<TextView>(dateButtonID).text = "@string/no_date"
+        activity.findViewById<TextView>(dateButtonID).text = R.string.no_date.toString()
         Toast.makeText(getActivity(),"Date Picker Canceled.", Toast.LENGTH_SHORT).show()
     }
 }
