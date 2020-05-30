@@ -48,23 +48,25 @@ public class Appointment{
     }
 
     //without time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated)
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated)
     {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
-        this.mLocation = location;
+        this.mLocation = favoriteLocation.getLocation();
+        this.mFavoriteLocation = favoriteLocation;
         this.mAppointmentCreated = appointmentCreated;
         this.mHasTime = false;
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, Location location, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
     {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
-        this.mLocation = location;
+        this.mLocation = favoriteLocation.getLocation();
+        this.mFavoriteLocation = favoriteLocation;
         this.mAppointmentCreated = appointmentCreated;
         this.mAppointmentTime = appointmentTime;
         this.mAppointmentRemindTime = appointmentRemindTime;
@@ -150,4 +152,8 @@ public class Appointment{
     public void setType(int mType) {
         this.mType = mType;
     }
+
+    public FavoriteLocation getFavoriteLocation() {return mFavoriteLocation;}
+
+    public void setFavoriteLocation(FavoriteLocation location) {this.mFavoriteLocation = location;}
 }

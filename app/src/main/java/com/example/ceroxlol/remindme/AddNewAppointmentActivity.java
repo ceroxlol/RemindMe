@@ -1,18 +1,19 @@
 package com.example.ceroxlol.remindme;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import Data.Appointment;
 import Data.FavoriteLocation;
@@ -68,9 +69,24 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     }
 
     private void saveNewAppointment() {
-        FavoriteLocation location = (FavoriteLocation) this.mSpinnerAddAppointmentLocations.getSelectedItem();
-        Appointment appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
-                mEditTextAppointmentText.getText().toString(), location.getLocation(), Calendar.getInstance().getTime());
+        FavoriteLocation favoriteLocation = (FavoriteLocation) this.mSpinnerAddAppointmentLocations.getSelectedItem();
+        Date remindTime = null;
+        Appointment appointment;
+
+        try {
+            remindTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.mButtonAppointmentDate.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (remindTime != null)
+            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
+                mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
+                null, remindTime);
+        else
+            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
+                    mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
+
         try {
             mDBHelper.getAppointmentDao().create(appointment);
         } catch (SQLException e) {

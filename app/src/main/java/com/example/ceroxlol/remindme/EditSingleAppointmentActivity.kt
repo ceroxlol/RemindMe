@@ -96,5 +96,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val adapter = ArrayAdapterLocationsListSpinner(this, locations)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         this.mSpinnerSingleAppointmentLocations.adapter = adapter
+        val position = getFavoriteLocationPositionWithID(locations)
+        this.mSpinnerSingleAppointmentLocations.setSelection(position)
+    }
+
+    private fun getFavoriteLocationPositionWithID(locations: ArrayList<FavoriteLocation>): Int {
+        locations.forEach{location ->
+            if(location.id == appointment.favoriteLocation.id)
+                return locations.indexOf(location)
+        }
+        return 0
     }
 }
