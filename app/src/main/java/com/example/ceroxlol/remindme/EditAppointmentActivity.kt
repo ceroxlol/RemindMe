@@ -16,6 +16,8 @@ class EditAppointmentActivity(
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_appointment)
 
+        //TODO: List all Appointments with their corresponding Locations and Remindtimes
+
         Log.i("EditAppointmentActivity", "Setting up edit appointments activity.")
         mAppointments = MainActivity.mDatabaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
         val mAppointmentsAdapter = ArrayAdapterAppointments(this, mAppointments)

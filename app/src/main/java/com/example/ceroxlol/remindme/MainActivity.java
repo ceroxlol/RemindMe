@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Init checker service thread for appointments met
         this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
-        //this.mAppointmentMetCheckingService.setRun(true);
+        this.mAppointmentMetCheckingService.setRun(true);
         this.mAppointmentMetCheckingService.start();
 
         //Init message handler for showing message on the main ui thread

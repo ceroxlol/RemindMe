@@ -69,12 +69,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val date_String = this.mButtonSingleAppointmentDate.text.toString()
         val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
         appointment.appointmentRemindTime = date
+        appointment.favoriteLocation = this.mSpinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
+
         MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
         Log.i(TAG, "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentRemindTime}")
     }
 
     private fun loadAppointment(id: Int) {
         appointment = MainActivity.mDatabaseHelper.appointmentDao.queryForId(id)
+
         this.mEditTextSingleAppointmentAppointmentName.setText(appointment.name)
         this.mEditTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
         if (appointment.appointmentRemindTime != null) {
