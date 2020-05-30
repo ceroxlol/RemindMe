@@ -47,15 +47,6 @@ public class FavoriteLocation {
         this.name = name;
     }
 
-    public FavoriteLocation(LatLng latLng)
-    {
-        //Provider name is unnecessary
-        this.location = new Location("");
-        this.location.setLatitude(latLng.latitude);
-        this.location.setLongitude(latLng.longitude);
-        this.name = "unkown";
-    }
-
     public Location getLocation() {
         return location;
     }

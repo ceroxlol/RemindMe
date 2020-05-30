@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -68,13 +69,11 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private static final String KEY_LOCATION = "location";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
@@ -92,29 +91,52 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         mEditTextName = findViewById(R.id.editTextLocationName);
         mButtonSave = findViewById(R.id.buttonSaveLocation);
         mButtonSave.setOnClickListener(v -> {
-            if(mNewLocationToBeSaved != null) {
+            if (mNewLocationToBeSaved != null) {
                 String favoriteLocationName = mEditTextName.getText().toString();
-                if (favoriteLocationName != "") {
-                    //Save any set Markers
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
+                if (!favoriteLocationName.equals("")) {
+                    saveNewFavoriteLocation(favoriteLocationName);
                 }
                 else
                 {
-                    //TODO: This case shouldn't happen
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved));
+                    showAlertDialog("No name for new location",
+                            "You have set no location name. Please set a name for the location in order to save it.");
                 }
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
-            }
-            else{
-                //TODO:Warning that no marker was set and thus a marker needs to be placed first
+            } else {
+                showAlertDialog("No marker was set",
+                        "You have set no marker. Please set a marker before you save a new location.");
             }
         });
 
         //Get all available favorite locations
         mSavedLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+    }
+
+    private void saveNewFavoriteLocation(String favoriteLocationName) {
+        //Save any set Markers
+        MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private void showAlertDialog(String title, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        //alertDialog.setIcon(R.drawable.delete);
+
+        // On pressing OK button
+        alertDialog.setPositiveButton("OK", null);
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
     /**
@@ -191,7 +213,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void setSavedMarkers() {
-        if(mSavedLocationsList.isEmpty())
+        if (mSavedLocationsList.isEmpty())
             return;
 
         for (FavoriteLocation location : mSavedLocationsList) {
@@ -210,12 +232,12 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void getDeviceLocation() {
-    /*
-     * Get the best and most recent location of the device, which may be null in rare
-     * cases when a location is not available.
-     */
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
         try {
-            if(mLocationPermissionGranted) {
+            if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -232,7 +254,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                     }
                 });
             }
-        } catch(SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -294,7 +316,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -309,7 +331,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         mMap.clear();
         setSavedMarkers();
         Marker marker = mMap.addMarker(new MarkerOptions()
-            .position(latLng));
+                .position(latLng));
         mNewLocationToBeSaved = marker.getPosition();
     }
 }
