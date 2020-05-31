@@ -76,7 +76,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     }
 
     private fun loadAppointment(id: Int) {
-        appointment = MainActivity.mDatabaseHelper.appointmentDao.queryForId(id)
+        appointment = MainActivity.mDatabaseHelper.appointmentDaoRuntimeException.queryForId(id)
 
         this.mEditTextSingleAppointmentAppointmentName.setText(appointment.name)
         this.mEditTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)

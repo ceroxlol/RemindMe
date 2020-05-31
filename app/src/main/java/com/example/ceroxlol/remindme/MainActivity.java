@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,17 +43,17 @@ public class MainActivity extends AppCompatActivity {
     private GPSTracker mGPSTracker;
 
     //Appointments
-    private ArrayList<Appointment> mAppointmentList;
+    private ArrayList<Appointment> mAppointmentArrayList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
     //UI
     private LinearLayout mAppointmentLinearLayout;
-    private Button mAppointmentAddNew;
-    private Button mAppointmentEdit;
-    private Button mLocationAddNew;
-    private Button mLocationEdit;
-    private RecyclerViewListAdapterAppointments mAppointmentRecyclerViewListAdapterAppointments;
-    private RecyclerView mListAppointmentsRecyclerView;
+    private Button mButtonAddNewAppointment;
+    private Button mButtonEditAppointment;
+    private Button mAddNewLocation;
+    private Button mEditLocation;
+    private RecyclerViewListAdapterAppointments mRecyclerViewListAdapterAppointments;
+    private RecyclerView mRecyclerViewAppointmentList;
 
     //Requests
     private final int REQUEST_APP_PERMISSIONS = 1;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         //Database
         getDBHelper();
 
-        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
+        this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
 
         //Init checker service thread for appointments met
         this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
@@ -117,22 +118,26 @@ public class MainActivity extends AppCompatActivity {
         };
 
         //UI elements
-        this.mListAppointmentsRecyclerView = findViewById(R.id.listAppointmentsRecyclerView);
-        this.mListAppointmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.mAppointmentAddNew = findViewById(R.id.buttonAddNewAppointment);
-        this.mAppointmentEdit = findViewById(R.id.buttonEditAppointment);
-        this.mLocationAddNew = findViewById(R.id.buttonAddNewLocation);
-        this.mLocationEdit = findViewById(R.id.buttonEditLocation);
+        this.mRecyclerViewAppointmentList = findViewById(R.id.RecyclerViewAppointmentList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        this.mRecyclerViewAppointmentList.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.mRecyclerViewAppointmentList.getContext(),
+                ((LinearLayoutManager) layoutManager).getOrientation());
+        this.mRecyclerViewAppointmentList.addItemDecoration(dividerItemDecoration);
+        this.mButtonAddNewAppointment = findViewById(R.id.buttonAddNewAppointment);
+        this.mButtonEditAppointment = findViewById(R.id.buttonEditAppointment);
+        this.mAddNewLocation = findViewById(R.id.buttonAddNewLocation);
+        this.mEditLocation = findViewById(R.id.buttonEditLocation);
 
-        if(mAppointmentRecyclerViewListAdapterAppointments == null)
+        if(mRecyclerViewListAdapterAppointments == null)
         {
-            mAppointmentRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentList);
-            mListAppointmentsRecyclerView.setAdapter(mAppointmentRecyclerViewListAdapterAppointments);
+            mRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentArrayList);
+            mRecyclerViewAppointmentList.setAdapter(mRecyclerViewListAdapterAppointments);
         }
     }
 
     private void initUI() {
-        this.mAppointmentAddNew.setOnClickListener(v -> {
+        this.mButtonAddNewAppointment.setOnClickListener(v -> {
             if(!checkIfLocationsAreAvailable())
             {
                 showAlertDialog("No locations available",
@@ -143,17 +148,17 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(i, REQUEST_NEW_APPOINTMENT);}
         });
 
-        this.mAppointmentEdit.setOnClickListener(v -> {
+        this.mButtonEditAppointment.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
             startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
         });
 
-        this.mLocationAddNew.setOnClickListener(v -> {
+        this.mAddNewLocation.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
             startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
         });
 
-        this.mLocationEdit.setOnClickListener(v -> {
+        this.mEditLocation.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
             startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
         });
@@ -227,11 +232,14 @@ public class MainActivity extends AppCompatActivity {
         {
             //Do something based on a new location
         }
+
+        refreshAppointmentList();
     }
 
     private void refreshAppointmentList()
     {
-        this.mAppointmentList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
-        this.mAppointmentRecyclerViewListAdapterAppointments.notifyItemInserted(mAppointmentList.size() -1);
+        this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
+        this.mRecyclerViewListAdapterAppointments.setAppointmentList(mAppointmentArrayList);
+        this.mRecyclerViewListAdapterAppointments.notifyDataSetChanged();
     }
 }
