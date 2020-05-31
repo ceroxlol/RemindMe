@@ -19,9 +19,9 @@ class EditAppointmentActivity(
         //TODO: List all Appointments with their corresponding Locations and Remindtimes
 
         Log.i("EditAppointmentActivity", "Setting up edit appointments activity.")
-        mAppointments = MainActivity.mDatabaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
-        val mAppointmentsAdapter = ArrayAdapterAppointments(this, mAppointments)
         val mLinearLayoutAppointments = findViewById<LinearLayout>(R.id.linearLayoutEditAppointmentsAppointments)
+        mAppointments = MainActivity.mDatabaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
+        val mAppointmentsAdapter = ArrayAdapterAppointments(this, mAppointments, mLinearLayoutAppointments)
 
         Log.i("EditAppointmentActivity", "Found " + mAppointmentsAdapter.count + "appointments.")
         for (i in 0 until mAppointmentsAdapter.count){

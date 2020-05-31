@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ceroxlol.remindme.EditSingleLocationActivity;
@@ -18,12 +19,16 @@ import java.util.ArrayList;
 import Data.FavoriteLocation;
 
 public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
+    private final LinearLayout linearLayoutLocations;
     private Context context;
+    private ArrayList<FavoriteLocation> locations;
 
-    public ArrayAdapterLocationsList(Context context, ArrayList<FavoriteLocation> data)
+    public ArrayAdapterLocationsList(Context context, ArrayList<FavoriteLocation> data, LinearLayout linearLayoutLocations)
     {
         super(context, 0, data);
         this.context = context;
+        this.locations = data;
+        this.linearLayoutLocations = linearLayoutLocations;
     }
 
     @Override
@@ -45,7 +50,14 @@ public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
             i1.putExtra("FavoriteLocationID", favoriteLocation.getID());
             context.startActivity(i1);
         });
-        favoriteLocationDelete.setOnClickListener(v -> MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getID()));
+        View finalView = view;
+        favoriteLocationDelete.setOnClickListener(v ->
+                {
+                    this.locations.remove(favoriteLocation);
+                    this.linearLayoutLocations.removeView(finalView);
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getID());
+                }
+        );
 
         // Return the completed view to render on screen
         return view;

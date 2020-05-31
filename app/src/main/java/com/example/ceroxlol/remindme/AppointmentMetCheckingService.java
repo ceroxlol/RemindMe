@@ -50,7 +50,8 @@ class AppointmentMetCheckingService extends Thread {
                     if (!checkIfNotificationIsAlreadyShown(appointment)) {
                         if (checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()))
                             showNotification(appointment);
-                        //TODO: Else: close the notification?
+                        else
+                            closeNotification(appointment.getId());
                     }
                 }
             }
@@ -60,6 +61,13 @@ class AppointmentMetCheckingService extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void closeNotification(int id) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.cancel(id);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
