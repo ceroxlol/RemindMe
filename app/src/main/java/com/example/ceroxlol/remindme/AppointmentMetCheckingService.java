@@ -48,6 +48,7 @@ class AppointmentMetCheckingService extends Thread {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
                 if (!appointment.getAcknowledged()) {
                     if (!checkIfNotificationIsAlreadyShown(appointment)) {
+                        //TODO: check if appointmentTime is set. If so only then show the notification
                         if (checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()))
                             showNotification(appointment);
                         else
@@ -91,10 +92,12 @@ class AppointmentMetCheckingService extends Thread {
         PendingIntent pIntentAcknowledge = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
 
         this.mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
+                //TODO: implement cool items
                 .setSmallIcon(R.drawable.amu_bubble_mask)
                 .setContentTitle("Appointment '" + appointment.getName() + "' is met")
                 .setContentText(appointment.getAppointmentText())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                //TODO: Add "snooze" action that sets the remindTime active
                 .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentAcknowledge));
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
 

@@ -41,6 +41,7 @@ public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
         }
         // Lookup view for data population
         TextView favoriteLocationName = view.findViewById(R.id.textViewFavoriteLocation);
+        //TODO: Delete this button. Make the textView clickable (onClick)
         Button favoriteLocationEdit = view.findViewById(R.id.buttonEditFavoriteLocation);
         Button favoriteLocationDelete = view.findViewById(R.id.buttonDeleteFavoriteLocation);
         // Populate the data into the template view using the data object

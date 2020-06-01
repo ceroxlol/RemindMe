@@ -78,6 +78,8 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
+        //TODO: Integrate Google maps suggestions for locations
+
         setContentView(R.layout.activity_add_new_location);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

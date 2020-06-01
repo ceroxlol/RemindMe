@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     //PUBLIC
-    //Message window handler
-    public Handler mMessageHandler;
     //Enum for Type
     public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
     //Database
@@ -66,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //TODO: Implement correct usage of appointmentTime and RemindTime
+        //TODO: Filter appointments
 
         //Call program setup
         init();
@@ -107,16 +108,8 @@ public class MainActivity extends AppCompatActivity {
         this.mAppointmentMetCheckingService.setRun(true);
         this.mAppointmentMetCheckingService.start();
 
-        //Init message handler for showing message on the main ui thread
-        mMessageHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                // This is where you do your work in the UI thread.
-                // Your worker tells you in the message what to do.
-                alertView(message);
-            }
-        };
-
+        //TODO: Improve the layout for appointments to be shown
+        //Make them expandable. Show only name and time?
         //UI elements
         this.mRecyclerViewAppointmentList = findViewById(R.id.RecyclerViewAppointmentList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -204,16 +197,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Just for testing purposes
-    public void alertView(Message message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-
-        dialog.setTitle(message.getData().getString("name"))
-                .setMessage(message.getData().getString("text"))
-                .setPositiveButton("Ok", (dialoginterface, i) -> {
-                }).show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -224,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK)
             {
                 Log.d(TAG, "Successfully created new appointment.");
-                this.refreshAppointmentList();
             }
         }
 

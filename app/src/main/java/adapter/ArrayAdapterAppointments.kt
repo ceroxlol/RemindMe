@@ -28,6 +28,7 @@ class ArrayAdapterAppointments(context: Context,
         val rowView = inflater.inflate(R.layout.layout_appointments_list, parent, false)
 
         val textViewAppointmentName : TextView = rowView.findViewById(R.id.textViewSingleAppointmentName)
+        //TODO: Delete this button. Make the textView clickable (onClick)
         val buttonEditAppointment: Button? = rowView.findViewById(R.id.buttonEditSingleAppointment)
         val buttonDeleteAppointment : Button? = rowView.findViewById(R.id.buttonDeleteSingleAppointment)
 
