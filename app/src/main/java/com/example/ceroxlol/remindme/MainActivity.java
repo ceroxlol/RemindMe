@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO: Implement correct usage of appointmentTime and RemindTime
         //TODO: Filter appointments
+        //TODO: Setup navigation bar for every activity
 
         //Call program setup
         init();

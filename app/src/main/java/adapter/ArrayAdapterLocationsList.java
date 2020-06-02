@@ -41,16 +41,9 @@ public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
         }
         // Lookup view for data population
         TextView favoriteLocationName = view.findViewById(R.id.textViewFavoriteLocation);
-        //TODO: Delete this button. Make the textView clickable (onClick)
-        Button favoriteLocationEdit = view.findViewById(R.id.buttonEditFavoriteLocation);
         Button favoriteLocationDelete = view.findViewById(R.id.buttonDeleteFavoriteLocation);
         // Populate the data into the template view using the data object
         favoriteLocationName.setText(favoriteLocation.getName());
-        favoriteLocationEdit.setOnClickListener(v -> {
-            Intent i1 = new Intent(getContext(), EditSingleLocationActivity.class);
-            i1.putExtra("FavoriteLocationID", favoriteLocation.getID());
-            context.startActivity(i1);
-        });
         View finalView = view;
         favoriteLocationDelete.setOnClickListener(v ->
                 {

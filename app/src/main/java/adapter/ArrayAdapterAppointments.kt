@@ -17,7 +17,7 @@ import java.util.ArrayList
 
 class ArrayAdapterAppointments(context: Context,
                                private var data: ArrayList<Appointment>?,
-                               val mLinearLayoutAppointments: LinearLayout) :
+                               private val mLinearLayoutAppointments: LinearLayout) :
         ArrayAdapter<Appointment>(context, 0, data) {
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -28,12 +28,10 @@ class ArrayAdapterAppointments(context: Context,
         val rowView = inflater.inflate(R.layout.layout_appointments_list, parent, false)
 
         val textViewAppointmentName : TextView = rowView.findViewById(R.id.textViewSingleAppointmentName)
-        //TODO: Delete this button. Make the textView clickable (onClick)
-        val buttonEditAppointment: Button? = rowView.findViewById(R.id.buttonEditSingleAppointment)
-        val buttonDeleteAppointment : Button? = rowView.findViewById(R.id.buttonDeleteSingleAppointment)
+        val buttonDeleteAppointment : Button? = rowView.findViewById(R.id.buttonSingleAppointmentDelete)
 
         textViewAppointmentName.text = appointment!!.name
-        buttonEditAppointment?.setOnClickListener {
+        textViewAppointmentName.setOnClickListener {
             val i1 = Intent(getContext(), EditSingleAppointmentActivity::class.java)
             i1.putExtra("AppointmentID", appointment.id)
             context.startActivity(i1)

@@ -17,6 +17,7 @@ class EditAppointmentActivity(
         setContentView(R.layout.activity_edit_appointment)
 
         //TODO: List all Appointments with their corresponding Locations and Remindtimes
+        //TODO: Create Toggle for fulfilled appointments
 
         Log.i("EditAppointmentActivity", "Initializing up edit appointments activity.")
         val mLinearLayoutAppointments = findViewById<LinearLayout>(R.id.linearLayoutEditAppointmentsAppointments)

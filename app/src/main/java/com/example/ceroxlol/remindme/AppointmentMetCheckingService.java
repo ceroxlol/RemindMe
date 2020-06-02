@@ -98,7 +98,8 @@ class AppointmentMetCheckingService extends Thread {
                 .setContentText(appointment.getAppointmentText())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 //TODO: Add "snooze" action that sets the remindTime active
-                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentAcknowledge));
+                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentAcknowledge))
+                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze", pIntentAcknowledge));
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
 
         // notificationId is a unique int for each notification that you must define
