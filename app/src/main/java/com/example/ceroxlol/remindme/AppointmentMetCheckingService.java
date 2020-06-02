@@ -13,8 +13,11 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import Data.Appointment;
 import com.example.ceroxlol.remindme.Receiver.AppointmentAcknowledgedReceiver;
+
+import java.util.Calendar;
+
+import Data.Appointment;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -42,19 +45,15 @@ class AppointmentMetCheckingService extends Thread {
         setUpNotificationChannel();
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void run() {
         while (run) {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
-                if (!appointment.getAcknowledged()) {
-                    if (!checkIfNotificationIsAlreadyShown(appointment)) {
-                        //TODO: check if appointmentTime is set. If so only then show the notification
-                        if (checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()))
-                            showNotification(appointment);
-                        else
-                            closeNotification(appointment.getId());
-                    }
-                }
+                if (checkIfAppointmentShouldBeShown(appointment))
+                    showNotification(appointment);
+                else
+                    closeNotification(appointment.getId());
             }
             try {
                 this.sleep(5000);
@@ -62,6 +61,18 @@ class AppointmentMetCheckingService extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean checkIfAppointmentShouldBeShown(Appointment appointment) {
+        return appointment.getAcknowledged() ||
+                checkIfNotificationIsAlreadyShown(appointment) ||
+                !checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()) ||
+                !checkIfAppointmentIsDue(appointment);
+    }
+
+    private boolean checkIfAppointmentIsDue(Appointment appointment) {
+        return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) > 0;
     }
 
     private void closeNotification(int id) {
@@ -84,12 +95,18 @@ class AppointmentMetCheckingService extends Thread {
     }
 
     private void showNotification(Appointment appointment) {
-        Intent intentAction = new Intent(mMainActivity.getApplicationContext(), AppointmentAcknowledgedReceiver.class);
+        Intent intentActionAcknowledge = new Intent(mMainActivity.getApplicationContext(), AppointmentAcknowledgedReceiver.class);
 
-        intentAction.putExtra("action", "setAcknowledge");
-        intentAction.putExtra("appointmentId", appointment.getId());
+        intentActionAcknowledge.putExtra("action", "setAcknowledge");
+        intentActionAcknowledge.putExtra("appointmentId", appointment.getId());
 
-        PendingIntent pIntentAcknowledge = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentActionSnooze = new Intent(mMainActivity.getApplicationContext(), AppointmentAcknowledgedReceiver.class);
+
+        intentActionSnooze.putExtra("action", "setSnooze");
+        intentActionSnooze.putExtra("appointmentId", appointment.getId());
+
+        PendingIntent pIntentAcknowledge = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
 
         this.mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
                 //TODO: implement cool items
@@ -97,9 +114,8 @@ class AppointmentMetCheckingService extends Thread {
                 .setContentTitle("Appointment '" + appointment.getName() + "' is met")
                 .setContentText(appointment.getAppointmentText())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                //TODO: Add "snooze" action that sets the remindTime active
                 .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentAcknowledge))
-                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze", pIntentAcknowledge));
+                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze", pIntentSnooze));
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
 
         // notificationId is a unique int for each notification that you must define

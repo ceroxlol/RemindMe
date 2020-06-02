@@ -84,8 +84,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
             val cal = Calendar.getInstance()
             cal.setTime(appointment.appointmentRemindTime)
             val dateFormat = SimpleDateFormat("dd MM yyyy HH:mm")
-            Log.i(TAG, "${cal.time
-            }")
+            Log.i(TAG, "${cal.time}")
             this.mButtonSingleAppointmentDate.text = dateFormat.format(cal.time)
         }
         Log.i(TAG, "Loaded appointment with parameters:\n" +
