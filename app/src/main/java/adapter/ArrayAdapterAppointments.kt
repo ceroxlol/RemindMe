@@ -13,7 +13,8 @@ import android.widget.TextView
 import com.example.ceroxlol.remindme.EditSingleAppointmentActivity
 import com.example.ceroxlol.remindme.MainActivity
 import com.example.ceroxlol.remindme.R
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ArrayAdapterAppointments(context: Context,
                                private var data: ArrayList<Appointment>?,
@@ -29,13 +30,28 @@ class ArrayAdapterAppointments(context: Context,
 
         val textViewAppointmentName : TextView = rowView.findViewById(R.id.textViewSingleAppointmentName)
         val buttonDeleteAppointment : Button? = rowView.findViewById(R.id.buttonSingleAppointmentDelete)
+        val linearLayoutAppointmentsFold : LinearLayout = rowView.findViewById(R.id.linearLayoutAppointmentsFold)
+
+        val textViewAppointmentText : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentText)
+        val textViewAppointmentFavoriteLocation : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentFavoriteLocation)
+        val textViewAppointmentRemindTime : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
 
         textViewAppointmentName.text = appointment!!.name
+        textViewAppointmentText.text = appointment.appointmentText
+        textViewAppointmentFavoriteLocation.text = MainActivity.mDatabaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
+        textViewAppointmentRemindTime.text = formateDate(appointment.appointmentRemindTime)
+
         textViewAppointmentName.setOnClickListener {
-            val i1 = Intent(getContext(), EditSingleAppointmentActivity::class.java)
-            i1.putExtra("AppointmentID", appointment.id)
-            context.startActivity(i1)
+            if (linearLayoutAppointmentsFold.isShown)
+                linearLayoutAppointmentsFold.visibility = View.GONE
+            else
+                linearLayoutAppointmentsFold.visibility = View.VISIBLE
         }
+
+        linearLayoutAppointmentsFold.setOnClickListener{
+            startEditSingleAppointment(appointment.id)
+        }
+
         buttonDeleteAppointment?.setOnClickListener{
             data?.remove(appointment)
             this.notifyDataSetChanged()
@@ -44,5 +60,17 @@ class ArrayAdapterAppointments(context: Context,
         }
 
         return rowView
+    }
+
+    private fun formateDate(remindTime: Date): String {
+        val cal = Calendar.getInstance()
+        cal.setTime(remindTime)
+        return SimpleDateFormat("dd MM yyyy HH:mm").format(cal.time)
+    }
+
+    private fun startEditSingleAppointment(appointmentId: Int) {
+        val i1 = Intent(getContext(), EditSingleAppointmentActivity::class.java)
+        i1.putExtra("AppointmentID", appointmentId)
+        context.startActivity(i1)
     }
 }

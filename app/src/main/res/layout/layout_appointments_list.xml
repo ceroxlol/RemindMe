@@ -10,14 +10,22 @@
         android:id="@+id/textViewSingleAppointmentName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:gravity="start"
         android:text="TextView"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        layout="@layout/layout_unfold_appointment"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/buttonSingleAppointmentDelete"
+        app:layout_constraintTop_toBottomOf="@id/textViewSingleAppointmentName"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginStart="8dp"
+        />
 
     <Button
         android:id="@+id/buttonSingleAppointmentDelete"
@@ -25,7 +33,7 @@
         android:layout_height="wrap_content"
         android:text="Delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
