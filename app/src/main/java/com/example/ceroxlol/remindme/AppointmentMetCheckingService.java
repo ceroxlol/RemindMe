@@ -65,13 +65,16 @@ class AppointmentMetCheckingService extends Thread {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean checkIfAppointmentShouldBeShown(Appointment appointment) {
-        return appointment.getAcknowledged() ||
-                checkIfNotificationIsAlreadyShown(appointment) ||
-                !checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()) ||
-                !checkIfAppointmentIsDue(appointment);
+        return !appointment.getAcknowledged() &&
+                !checkIfNotificationIsAlreadyShown(appointment) &&
+                checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()) &&
+                checkIfAppointmentIsDue(appointment);
     }
 
     private boolean checkIfAppointmentIsDue(Appointment appointment) {
+        //TODO: Workaround until I fixed the appointmentTimeIssue
+        if(appointment.getAppointmentTime() == null)
+            return false;
         return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) > 0;
     }
 
