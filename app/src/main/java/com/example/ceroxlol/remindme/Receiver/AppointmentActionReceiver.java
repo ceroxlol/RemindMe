@@ -25,7 +25,7 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
             Toast.makeText(context,"Appointment done.",Toast.LENGTH_SHORT).show();
         }
         else if(action.equals("setSnooze")){
-            setRemindTimer(appointmentId);
+            setSnoozeForAppointmentTime(appointmentId);
             Toast.makeText(context,"Appointment snoozed for 10 minutes.",Toast.LENGTH_SHORT).show();
         }
         else
@@ -47,12 +47,12 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
         Log.i(TAG, "Received update isActive for appointment ID " + appointmentId);
     }
 
-    public void setRemindTimer(int appointmentId){
+    public void setSnoozeForAppointmentTime(int appointmentId){
         Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(appointmentToUpdate.getAppointmentTime());
         calendar.add(Calendar.MINUTE, 10);
-        appointmentToUpdate.setAppointmentRemindTime(calendar.getTime());
+        appointmentToUpdate.setAppointmentTime(calendar.getTime());
         Log.i(TAG, "Set snooze timer for appointment to " + calendar.getTime());
     }
 

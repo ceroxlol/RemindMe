@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO: Implement correct usage of appointmentTime and RemindTime
         //TODO: Filter appointments
         //TODO: Setup navigation bar for every activity
 

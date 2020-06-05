@@ -29,6 +29,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     private lateinit var mEditTextSingleAppointmentAppointmentText: EditText
     private lateinit var mSpinnerSingleAppointmentLocations: Spinner
     private lateinit var mButtonSingleAppointmentSave : Button
+    private lateinit var mButtonSingleAppointmentCleareDate: Button
 
 
     @SuppressLint("ResourceType")
@@ -36,6 +37,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_single_appointment)
 
+        this.mButtonSingleAppointmentCleareDate = findViewById(R.id.buttonSingleAppointmentClearDate)
         this.mButtonSingleAppointmentDate = findViewById(R.id.buttonSingleAppointmentDate)
         this.mEditTextSingleAppointmentAppointmentName = findViewById(R.id.editTextSingleAppointmentAppointmentName)
         this.mEditTextSingleAppointmentAppointmentText = findViewById(R.id.editTextSingleAppointmentAppointmentText)
@@ -45,6 +47,10 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         this.mButtonSingleAppointmentDate.setOnClickListener {
             val datePickerDialog = DatePickerFragment(R.id.buttonSingleAppointmentDate)
             datePickerDialog.show(fragmentManager, "Date Picker")
+        }
+
+        this.mButtonSingleAppointmentCleareDate.setOnClickListener{
+            this.mButtonSingleAppointmentDate.text = "No Date"
         }
 
         this.mButtonSingleAppointmentSave.setOnClickListener{

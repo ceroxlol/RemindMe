@@ -33,8 +33,6 @@ public class Appointment{
     private Date mAppointmentCreated;
     @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
     private Date mAppointmentTime;
-    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
-    private Date mAppointmentRemindTime;
     @DatabaseField
     private int mPriority;
     @DatabaseField
@@ -62,7 +60,7 @@ public class Appointment{
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime, Date appointmentRemindTime)
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime)
     {
         this.mType = appointmentType;
         this.mName = name;
@@ -71,7 +69,6 @@ public class Appointment{
         this.mFavoriteLocation = favoriteLocation;
         this.mAppointmentCreated = appointmentCreated;
         this.mAppointmentTime = appointmentTime;
-        this.mAppointmentRemindTime = appointmentRemindTime;
         this.mHasTime = true;
     }
 
@@ -129,14 +126,6 @@ public class Appointment{
 
     public void setAppointmentTime(Date mAppointmentTime) {
         this.mAppointmentTime = mAppointmentTime;
-    }
-
-    public Date getAppointmentRemindTime() {
-        return mAppointmentRemindTime;
-    }
-
-    public void setAppointmentRemindTime(Date mAppointmentRemindTime) {
-        this.mAppointmentRemindTime = mAppointmentRemindTime;
     }
 
     public int getPriority() {

@@ -41,7 +41,6 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while (run) {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
-                //TODO: Check for Snooze
                 if(checkIfNotificationIsAlreadyShown(appointment) && !appointment.getIsActive())
                     closeNotification(appointment.getId());
                 if (checkIfAppointmentShouldBeShown(appointment) && !checkIfNotificationIsAlreadyShown(appointment))
@@ -101,6 +100,7 @@ class AppointmentMetCheckingService extends Thread {
         PendingIntent pIntentSetActive = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //TODO: On notification click, open a view of the appointment
         NotificationCompat.Builder mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
                 //TODO: implement cool icons
                 .setSmallIcon(R.drawable.amu_bubble_mask)

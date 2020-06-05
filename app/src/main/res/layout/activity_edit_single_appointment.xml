@@ -38,6 +38,16 @@
         app:layout_constraintTop_toBottomOf="@id/editTextSingleAppointmentAppointmentText"
         app:layout_constraintBottom_toBottomOf="@id/spinnerSingleAppointmentLocations"/>
 
+    <TextView
+        android:id="@+id/textViewSingleAppointmentAppointmentDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/barrierSingleAppointment"
+        app:layout_constraintTop_toBottomOf="@id/textViewSingleAppointmentAppointmentLocations"
+        app:layout_constraintBottom_toBottomOf="@id/buttonSingleAppointmentDate"/>
+
     <android.support.constraint.Barrier
         android:id="@+id/barrierSingleAppointment"
         android:layout_width="0dp"
@@ -76,11 +86,22 @@
 
     <Button
         android:id="@+id/buttonSingleAppointmentDate"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFFFFF"
         android:text="@string/no_date"
         app:layout_constraintLeft_toRightOf="@+id/barrierSingleAppointment"
+        app:layout_constraintRight_toLeftOf="@+id/buttonSingleAppointmentClearDate"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSingleAppointmentLocations" />
+
+    <Button
+        android:id="@+id/buttonSingleAppointmentClearDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"
+        android:text="Clear"
+        app:layout_constraintLeft_toRightOf="@+id/buttonSingleAppointmentDate"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinnerSingleAppointmentLocations" />
 

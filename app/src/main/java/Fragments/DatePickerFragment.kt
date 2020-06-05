@@ -1,5 +1,6 @@
 package Fragments
 
+import Data.Appointment
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.DialogInterface
@@ -64,7 +65,6 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
     }
 
     override fun onCancel(dialog: DialogInterface?) {
-        activity.findViewById<TextView>(dateButtonID).text = "No Date"
-        Toast.makeText(getActivity(),"Date Picker Canceled.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"Date Picker Canceled.", Toast.LENGTH_SHORT).show()
     }
 }
