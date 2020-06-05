@@ -34,12 +34,12 @@ class ArrayAdapterAppointments(context: Context,
 
         val textViewAppointmentText : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentText)
         val textViewAppointmentFavoriteLocation : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentFavoriteLocation)
-        val textViewAppointmentRemindTime : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
+        val textViewAppointmentAAppointmentTime : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
 
         textViewAppointmentName.text = appointment!!.name
         textViewAppointmentText.text = appointment.appointmentText
         textViewAppointmentFavoriteLocation.text = MainActivity.mDatabaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
-        textViewAppointmentRemindTime.text = formateDate(appointment.appointmentRemindTime)
+        textViewAppointmentAAppointmentTime.text = formateDate(appointment.appointmentTime)
 
         textViewAppointmentName.setOnClickListener {
             if (linearLayoutAppointmentsFold.isShown)
@@ -62,9 +62,9 @@ class ArrayAdapterAppointments(context: Context,
         return rowView
     }
 
-    private fun formateDate(remindTime: Date): String {
+    private fun formateDate(appointmentTime: Date): String {
         val cal = Calendar.getInstance()
-        cal.setTime(remindTime)
+        cal.setTime(appointmentTime)
         return SimpleDateFormat("dd MM yyyy HH:mm").format(cal.time)
     }
 

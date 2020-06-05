@@ -70,19 +70,20 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
     private void saveNewAppointment() {
         FavoriteLocation favoriteLocation = (FavoriteLocation) this.mSpinnerAddAppointmentLocations.getSelectedItem();
-        Date remindTime = null;
+        Date appointmentTime = null;
         Appointment appointment;
 
         try {
-            remindTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.mButtonAppointmentDate.getText().toString());
+            appointmentTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.mButtonAppointmentDate.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if (remindTime != null)
+        if (appointmentTime != null)
             appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
                 mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
-                null, remindTime);
+                appointmentTime, null);
+        //No appointment Time
         else
             appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
                     mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());

@@ -84,11 +84,11 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         appointment.appointmentText = this.mEditTextSingleAppointmentAppointmentText.text.toString()
         val date_String = this.mButtonSingleAppointmentDate.text.toString()
         val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
-        appointment.appointmentRemindTime = date
+        appointment.appointmentTime = date
         appointment.favoriteLocation = this.mSpinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
 
         MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
-        Log.i(TAG, "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentRemindTime}")
+        Log.i(TAG, "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentTime}")
     }
 
     private fun loadAppointment(id: Int) {
@@ -96,9 +96,9 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
 
         this.mEditTextSingleAppointmentAppointmentName.setText(appointment.name)
         this.mEditTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
-        if (appointment.appointmentRemindTime != null) {
+        if (appointment.appointmentTime != null) {
             val cal = Calendar.getInstance()
-            cal.setTime(appointment.appointmentRemindTime)
+            cal.setTime(appointment.appointmentTime)
             val dateFormat = SimpleDateFormat("dd MM yyyy HH:mm")
             Log.i(TAG, "${cal.time}")
             this.mButtonSingleAppointmentDate.text = dateFormat.format(cal.time)
@@ -106,7 +106,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         Log.i(TAG, "Loaded appointment with parameters:\n" +
                 "${appointment.name} \n" +
                 "${appointment.appointmentText} \n" +
-                "${appointment.appointmentRemindTime}")
+                "${appointment.appointmentTime}")
     }
 
     private fun loadLocations() {
