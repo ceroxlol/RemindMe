@@ -32,7 +32,7 @@ import Data.User;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper implements Serializable {
     //Database variables
     private static final String DATABASE_NAME = "RemindMe.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
     public static Gson gson;
 
     //DAO Objects to access the tables

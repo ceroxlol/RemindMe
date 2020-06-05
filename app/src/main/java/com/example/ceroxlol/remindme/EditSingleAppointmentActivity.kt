@@ -69,12 +69,11 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         item.setActionView(R.layout.switch_layout)
 
         val mySwitch = item.actionView.findViewById<SwitchCompat>(R.id.switchForActionBar)
-        mySwitch.isChecked = appointment.acknowledged
+        mySwitch.isChecked = appointment.isActive
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
-            // Set acknowledged = !isActive
-            appointment.acknowledged = !isChecked
+            appointment.isActive = isChecked
             MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
-            Log.d(TAG, "Set appointment "+ appointment.id + " acknowledge to " + appointment.acknowledged)
+            Log.d(TAG, "Set appointment "+ appointment.id + " isActive to " + appointment.isActive)
         }
 
         return true

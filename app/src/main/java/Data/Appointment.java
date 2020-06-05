@@ -39,8 +39,8 @@ public class Appointment{
     private int mPriority;
     @DatabaseField
     private int mType;
-    @DatabaseField(canBeNull = false, defaultValue = "false")
-    private boolean mAcknowledged;
+    @DatabaseField(canBeNull = false, defaultValue = "true")
+    private Boolean mIsActive;
 
     private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
 
@@ -159,7 +159,7 @@ public class Appointment{
 
     public void setFavoriteLocation(FavoriteLocation location) {this.mFavoriteLocation = location;}
 
-    public boolean getAcknowledged() {return this.mAcknowledged;}
+    public boolean getIsActive() {return this.mIsActive;}
 
-    public void setAcknowledged(boolean acknowledged) {this.mAcknowledged = acknowledged;}
+    public void setIsActive(boolean isActive) {this.mIsActive = isActive;}
 }

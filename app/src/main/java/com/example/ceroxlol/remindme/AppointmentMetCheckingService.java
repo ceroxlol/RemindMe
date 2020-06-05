@@ -11,7 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.example.ceroxlol.remindme.Receiver.AppointmentAcknowledgedReceiver;
+import com.example.ceroxlol.remindme.Receiver.AppointmentActionReceiver;
 
 import java.util.Calendar;
 
@@ -41,9 +41,10 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while (run) {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
-                if(checkIfNotificationIsAlreadyShown(appointment) && appointment.getAcknowledged())
+                //TODO: Check for Snooze
+                if(checkIfNotificationIsAlreadyShown(appointment) && !appointment.getIsActive())
                     closeNotification(appointment.getId());
-                if (checkIfAppointmentShouldBeShown(appointment))
+                if (checkIfAppointmentShouldBeShown(appointment) && !checkIfNotificationIsAlreadyShown(appointment))
                     showNotification(appointment);
             }
             try {
@@ -56,8 +57,7 @@ class AppointmentMetCheckingService extends Thread {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean checkIfAppointmentShouldBeShown(Appointment appointment) {
-        return !appointment.getAcknowledged() &&
-                !checkIfNotificationIsAlreadyShown(appointment) &&
+        return appointment.getIsActive() &&
                 checkIfAppointmentDistanceIsMet(appointment, mGPSTracker.getLocation()) &&
                 checkIfAppointmentIsDue(appointment);
     }
@@ -65,7 +65,7 @@ class AppointmentMetCheckingService extends Thread {
     private boolean checkIfAppointmentIsDue(Appointment appointment) {
         if(appointment.getAppointmentTime() == null)
             return true;
-        return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) > 0;
+        return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) <= 0;
     }
 
     private void closeNotification(int id) {
@@ -88,18 +88,18 @@ class AppointmentMetCheckingService extends Thread {
     }
 
     private void showNotification(Appointment appointment) {
-        Intent intentActionAcknowledge = new Intent(mMainActivity.getApplicationContext(), AppointmentAcknowledgedReceiver.class);
+        Intent intentActionSetInactive = new Intent(mMainActivity.getApplicationContext(), AppointmentActionReceiver.class);
 
-        intentActionAcknowledge.putExtra("action", "setAcknowledge");
-        intentActionAcknowledge.putExtra("appointmentId", appointment.getId());
+        intentActionSetInactive.putExtra("action", "setInactive");
+        intentActionSetInactive.putExtra("appointmentId", appointment.getId());
 
-        Intent intentActionSnooze = new Intent(mMainActivity.getApplicationContext(), AppointmentAcknowledgedReceiver.class);
+        Intent intentActionSnooze = new Intent(mMainActivity.getApplicationContext(), AppointmentActionReceiver.class);
 
         intentActionSnooze.putExtra("action", "setSnooze");
         intentActionSnooze.putExtra("appointmentId", appointment.getId());
 
-        PendingIntent pIntentAcknowledge = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntentSetActive = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
                 //TODO: implement cool icons
@@ -107,8 +107,8 @@ class AppointmentMetCheckingService extends Thread {
                 .setContentTitle("Appointment '" + appointment.getName() + "' is met")
                 .setContentText(appointment.getAppointmentText())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentAcknowledge))
-                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze", pIntentSnooze));
+                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentSetActive))
+                .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze 10 mins", pIntentSnooze));
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
 
         // notificationId is a unique int for each notification that you must define

@@ -65,7 +65,7 @@
         <activity android:name=".EditLocationActivity" />
         <activity android:name=".EditSingleLocationActivity" />
 
-        <receiver android:name=".Receiver.AppointmentAcknowledgedReceiver"></receiver>
+        <receiver android:name=".Receiver.AppointmentActionReceiver"></receiver>
     </application>
 
 </manifest>
