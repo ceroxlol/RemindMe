@@ -5,17 +5,17 @@ import Data.FavoriteLocation
 import Fragments.DatePickerFragment
 import adapter.ArrayAdapterLocationsListSpinner
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SwitchCompat
 import android.util.Log
+import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class EditSingleAppointmentActivity : AppCompatActivity() {
 
@@ -30,7 +30,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     private lateinit var mButtonSingleAppointmentSave : Button
 
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_single_appointment)
@@ -60,6 +60,22 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         loadAppointment(id)
 
         loadLocations()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_single_appointment_is_active, menu)
+        val item = menu!!.findItem(R.id.switchForActionBar)
+        item.setActionView(R.layout.switch_layout)
+
+        val mySwitch = item.actionView.findViewById<SwitchCompat>(R.id.switchForActionBar)
+        mySwitch.isChecked = appointment.acknowledged
+        mySwitch.setOnCheckedChangeListener { p0, isChecked ->
+            // Set acknowledged = isActive
+            appointment.acknowledged = isChecked
+            MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
+        }
+
+        return true
     }
 
     @SuppressLint("SimpleDateFormat")

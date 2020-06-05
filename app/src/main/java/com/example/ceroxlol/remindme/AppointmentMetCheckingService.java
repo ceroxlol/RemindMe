@@ -112,7 +112,7 @@ class AppointmentMetCheckingService extends Thread {
         PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
 
         this.mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
-                //TODO: implement cool items
+                //TODO: implement cool icons
                 .setSmallIcon(R.drawable.amu_bubble_mask)
                 .setContentTitle("Appointment '" + appointment.getName() + "' is met")
                 .setContentText(appointment.getAppointmentText())

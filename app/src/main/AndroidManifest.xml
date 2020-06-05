@@ -14,18 +14,16 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".EditSingleAppointmentActivity"
-            android:label="@string/title_activity_edit_single_appointment"
-            android:parentActivityName=".EditAppointmentActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="Edit appointment"
+            android:parentActivityName=".EditAppointmentActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ceroxlol.remindme.EditAppointmentActivity" />
         </activity>
         <activity
             android:name=".EditAppointmentActivity"
-            android:label="@string/title_activity_edit_appointment"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="All appointments"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ceroxlol.remindme.MainActivity" />
@@ -37,7 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddNewAppointmentActivity" />
+        <activity
+            android:name=".AddNewAppointmentActivity"
+            android:label="Add new appointment">
+        </activity>
+
         <activity
             android:name=".AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light" />
@@ -62,6 +64,7 @@
         </activity>
         <activity android:name=".EditLocationActivity" />
         <activity android:name=".EditSingleLocationActivity" />
+
         <receiver android:name=".Receiver.AppointmentAcknowledgedReceiver"></receiver>
     </application>
 

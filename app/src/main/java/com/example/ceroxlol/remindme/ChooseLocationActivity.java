@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,6 +41,8 @@ import Data.FavoriteLocation;
 public class ChooseLocationActivity extends FragmentActivity implements OnMapReadyCallback,
         OnMarkerClickListener,
         OnMapClickListener {
+
+    //TODO: Implement google places integration
 
     private static final String TAG = "CHOSE_LOCATION_ACTIVITY";
     private UiSettings mUiSettings;
@@ -97,6 +100,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 String favoriteLocationName = mEditTextName.getText().toString();
                 if (!favoriteLocationName.equals("")) {
                     saveNewFavoriteLocation(favoriteLocationName);
+                    Toast.makeText(getApplicationContext(), "Location '" + favoriteLocationName + "' was saved.", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -211,10 +215,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         getDeviceLocation();
 
         // Set the saved Markers on the map
-        setSavedMarkers();
+        loadSavedLocationsAsMarkers();
     }
 
-    private void setSavedMarkers() {
+    private void loadSavedLocationsAsMarkers() {
         if (mSavedLocationsList.isEmpty())
             return;
 
@@ -245,20 +249,26 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.getResult();
+                        if(mLastKnownLocation == null)
+                            locationIsNullError(task.getException());
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.getException());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        locationIsNullError(task.getException());
                     }
                 });
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    private void locationIsNullError(Exception e) {
+        Log.d(TAG, "Current location is null. Using defaults.");
+        Log.e(TAG, "Exception: %s", e);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     /**
@@ -331,7 +341,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapClick(LatLng latLng) {
         mMap.clear();
-        setSavedMarkers();
+        loadSavedLocationsAsMarkers();
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng));
         mNewLocationToBeSaved = marker.getPosition();
