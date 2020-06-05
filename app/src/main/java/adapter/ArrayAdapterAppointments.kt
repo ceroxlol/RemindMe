@@ -39,7 +39,10 @@ class ArrayAdapterAppointments(context: Context,
         textViewAppointmentName.text = appointment!!.name
         textViewAppointmentText.text = appointment.appointmentText
         textViewAppointmentFavoriteLocation.text = MainActivity.mDatabaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
-        textViewAppointmentAAppointmentTime.text = formateDate(appointment.appointmentTime)
+        if(appointment.appointmentTime == null)
+            textViewAppointmentAAppointmentTime.text = "No Date"
+        else
+            textViewAppointmentAAppointmentTime.text = formateDate(appointment.appointmentTime)
 
         textViewAppointmentName.setOnClickListener {
             if (linearLayoutAppointmentsFold.isShown)
@@ -73,4 +76,6 @@ class ArrayAdapterAppointments(context: Context,
         i1.putExtra("AppointmentID", appointmentId)
         context.startActivity(i1)
     }
+
+    //TODO: OnResult refresh content
 }

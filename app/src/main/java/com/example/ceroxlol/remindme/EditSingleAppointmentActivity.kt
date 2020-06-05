@@ -13,6 +13,7 @@ import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,9 +71,10 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val mySwitch = item.actionView.findViewById<SwitchCompat>(R.id.switchForActionBar)
         mySwitch.isChecked = appointment.acknowledged
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
-            // Set acknowledged = isActive
-            appointment.acknowledged = isChecked
+            // Set acknowledged = !isActive
+            appointment.acknowledged = !isChecked
             MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
+            Log.d(TAG, "Set appointment "+ appointment.id + " acknowledge to " + appointment.acknowledged)
         }
 
         return true
@@ -83,8 +85,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         appointment.name = this.mEditTextSingleAppointmentAppointmentName.text.toString()
         appointment.appointmentText = this.mEditTextSingleAppointmentAppointmentText.text.toString()
         val date_String = this.mButtonSingleAppointmentDate.text.toString()
-        val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
-        appointment.appointmentTime = date
+        try {
+            val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
+            appointment.appointmentTime = date
+        }
+        catch (exception:ParseException) {
+            appointment.appointmentTime = null
+            Log.e(TAG, "Couldn't parse the date. Set it to 'null'")
+            Log.e(TAG, exception.toString())
+        }
         appointment.favoriteLocation = this.mSpinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
 
         MainActivity.mDatabaseHelper.appointmentDao.update(appointment)

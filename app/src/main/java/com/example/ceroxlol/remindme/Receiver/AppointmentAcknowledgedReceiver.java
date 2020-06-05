@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.example.ceroxlol.remindme.MainActivity;
 
@@ -13,6 +14,7 @@ import Data.Appointment;
 
 public class AppointmentAcknowledgedReceiver extends BroadcastReceiver {
 
+    private String TAG = "AppBroadRec";
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -36,6 +38,7 @@ public class AppointmentAcknowledgedReceiver extends BroadcastReceiver {
         Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         appointmentToUpdate.setAcknowledged(true);
         MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);
+        Log.i(TAG, "Received update acknowledge for appointment ID " + appointmentId);
     }
 
     public void setRemindTimer(int appointmentId){
@@ -44,5 +47,6 @@ public class AppointmentAcknowledgedReceiver extends BroadcastReceiver {
         calendar.setTime(appointmentToUpdate.getAppointmentTime());
         calendar.add(Calendar.MINUTE, 10);
         appointmentToUpdate.setAppointmentRemindTime(calendar.getTime());
+        Log.i(TAG, "Set snooze timer for appointment to " + calendar.getTime());
     }
 }

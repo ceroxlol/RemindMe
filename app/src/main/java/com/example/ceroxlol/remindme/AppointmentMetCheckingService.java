@@ -6,8 +6,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Message;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
@@ -28,32 +26,25 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 class AppointmentMetCheckingService extends Thread {
     private GPSTracker mGPSTracker;
     private boolean run;
-    private Message mAppointmentMessage;
-    private Bundle mMessageData;
     private String mChannelId;
-    private NotificationCompat.Builder mNotficationBuilder;
 
     private MainActivity mMainActivity;
 
     public AppointmentMetCheckingService(GPSTracker GPSTracker, MainActivity mainActivity) {
         this.mGPSTracker = GPSTracker;
         this.mMainActivity = mainActivity;
-        this.mAppointmentMessage = new Message();
-        this.mMessageData = new Bundle();
         this.mChannelId = "AppointmentMetCheckingServiceChannelID";
 
         setUpNotificationChannel();
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void run() {
         while (run) {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
+                if(checkIfNotificationIsAlreadyShown(appointment) && appointment.getAcknowledged())
+                    closeNotification(appointment.getId());
                 if (checkIfAppointmentShouldBeShown(appointment))
                     showNotification(appointment);
-                else
-                    closeNotification(appointment.getId());
             }
             try {
                 this.sleep(5000);
@@ -72,9 +63,8 @@ class AppointmentMetCheckingService extends Thread {
     }
 
     private boolean checkIfAppointmentIsDue(Appointment appointment) {
-        //TODO: Workaround until I fixed the appointmentTimeIssue
         if(appointment.getAppointmentTime() == null)
-            return false;
+            return true;
         return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) > 0;
     }
 
@@ -111,7 +101,7 @@ class AppointmentMetCheckingService extends Thread {
         PendingIntent pIntentAcknowledge = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mMainActivity.getApplicationContext(), 1, intentActionAcknowledge, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        this.mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
+        NotificationCompat.Builder mNotficationBuilder = new NotificationCompat.Builder(this.mMainActivity.getApplicationContext(), mChannelId)
                 //TODO: implement cool icons
                 .setSmallIcon(R.drawable.amu_bubble_mask)
                 .setContentTitle("Appointment '" + appointment.getName() + "' is met")
@@ -122,7 +112,7 @@ class AppointmentMetCheckingService extends Thread {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.mMainActivity.getApplicationContext());
 
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(appointment.getId(), this.mNotficationBuilder.build());
+        notificationManager.notify(appointment.getId(), mNotficationBuilder.build());
     }
 
     public void setRun(boolean run) {
