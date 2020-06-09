@@ -30,8 +30,7 @@ public class EditLocationActivity extends AppCompatActivity {
     }
 
     private void fillLinearLayoutLocations() {
-        for (int i = 0; i < mLocationsArrayAdapter.getCount(); i++)
-        {
+        for (int i = 0; i < mLocationsArrayAdapter.getCount(); i++) {
             View view = mLocationsArrayAdapter.getView(i, null, null);
             mLinearLayoutLocations.addView(view);
         }

@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     //PUBLIC
     //Enum for Type
     public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
+
     //Database
     public static DatabaseHelper mDatabaseHelper = null;
 

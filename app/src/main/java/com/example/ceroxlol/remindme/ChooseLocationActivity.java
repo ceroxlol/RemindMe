@@ -101,9 +101,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                 if (!favoriteLocationName.equals("")) {
                     saveNewFavoriteLocation(favoriteLocationName);
                     Toast.makeText(getApplicationContext(), "Location '" + favoriteLocationName + "' was saved.", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                } else {
                     showAlertDialog("No name for new location",
                             "You have set no location name. Please set a name for the location in order to save it.");
                 }
@@ -249,7 +247,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.getResult();
-                        if(mLastKnownLocation == null)
+                        if (mLastKnownLocation == null)
                             locationIsNullError(task.getException());
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastKnownLocation.getLatitude(),

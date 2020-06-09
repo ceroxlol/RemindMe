@@ -16,20 +16,18 @@ import Data.Appointment;
 public class AppointmentActionReceiver extends BroadcastReceiver {
 
     private String TAG = "AppBroadRec";
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action=intent.getStringExtra("action");
+        String action = intent.getStringExtra("action");
         int appointmentId = intent.getIntExtra("appointmentId", -1);
-        if(action.equals("setInactive")){
+        if (action.equals("setInactive")) {
             updateisActiveForAppointment(appointmentId);
-            Toast.makeText(context,"Appointment done.",Toast.LENGTH_SHORT).show();
-        }
-        else if(action.equals("setSnooze")){
+            Toast.makeText(context, "Appointment done.", Toast.LENGTH_SHORT).show();
+        } else if (action.equals("setSnooze")) {
             setSnoozeForAppointmentTime(appointmentId);
-            Toast.makeText(context,"Appointment snoozed for 10 minutes.",Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+            Toast.makeText(context, "Appointment snoozed for 10 minutes.", Toast.LENGTH_SHORT).show();
+        } else {
             Log.e(TAG, "Unkown Appointment Action received.");
             return;
         }
@@ -40,14 +38,14 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
         context.sendBroadcast(it);
     }
 
-    public void updateisActiveForAppointment(int appointmentId){
+    public void updateisActiveForAppointment(int appointmentId) {
         Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         appointmentToUpdate.setIsActive(false);
         MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);
         Log.i(TAG, "Received update isActive for appointment ID " + appointmentId);
     }
 
-    public void setSnoozeForAppointmentTime(int appointmentId){
+    public void setSnoozeForAppointmentTime(int appointmentId) {
         Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(appointmentToUpdate.getAppointmentTime());
@@ -56,7 +54,7 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
         Log.i(TAG, "Set snooze timer for appointment to " + calendar.getTime());
     }
 
-    public void closeNotification(Context context, int appointmentId){
+    public void closeNotification(Context context, int appointmentId) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
         // notificationId is a unique int for each notification that you must define

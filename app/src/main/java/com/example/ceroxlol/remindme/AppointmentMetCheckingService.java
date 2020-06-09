@@ -41,7 +41,7 @@ class AppointmentMetCheckingService extends Thread {
     public void run() {
         while (run) {
             for (Appointment appointment : this.mMainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
-                if(checkIfNotificationIsAlreadyShown(appointment) && !appointment.getIsActive())
+                if (checkIfNotificationIsAlreadyShown(appointment) && !appointment.getIsActive())
                     closeNotification(appointment.getId());
                 if (checkIfAppointmentShouldBeShown(appointment) && !checkIfNotificationIsAlreadyShown(appointment))
                     showNotification(appointment);
@@ -62,7 +62,7 @@ class AppointmentMetCheckingService extends Thread {
     }
 
     private boolean checkIfAppointmentIsDue(Appointment appointment) {
-        if(appointment.getAppointmentTime() == null)
+        if (appointment.getAppointmentTime() == null)
             return true;
         return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) <= 0;
     }

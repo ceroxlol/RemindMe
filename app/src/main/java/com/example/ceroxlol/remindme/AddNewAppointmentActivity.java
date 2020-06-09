@@ -81,9 +81,9 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
 
         if (appointmentTime != null)
             appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
-                mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
-                appointmentTime);
-        //No appointment Time
+                    mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
+                    appointmentTime);
+            //No appointment Time
         else
             appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
                     mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
