@@ -20,7 +20,7 @@ class ArrayAdapterAppointments(context: Context,
                                private var data: ArrayList<Appointment>?,
                                private val mLinearLayoutAppointments: LinearLayout) :
         ArrayAdapter<Appointment>(context, 0, data) {
-    private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val appointment = getItem(position)
@@ -28,18 +28,18 @@ class ArrayAdapterAppointments(context: Context,
         //TODO: ViewHolderPattern implementation, see recyclerview
         val rowView = inflater.inflate(R.layout.layout_appointments_list, parent, false)
 
-        val textViewAppointmentName : TextView = rowView.findViewById(R.id.textViewSingleAppointmentName)
-        val buttonDeleteAppointment : Button? = rowView.findViewById(R.id.buttonSingleAppointmentDelete)
-        val linearLayoutAppointmentsFold : LinearLayout = rowView.findViewById(R.id.linearLayoutAppointmentsFold)
+        val textViewAppointmentName: TextView = rowView.findViewById(R.id.textViewSingleAppointmentName)
+        val buttonDeleteAppointment: Button? = rowView.findViewById(R.id.buttonSingleAppointmentDelete)
+        val linearLayoutAppointmentsFold: LinearLayout = rowView.findViewById(R.id.linearLayoutAppointmentsFold)
 
-        val textViewAppointmentText : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentText)
-        val textViewAppointmentFavoriteLocation : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentFavoriteLocation)
-        val textViewAppointmentAAppointmentTime : TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
+        val textViewAppointmentText: TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentText)
+        val textViewAppointmentFavoriteLocation: TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentFavoriteLocation)
+        val textViewAppointmentAAppointmentTime: TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
 
         textViewAppointmentName.text = appointment!!.name
         textViewAppointmentText.text = appointment.appointmentText
         textViewAppointmentFavoriteLocation.text = MainActivity.mDatabaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
-        if(appointment.appointmentTime == null)
+        if (appointment.appointmentTime == null)
             textViewAppointmentAAppointmentTime.text = "No Date"
         else
             textViewAppointmentAAppointmentTime.text = formateDate(appointment.appointmentTime)
@@ -51,11 +51,11 @@ class ArrayAdapterAppointments(context: Context,
                 linearLayoutAppointmentsFold.visibility = View.VISIBLE
         }
 
-        linearLayoutAppointmentsFold.setOnClickListener{
+        linearLayoutAppointmentsFold.setOnClickListener {
             startEditSingleAppointment(appointment.id)
         }
 
-        buttonDeleteAppointment?.setOnClickListener{
+        buttonDeleteAppointment?.setOnClickListener {
             data?.remove(appointment)
             this.notifyDataSetChanged()
             mLinearLayoutAppointments.removeView(rowView)
