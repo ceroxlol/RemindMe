@@ -72,10 +72,8 @@ class ArrayAdapterAppointments(context: Context,
     }
 
     private fun startEditSingleAppointment(appointmentId: Int) {
-        val i1 = Intent(getContext(), EditSingleAppointmentActivity::class.java)
+        val i1 = Intent(context, EditSingleAppointmentActivity::class.java)
         i1.putExtra("AppointmentID", appointmentId)
         context.startActivity(i1)
     }
-
-    //TODO: OnResult refresh content
 }

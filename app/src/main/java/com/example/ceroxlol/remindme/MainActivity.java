@@ -85,9 +85,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_APP_PERMISSIONS);
@@ -122,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
         this.mAddNewLocation = findViewById(R.id.buttonAddNewLocation);
         this.mEditLocation = findViewById(R.id.buttonEditLocation);
 
-        if(mRecyclerViewListAdapterAppointments == null)
-        {
+        if (mRecyclerViewListAdapterAppointments == null) {
             mRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentArrayList);
             mRecyclerViewAppointmentList.setAdapter(mRecyclerViewListAdapterAppointments);
         }
@@ -131,14 +129,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUI() {
         this.mButtonAddNewAppointment.setOnClickListener(v -> {
-            if(!checkIfLocationsAreAvailable())
-            {
+            if (!checkIfLocationsAreAvailable()) {
                 showAlertDialog("No locations available",
                         "In order to create appointments you need to have locations first. Please create one.");
+            } else {
+                Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
+                startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
             }
-            else
-            {Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
-            startActivityForResult(i, REQUEST_NEW_APPOINTMENT);}
         });
 
         this.mButtonEditAppointment.setOnClickListener(v -> {
@@ -198,28 +195,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "requestCode: " + requestCode + "  resultCode: " + resultCode);
 
-        if(requestCode == REQUEST_NEW_APPOINTMENT)
-        {
-            if (resultCode == RESULT_OK)
-            {
+        if (requestCode == REQUEST_NEW_APPOINTMENT) {
+            if (resultCode == RESULT_OK) {
                 Log.d(TAG, "Successfully created new appointment.");
             }
         }
 
-        if(requestCode == REQUEST_NEW_FAVORITE_LOCATION)
-        {
+        if (requestCode == REQUEST_NEW_FAVORITE_LOCATION) {
             //Do something based on a new location
         }
 
         refreshAppointmentList();
     }
 
-    private void refreshAppointmentList()
-    {
+    private void refreshAppointmentList() {
         this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
         this.mRecyclerViewListAdapterAppointments.setAppointmentList(mAppointmentArrayList);
         this.mRecyclerViewListAdapterAppointments.notifyDataSetChanged();
