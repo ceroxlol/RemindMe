@@ -1,7 +1,7 @@
 package com.example.ceroxlol.remindme
 
-import adapter.ArrayAdapterAppointments
 import Data.Appointment
+import adapter.ArrayAdapterAppointments
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -17,14 +17,21 @@ class EditAppointmentActivity(
         setContentView(R.layout.activity_edit_appointment)
 
         Log.i("EditAppointmentActivity", "Initializing up edit appointments activity.")
-        val mLinearLayoutAppointments = findViewById<LinearLayout>(R.id.linearLayoutEditAppointmentsAppointments)
+        mLinearLayoutAppointments = findViewById<LinearLayout>(R.id.linearLayoutEditAppointmentsAppointments)
         mAppointmentArrayList = MainActivity.mDatabaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
         val mAppointmentsAdapter = ArrayAdapterAppointments(this, mAppointmentArrayList, mLinearLayoutAppointments)
 
         Log.i("EditAppointmentActivity", "Found " + mAppointmentsAdapter.count + "appointments.")
-        for (i in 0 until mAppointmentsAdapter.count){
-            val view : View = mAppointmentsAdapter.getView(i, null, null)
+        for (i in 0 until mAppointmentsAdapter.count) {
+            val view: View = mAppointmentsAdapter.getView(i, null, null)
             mLinearLayoutAppointments.addView(view)
+        }
+    }
+
+    companion object {
+        private lateinit var mLinearLayoutAppointments: LinearLayout
+        fun reloadLayout() {
+            this.mLinearLayoutAppointments.invalidate()
         }
     }
 }

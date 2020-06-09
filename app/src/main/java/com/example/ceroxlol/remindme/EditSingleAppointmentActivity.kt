@@ -28,7 +28,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     private lateinit var mEditTextSingleAppointmentAppointmentName: EditText
     private lateinit var mEditTextSingleAppointmentAppointmentText: EditText
     private lateinit var mSpinnerSingleAppointmentLocations: Spinner
-    private lateinit var mButtonSingleAppointmentSave : Button
+    private lateinit var mButtonSingleAppointmentSave: Button
     private lateinit var mButtonSingleAppointmentCleareDate: Button
 
 
@@ -49,11 +49,11 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
             datePickerDialog.show(fragmentManager, "Date Picker")
         }
 
-        this.mButtonSingleAppointmentCleareDate.setOnClickListener{
+        this.mButtonSingleAppointmentCleareDate.setOnClickListener {
             this.mButtonSingleAppointmentDate.text = "No Date"
         }
 
-        this.mButtonSingleAppointmentSave.setOnClickListener{
+        this.mButtonSingleAppointmentSave.setOnClickListener {
             saveAppointment()
             finish()
         }
@@ -61,7 +61,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         val i = intent
         val id = i.getIntExtra("AppointmentID", -1)
 
-        if(id == -1)
+        if (id == -1)
             Log.e(TAG, "AppointmentID couldn't be found. Something went wrong passing over the appointment.")
 
         loadAppointment(id)
@@ -79,7 +79,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
             appointment.isActive = isChecked
             MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
-            Log.d(TAG, "Set appointment "+ appointment.id + " isActive to " + appointment.isActive)
+            Log.d(TAG, "Set appointment " + appointment.id + " isActive to " + appointment.isActive)
         }
 
         return true
@@ -93,8 +93,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         try {
             val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
             appointment.appointmentTime = date
-        }
-        catch (exception:ParseException) {
+        } catch (exception: ParseException) {
             appointment.appointmentTime = null
             Log.e(TAG, "Couldn't parse the date. Set it to 'null'")
             Log.e(TAG, exception.toString())
@@ -133,10 +132,15 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     }
 
     private fun getFavoriteLocationPositionWithID(locations: ArrayList<FavoriteLocation>): Int {
-        locations.forEach{location ->
-            if(location.id == appointment.favoriteLocation.id)
+        locations.forEach { location ->
+            if (location.id == appointment.favoriteLocation.id)
                 return locations.indexOf(location)
         }
         return 0
+    }
+
+    override fun finish() {
+        EditAppointmentActivity.reloadLayout()
+        super.finish()
     }
 }
