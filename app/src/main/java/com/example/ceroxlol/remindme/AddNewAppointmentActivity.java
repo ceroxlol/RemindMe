@@ -26,7 +26,6 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     private DatabaseHelper mDBHelper;
 
     private Button mButtonAppointmentDate;
-    private Button mButtonAppointmentSave;
     private EditText mEditTextAppointmentText;
     private EditText mEditTextAppointmentName;
     private Spinner mSpinnerAddAppointmentLocations;
@@ -42,10 +41,11 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     private void init() {
         this.mDBHelper = MainActivity.mDatabaseHelper;
 
+        //TODO: Add maps fragment with the corresponding location so you can draw a circle around it
         this.mEditTextAppointmentName = findViewById(R.id.editTextAddAppointmentAppointmentName);
         this.mEditTextAppointmentText = findViewById(R.id.editTextAddAppointmentAppointmentText);
         this.mButtonAppointmentDate = findViewById(R.id.buttonAddAppointmentDate);
-        this.mButtonAppointmentSave = findViewById(R.id.buttonAddAppointmentSave);
+        Button mButtonAppointmentSave = findViewById(R.id.buttonAddAppointmentSave);
         this.mSpinnerAddAppointmentLocations = findViewById(R.id.spinnerAddAppointmentLocations);
 
         this.mButtonAppointmentDate.setOnClickListener(view -> {
@@ -53,7 +53,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
             datePickerDialog.show(getFragmentManager(), "Date Picker");
         });
 
-        this.mButtonAppointmentSave.setOnClickListener(v -> {
+        mButtonAppointmentSave.setOnClickListener(v -> {
             saveNewAppointment();
             finishActivity();
         });

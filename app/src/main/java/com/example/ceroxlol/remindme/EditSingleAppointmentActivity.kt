@@ -111,7 +111,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         this.mEditTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
         if (appointment.appointmentTime != null) {
             val cal = Calendar.getInstance()
-            cal.setTime(appointment.appointmentTime)
+            cal.time = appointment.appointmentTime
             val dateFormat = SimpleDateFormat("dd MM yyyy HH:mm")
             Log.i(TAG, "${cal.time}")
             this.mButtonSingleAppointmentDate.text = dateFormat.format(cal.time)
@@ -139,6 +139,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         return 0
     }
 
+    //TODO: Implement this functionality
     override fun finish() {
         EditAppointmentActivity.reloadLayout()
         super.finish()

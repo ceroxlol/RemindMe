@@ -5,9 +5,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,12 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.ArrayList;
-
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
@@ -29,10 +24,6 @@ import adapter.RecyclerViewListAdapterAppointments;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
-    //PUBLIC
-    //Enum for Type
-    public static enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
 
     //Database
     public static DatabaseHelper mDatabaseHelper = null;
@@ -45,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Appointment> mAppointmentArrayList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
-    //UI
-    private LinearLayout mAppointmentLinearLayout;
     private Button mButtonAddNewAppointment;
     private Button mButtonEditAppointment;
     private Button mAddNewLocation;
@@ -66,22 +55,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO: Filter appointments
-        //TODO: Setup navigation bar for every activity
+        //TODO: Implement good layout first, then: Filter appointments
 
-        //Call program setup
         init();
     }
 
     private void init() {
-
-        //Permission Check
         checkPermissions();
-
-        //Init components
         initClasses();
-
-        //Init UI
         initUI();
     }
 
@@ -95,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initClasses() {
-        //Init GPS Tracker
         this.mGPSTracker = new GPSTracker(this.getApplicationContext());
 
         //Database
@@ -131,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
     private void initUI() {
         this.mButtonAddNewAppointment.setOnClickListener(v -> {
             if (!checkIfLocationsAreAvailable()) {
-                showAlertDialog("No locations available",
-                        "In order to create appointments you need to have locations first. Please create one.");
+                showNoLocationsAvailableAlertDialog(
+                );
             } else {
                 Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
                 startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
@@ -155,14 +135,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showAlertDialog(String title, String message) {
+    private void showNoLocationsAvailableAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
         // Setting Dialog Title
-        alertDialog.setTitle(title);
+        alertDialog.setTitle("No locations available");
 
         // Setting Dialog Message
-        alertDialog.setMessage(message);
+        alertDialog.setMessage("In order to create appointments you need to have locations first. Please create one.");
 
         // Setting Icon to Dialog
         //alertDialog.setIcon(R.drawable.delete);

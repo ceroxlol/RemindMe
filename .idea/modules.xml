@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RemindMe.iml" filepath="$PROJECT_DIR$/RemindMe.iml" group="RemindMe" />
-      <module fileurl="file://$PROJECT_DIR$/app/RemindMe-app.iml" filepath="$PROJECT_DIR$/app/RemindMe-app.iml" group="RemindMe/app" />
-      <module fileurl="file://$PROJECT_DIR$/ormlite-android-5.0/RemindMe-ormlite-android-5.0.iml" filepath="$PROJECT_DIR$/ormlite-android-5.0/RemindMe-ormlite-android-5.0.iml" group="RemindMe/ormlite-android-5.0" />
-      <module fileurl="file://$PROJECT_DIR$/ormlite-core-5.0/RemindMe-ormlite-core-5.0.iml" filepath="$PROJECT_DIR$/ormlite-core-5.0/RemindMe-ormlite-core-5.0.iml" group="RemindMe/ormlite-core-5.0" />
-      <module fileurl="file://$PROJECT_DIR$/StudioProjects-RemindMe.iml" filepath="$PROJECT_DIR$/StudioProjects-RemindMe.iml" group="RemindMe" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="RemindMe/app" />
-      <module fileurl="file://$PROJECT_DIR$/ormlite-android-5.0/ormlite-android-5.0.iml" filepath="$PROJECT_DIR$/ormlite-android-5.0/ormlite-android-5.0.iml" group="RemindMe/ormlite-android-5.0" />
-      <module fileurl="file://$PROJECT_DIR$/ormlite-core-5.0/ormlite-core-5.0.iml" filepath="$PROJECT_DIR$/ormlite-core-5.0/ormlite-core-5.0.iml" group="RemindMe/ormlite-core-5.0" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemindMe.iml" filepath="$PROJECT_DIR$/.idea/modules/RemindMe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/RemindMe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/RemindMe.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ormlite-android-5.0/RemindMe.ormlite-android-5.0.iml" filepath="$PROJECT_DIR$/.idea/modules/ormlite-android-5.0/RemindMe.ormlite-android-5.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ormlite-core-5.0/RemindMe.ormlite-core-5.0.iml" filepath="$PROJECT_DIR$/.idea/modules/ormlite-core-5.0/RemindMe.ormlite-core-5.0.iml" />
     </modules>
   </component>
 </project>
