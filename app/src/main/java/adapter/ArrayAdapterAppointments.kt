@@ -19,10 +19,10 @@ import java.util.*
 class ArrayAdapterAppointments(context: Context,
                                private var data: ArrayList<Appointment>?,
                                private val mLinearLayoutAppointments: LinearLayout) :
-        ArrayAdapter<Appointment>(context, 0, data) {
+        ArrayAdapter<Appointment>(context, 0, data!!) {
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val appointment = getItem(position)
 
         //TODO: ViewHolderPattern implementation, see recyclerview

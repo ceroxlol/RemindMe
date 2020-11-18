@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.ceroxlol.remindme.R
 
-class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<FavoriteLocation>?) : ArrayAdapter<FavoriteLocation>(context, 0, data) {
+class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<FavoriteLocation>?) : ArrayAdapter<FavoriteLocation>(context, 0, data!!) {
 
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

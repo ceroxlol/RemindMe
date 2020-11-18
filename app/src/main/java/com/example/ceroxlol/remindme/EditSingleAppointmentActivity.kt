@@ -6,8 +6,8 @@ import Fragments.DatePickerFragment
 import adapter.ArrayAdapterLocationsListSpinner
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SwitchCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import android.util.Log
 import android.view.Menu
 import android.widget.Button
@@ -137,11 +137,5 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
                 return locations.indexOf(location)
         }
         return 0
-    }
-
-    //TODO: Implement this functionality
-    override fun finish() {
-        EditAppointmentActivity.reloadLayout()
-        super.finish()
     }
 }

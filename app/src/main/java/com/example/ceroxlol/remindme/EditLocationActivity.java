@@ -1,7 +1,7 @@
 package com.example.ceroxlol.remindme;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -31,7 +31,7 @@ public class EditLocationActivity extends AppCompatActivity {
 
     private void fillLinearLayoutLocations() {
         for (int i = 0; i < mLocationsArrayAdapter.getCount(); i++) {
-            View view = mLocationsArrayAdapter.getView(i, null, null);
+            View view = mLocationsArrayAdapter.getView(i, null, mLinearLayoutLocations);
             mLinearLayoutLocations.addView(view);
         }
     }
