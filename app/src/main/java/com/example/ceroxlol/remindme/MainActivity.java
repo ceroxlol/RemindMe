@@ -5,34 +5,36 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.Log;
 import android.widget.Button;
 
+import com.google.android.material.tabs.TabLayout;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.ArrayList;
 
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
+import adapter.MainPageAdapter;
 import adapter.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private final boolean APPOINTMENT_TRACKER_ENABLED = false;
 
-    //Database
     public static DatabaseHelper mDatabaseHelper = null;
 
-    //PRIVATE
-    //GPS Component
     private GPSTracker mGPSTracker;
 
-    //Appointments
     private ArrayList<Appointment> mAppointmentArrayList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
@@ -42,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mEditLocation;
     private RecyclerViewListAdapterAppointments mRecyclerViewListAdapterAppointments;
     private RecyclerView mRecyclerViewAppointmentList;
+    private MainPageAdapter mainPageAdapter;
 
-    //Requests
     private final int REQUEST_APP_PERMISSIONS = 1;
     private final int REQUEST_NEW_FAVORITE_LOCATION = 10;
     private final int REQUEST_EDIT_FAVORITE_LOCATION = 11;
@@ -78,34 +80,30 @@ public class MainActivity extends AppCompatActivity {
     private void initClasses() {
         this.mGPSTracker = new GPSTracker(this.getApplicationContext());
 
-        //Database
         getDBHelper();
 
         this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
 
-        //Init checker service thread for appointments met
-        this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
-        this.mAppointmentMetCheckingService.setRun(true);
-        this.mAppointmentMetCheckingService.start();
+        if (APPOINTMENT_TRACKER_ENABLED) {
+            this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
+            this.mAppointmentMetCheckingService.setRun(true);
+            this.mAppointmentMetCheckingService.start();
+        }
 
         //TODO: Improve the layout for appointments to be shown
         //Make them expandable. Show only name and time?
         //UI elements
-        this.mRecyclerViewAppointmentList = findViewById(R.id.RecyclerViewAppointmentList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        this.mRecyclerViewAppointmentList.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.mRecyclerViewAppointmentList.getContext(),
-                ((LinearLayoutManager) layoutManager).getOrientation());
-        this.mRecyclerViewAppointmentList.addItemDecoration(dividerItemDecoration);
+
         this.mButtonAddNewAppointment = findViewById(R.id.buttonAddNewAppointment);
         this.mButtonEditAppointment = findViewById(R.id.buttonEditAppointment);
         this.mAddNewLocation = findViewById(R.id.buttonAddNewLocation);
         this.mEditLocation = findViewById(R.id.buttonEditLocation);
 
-        if (mRecyclerViewListAdapterAppointments == null) {
-            mRecyclerViewListAdapterAppointments = new RecyclerViewListAdapterAppointments(this.mAppointmentArrayList);
-            mRecyclerViewAppointmentList.setAdapter(mRecyclerViewListAdapterAppointments);
-        }
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        viewPager.setAdapter(new MainPageAdapter(getSupportFragmentManager()));
+
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void initUI() {

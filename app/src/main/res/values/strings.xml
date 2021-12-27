@@ -18,4 +18,6 @@
     <string name="locations_colon">Locations:</string>
     <string name="has_time">has time</string>
     <string name="no_date">No date</string>
+    <string name="appointments_tab">Appointments</string>
+    <string name="locations_tab">Locations</string>
 </resources>
