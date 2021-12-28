@@ -1,23 +1,22 @@
 package Fragments
 
-import Data.Appointment
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import android.widget.DatePicker
 import android.widget.Toast
-import com.example.ceroxlol.remindme.R
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.*
 
 
 @SuppressLint("ValidFragment")
-class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFragment(),
+    DatePickerDialog.OnDateSetListener {
 
-    private lateinit var calendar:Calendar
+    private lateinit var calendar: Calendar
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Initialize a calendar instance
@@ -31,13 +30,13 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
 
         // Initialize a new date picker dialog and return it
         return DatePickerDialog(
-                activity, // Context
-                // Put 0 to system default theme or remove this parameter
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth, // Theme
-                this, // DatePickerDialog.OnDateSetListener
-                year, // Year
-                month, // Month of year
-                day // Day of month
+            activity, // Context
+            // Put 0 to system default theme or remove this parameter
+            android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth, // Theme
+            this, // DatePickerDialog.OnDateSetListener
+            year, // Year
+            month, // Month of year
+            day // Day of month
         )
     }
 
@@ -45,9 +44,8 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
     // When date set and press ok button in date picker dialog
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         Toast.makeText(
-                activity,
-                "Date Set : ${formatDate(year,month,day)}"
-                ,Toast.LENGTH_SHORT
+            activity,
+            "Date Set : ${formatDate(year, month, day)}", Toast.LENGTH_SHORT
         ).show()
 
         val timePickerFragment = TimePickerFragment(dateButtonID, year, month, day)
@@ -56,7 +54,7 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
 
 
     // Custom method to format date
-    private fun formatDate(year:Int, month:Int, day:Int):String{
+    private fun formatDate(year: Int, month: Int, day: Int): String {
         // Create a Date variable/object with user chosen date
         calendar.set(year, month, day, 0, 0, 0)
         val chosenDate = calendar.time
@@ -65,6 +63,6 @@ class DatePickerFragment constructor(private val dateButtonID: Int) : DialogFrag
     }
 
     override fun onCancel(dialog: DialogInterface?) {
-        Toast.makeText(activity,"Date Picker Canceled.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Date Picker Canceled.", Toast.LENGTH_SHORT).show()
     }
 }

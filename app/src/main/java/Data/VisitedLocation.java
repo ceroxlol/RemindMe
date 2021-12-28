@@ -1,16 +1,19 @@
 package Data;
 
-import android.location.Location;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import DatabaseServices.LocationPersister;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Created by Ceroxlol on 27.02.2018.
  */
-
+@Getter
+@Setter
+@NoArgsConstructor
 @DatabaseTable
 public class VisitedLocation {
     @DatabaseField(generatedId = true, columnName = "LocationID")
@@ -18,13 +21,4 @@ public class VisitedLocation {
 
     @DatabaseField(canBeNull = false, persisterClass = LocationPersister.class)
     private android.location.Location location;
-
-    public VisitedLocation()
-    {
-        // ORMLite needs a no-arg constructor
-    }
-
-    public Location getLocation() {
-        return location;
-    }
 }

@@ -9,12 +9,20 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
 
 import DatabaseServices.LocationPersister;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Created by Ceroxlol on 13.12.2017.
  */
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @DatabaseTable
-public class Appointment{
+public class Appointment {
 
     @DatabaseField(generatedId = true, columnName = "AppointmentID")
     private int id;
@@ -29,9 +37,9 @@ public class Appointment{
     @DatabaseField
     private Boolean mHasTime;
     //DATE FORMAT: dd/MM/yyyy HH mm
-    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
+    @DatabaseField(dataType = DataType.DATE_STRING, format = "dd MM yyyy HH:mm")
     private Date mAppointmentCreated;
-    @DatabaseField(dataType = DataType.DATE_STRING, format="dd MM yyyy HH:mm")
+    @DatabaseField(dataType = DataType.DATE_STRING, format = "dd MM yyyy HH:mm")
     private Date mAppointmentTime;
     @DatabaseField
     private int mPriority;
@@ -40,16 +48,10 @@ public class Appointment{
     @DatabaseField(canBeNull = false, defaultValue = "true")
     private Boolean mIsActive;
 
-    private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time};
-
-    public Appointment()
-    {
-        // ORMLite needs a no-arg constructor
-    }
+    //private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
 
     //without time
-    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated)
-    {
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated) {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
@@ -60,8 +62,7 @@ public class Appointment{
     }
 
     //with time
-    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime)
-    {
+    public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime) {
         this.mType = appointmentType;
         this.mName = name;
         this.mAppointmentText = appointmentText;
@@ -71,84 +72,5 @@ public class Appointment{
         this.mAppointmentTime = appointmentTime;
         this.mHasTime = true;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String mName) {
-        this.mName = mName;
-    }
-
-    public String getAppointmentText() {
-        return mAppointmentText;
-    }
-
-    public void setAppointmentText(String mAppointmentText) {
-        this.mAppointmentText = mAppointmentText;
-    }
-
-    public Location getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(Location mLocation) {
-        this.mLocation = mLocation;
-    }
-
-    public Boolean getHasTime() {
-        return mHasTime;
-    }
-
-    public void setHasTime(Boolean mHasTime) {
-        this.mHasTime = mHasTime;
-    }
-
-    public Date getAppointmentCreated() {
-        return mAppointmentCreated;
-    }
-
-    public void setAppointmentCreated(Date mAppointmentCreated) {
-        this.mAppointmentCreated = mAppointmentCreated;
-    }
-
-    public Date getAppointmentTime() {
-        return mAppointmentTime;
-    }
-
-    public void setAppointmentTime(Date mAppointmentTime) {
-        this.mAppointmentTime = mAppointmentTime;
-    }
-
-    public int getPriority() {
-        return mPriority;
-    }
-
-    public void setPriority(int mPriority) {
-        this.mPriority = mPriority;
-    }
-
-    public int getType() {
-        return mType;
-    }
-
-    public void setType(int mType) {
-        this.mType = mType;
-    }
-
-    public FavoriteLocation getFavoriteLocation() {return mFavoriteLocation;}
-
-    public void setFavoriteLocation(FavoriteLocation location) {this.mFavoriteLocation = location;}
-
-    public boolean getIsActive() {return this.mIsActive;}
-
-    public void setIsActive(boolean isActive) {this.mIsActive = isActive;}
 }
+
