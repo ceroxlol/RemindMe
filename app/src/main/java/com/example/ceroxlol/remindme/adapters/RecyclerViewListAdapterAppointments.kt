@@ -1,6 +1,6 @@
-package adapter
+package com.example.ceroxlol.remindme.adapters
 
-import Data.Appointment
+import com.example.ceroxlol.remindme.models.Appointment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView

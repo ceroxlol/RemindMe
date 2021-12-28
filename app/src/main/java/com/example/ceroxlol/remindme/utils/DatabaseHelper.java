@@ -1,4 +1,4 @@
-package DatabaseServices;
+package com.example.ceroxlol.remindme.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -18,10 +18,10 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Data.Appointment;
-import Data.FavoriteLocation;
-import Data.User;
-import Data.VisitedLocation;
+import com.example.ceroxlol.remindme.models.Appointment;
+import com.example.ceroxlol.remindme.models.FavoriteLocation;
+import com.example.ceroxlol.remindme.models.User;
+import com.example.ceroxlol.remindme.models.VisitedLocation;
 
 /**
  * Created by Ceroxlol on 18.12.2017.

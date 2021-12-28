@@ -1,4 +1,4 @@
-package Data;
+package com.example.ceroxlol.remindme.models;
 
 import android.location.Location;
 
@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import DatabaseServices.LocationPersister;
+import com.example.ceroxlol.remindme.utils.LocationPersister;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
-package com.example.ceroxlol.remindme
+package com.example.ceroxlol.remindme.fragments
 
-import Data.Appointment
-import adapter.AppointmentViewHolder
-import adapter.RecyclerViewListAdapterAppointments
+import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.adapters.AppointmentViewHolder
+import com.example.ceroxlol.remindme.adapters.RecyclerViewListAdapterAppointments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ceroxlol.remindme.MainActivity.mDatabaseHelper
+import com.example.ceroxlol.remindme.activities.MainActivity.mDatabaseHelper
+import com.example.ceroxlol.remindme.R
 
 class AppointmentsFragment : Fragment() {
 

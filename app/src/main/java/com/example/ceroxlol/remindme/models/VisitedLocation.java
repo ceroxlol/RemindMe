@@ -1,9 +1,9 @@
-package Data;
+package com.example.ceroxlol.remindme.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import DatabaseServices.LocationPersister;
+import com.example.ceroxlol.remindme.utils.LocationPersister;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

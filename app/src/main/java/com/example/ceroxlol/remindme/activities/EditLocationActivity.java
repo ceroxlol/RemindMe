@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,10 +7,12 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ceroxlol.remindme.R;
+
 import java.util.ArrayList;
 
-import Data.FavoriteLocation;
-import adapter.ArrayAdapterLocationsList;
+import com.example.ceroxlol.remindme.models.FavoriteLocation;
+import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsList;
 
 public class EditLocationActivity extends AppCompatActivity {
 

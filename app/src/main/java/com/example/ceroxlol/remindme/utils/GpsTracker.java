@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.utils;
 
 import android.Manifest;
 import android.app.Activity;

@@ -1,4 +1,4 @@
-package Data;
+package com.example.ceroxlol.remindme.models;
 
 import android.location.Location;
 
@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
-import DatabaseServices.LocationPersister;
+import com.example.ceroxlol.remindme.utils.LocationPersister;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,50 +27,50 @@ public class Appointment {
     @DatabaseField(generatedId = true, columnName = "AppointmentID")
     private int id;
     @DatabaseField
-    private String mName;
+    private String name;
     @DatabaseField
-    private String mAppointmentText;
+    private String appointmentText;
     @DatabaseField(persisterClass = LocationPersister.class)
-    private Location mLocation;
+    private Location location;
     @DatabaseField(foreign = true)
-    private FavoriteLocation mFavoriteLocation;
+    private FavoriteLocation favoriteLocation;
     @DatabaseField
-    private Boolean mHasTime;
+    private Boolean hasTime;
     //DATE FORMAT: dd/MM/yyyy HH mm
     @DatabaseField(dataType = DataType.DATE_STRING, format = "dd MM yyyy HH:mm")
-    private Date mAppointmentCreated;
+    private Date appointmentCreated;
     @DatabaseField(dataType = DataType.DATE_STRING, format = "dd MM yyyy HH:mm")
-    private Date mAppointmentTime;
+    private Date appointmentTime;
     @DatabaseField
-    private int mPriority;
+    private int priority;
     @DatabaseField
-    private int mType;
+    private int type;
     @DatabaseField(canBeNull = false, defaultValue = "true")
-    private Boolean mIsActive;
+    private Boolean isActive;
 
     //private enum mAppointmentType {Arrival, Leave, ArrivalWithTime, LeaveWithTime, Time}
 
     //without time
     public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated) {
-        this.mType = appointmentType;
-        this.mName = name;
-        this.mAppointmentText = appointmentText;
-        this.mLocation = favoriteLocation.getLocation();
-        this.mFavoriteLocation = favoriteLocation;
-        this.mAppointmentCreated = appointmentCreated;
-        this.mHasTime = false;
+        this.type = appointmentType;
+        this.name = name;
+        this.appointmentText = appointmentText;
+        this.location = favoriteLocation.getLocation();
+        this.favoriteLocation = favoriteLocation;
+        this.appointmentCreated = appointmentCreated;
+        this.hasTime = false;
     }
 
     //with time
     public Appointment(int appointmentType, String name, String appointmentText, FavoriteLocation favoriteLocation, Date appointmentCreated, Date appointmentTime) {
-        this.mType = appointmentType;
-        this.mName = name;
-        this.mAppointmentText = appointmentText;
-        this.mLocation = favoriteLocation.getLocation();
-        this.mFavoriteLocation = favoriteLocation;
-        this.mAppointmentCreated = appointmentCreated;
-        this.mAppointmentTime = appointmentTime;
-        this.mHasTime = true;
+        this.type = appointmentType;
+        this.name = name;
+        this.appointmentText = appointmentText;
+        this.location = favoriteLocation.getLocation();
+        this.favoriteLocation = favoriteLocation;
+        this.appointmentCreated = appointmentCreated;
+        this.appointmentTime = appointmentTime;
+        this.hasTime = true;
     }
 }
 

@@ -1,6 +1,6 @@
-package DatabaseServices;
+package com.example.ceroxlol.remindme.utils;
 
-import static DatabaseServices.DatabaseHelper.gson;
+import static com.example.ceroxlol.remindme.utils.DatabaseHelper.gson;
 
 import android.location.Location;
 

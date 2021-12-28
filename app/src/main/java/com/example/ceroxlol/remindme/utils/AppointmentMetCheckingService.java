@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.utils;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,11 +12,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.example.ceroxlol.remindme.Receiver.AppointmentActionReceiver;
+import com.example.ceroxlol.remindme.R;
+import com.example.ceroxlol.remindme.activities.MainActivity;
+import com.example.ceroxlol.remindme.receiver.AppointmentActionReceiver;
 
 import java.util.Calendar;
 
-import Data.Appointment;
+import com.example.ceroxlol.remindme.models.Appointment;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -24,7 +26,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  * Created by Ceroxlol on 22.04.2017.
  */
 
-class AppointmentMetCheckingService extends Thread {
+public class AppointmentMetCheckingService extends Thread {
     private final GpsTracker gpsTracker;
     private boolean run;
     private final String channelId;

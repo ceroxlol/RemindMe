@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ceroxlol.remindme.R;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,10 +18,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import Data.Appointment;
-import Data.FavoriteLocation;
-import Fragments.DatePickerFragment;
-import adapter.ArrayAdapterLocationsListSpinner;
+import com.example.ceroxlol.remindme.models.Appointment;
+import com.example.ceroxlol.remindme.models.FavoriteLocation;
+import com.example.ceroxlol.remindme.fragments.DatePickerFragment;
+import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner;
 
 public class AddNewAppointmentActivity extends AppCompatActivity {
 

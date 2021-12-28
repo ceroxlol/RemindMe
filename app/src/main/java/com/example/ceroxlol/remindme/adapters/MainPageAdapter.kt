@@ -1,10 +1,10 @@
-package adapter
+package com.example.ceroxlol.remindme.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.ceroxlol.remindme.AppointmentsFragment
-import com.example.ceroxlol.remindme.LocationsFragment
+import com.example.ceroxlol.remindme.fragments.AppointmentsFragment
+import com.example.ceroxlol.remindme.fragments.LocationsFragment
 
 //TODO: Replace FragmentPagerAdapter
 class MainPageAdapter(fm: FragmentManager) :

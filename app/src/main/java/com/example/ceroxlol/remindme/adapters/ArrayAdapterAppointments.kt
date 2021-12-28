@@ -1,6 +1,6 @@
-package adapter
+package com.example.ceroxlol.remindme.adapters
 
-import Data.Appointment
+import com.example.ceroxlol.remindme.models.Appointment
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.ceroxlol.remindme.EditSingleAppointmentActivity
-import com.example.ceroxlol.remindme.MainActivity
+import com.example.ceroxlol.remindme.activities.EditSingleAppointmentActivity
+import com.example.ceroxlol.remindme.activities.MainActivity
 import com.example.ceroxlol.remindme.R
 import java.text.SimpleDateFormat
 import java.util.*

@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.ceroxlol.remindme.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,7 +38,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
-import Data.FavoriteLocation;
+import com.example.ceroxlol.remindme.models.FavoriteLocation;
 
 public class ChooseLocationActivity extends FragmentActivity implements OnMapReadyCallback,
         OnMarkerClickListener,

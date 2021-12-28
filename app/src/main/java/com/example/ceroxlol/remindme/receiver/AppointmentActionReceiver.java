@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme.Receiver;
+package com.example.ceroxlol.remindme.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,11 +7,11 @@ import androidx.core.app.NotificationManagerCompat;
 import android.widget.Toast;
 import android.util.Log;
 
-import com.example.ceroxlol.remindme.MainActivity;
+import com.example.ceroxlol.remindme.activities.MainActivity;
 
 import java.util.Calendar;
 
-import Data.Appointment;
+import com.example.ceroxlol.remindme.models.Appointment;
 
 public class AppointmentActionReceiver extends BroadcastReceiver {
 

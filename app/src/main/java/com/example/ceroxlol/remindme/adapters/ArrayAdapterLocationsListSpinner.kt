@@ -1,6 +1,6 @@
-package adapter
+package com.example.ceroxlol.remindme.adapters
 
-import Data.FavoriteLocation
+import com.example.ceroxlol.remindme.models.FavoriteLocation
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

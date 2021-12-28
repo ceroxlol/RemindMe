@@ -1,4 +1,4 @@
-package com.example.ceroxlol.remindme;
+package com.example.ceroxlol.remindme.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -12,14 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.ceroxlol.remindme.utils.AppointmentMetCheckingService;
+import com.example.ceroxlol.remindme.utils.GpsTracker;
+import com.example.ceroxlol.remindme.R;
 import com.google.android.material.tabs.TabLayout;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-import java.util.ArrayList;
-
-import Data.Appointment;
-import DatabaseServices.DatabaseHelper;
-import adapter.MainPageAdapter;
+import com.example.ceroxlol.remindme.utils.DatabaseHelper;
+import com.example.ceroxlol.remindme.adapters.MainPageAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

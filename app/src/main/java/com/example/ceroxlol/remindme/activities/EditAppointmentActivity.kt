@@ -1,12 +1,13 @@
-package com.example.ceroxlol.remindme
+package com.example.ceroxlol.remindme.activities
 
-import Data.Appointment
-import adapter.ArrayAdapterAppointments
+import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.adapters.ArrayAdapterAppointments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ceroxlol.remindme.R
 import java.util.*
 
 class EditAppointmentActivity(

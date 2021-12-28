@@ -1,4 +1,4 @@
-package adapter;
+package com.example.ceroxlol.remindme.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ceroxlol.remindme.MainActivity;
+import com.example.ceroxlol.remindme.activities.MainActivity;
 import com.example.ceroxlol.remindme.R;
 
 import java.util.ArrayList;
 
-import Data.FavoriteLocation;
+import com.example.ceroxlol.remindme.models.FavoriteLocation;
 
 public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
     private final LinearLayout linearLayoutLocations;
@@ -41,7 +41,7 @@ public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
                 {
                     this.locations.remove(favoriteLocation);
                     this.linearLayoutLocations.removeView(finalView);
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getID());
+                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getId());
                 }
         );
 
