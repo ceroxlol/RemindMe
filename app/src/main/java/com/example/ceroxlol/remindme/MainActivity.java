@@ -5,16 +5,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.util.Log;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -24,7 +20,6 @@ import java.util.ArrayList;
 import Data.Appointment;
 import DatabaseServices.DatabaseHelper;
 import adapter.MainPageAdapter;
-import adapter.RecyclerViewListAdapterAppointments;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,18 +28,14 @@ public class MainActivity extends AppCompatActivity {
 
     public static DatabaseHelper mDatabaseHelper = null;
 
-    private GPSTracker mGPSTracker;
+    private GpsTracker mGPSTracker;
 
-    private ArrayList<Appointment> mAppointmentArrayList;
     private AppointmentMetCheckingService mAppointmentMetCheckingService;
 
     private Button mButtonAddNewAppointment;
     private Button mButtonEditAppointment;
     private Button mAddNewLocation;
     private Button mEditLocation;
-    private RecyclerViewListAdapterAppointments mRecyclerViewListAdapterAppointments;
-    private RecyclerView mRecyclerViewAppointmentList;
-    private MainPageAdapter mainPageAdapter;
 
     private final int REQUEST_APP_PERMISSIONS = 1;
     private final int REQUEST_NEW_FAVORITE_LOCATION = 10;
@@ -78,11 +69,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initClasses() {
-        this.mGPSTracker = new GPSTracker(this.getApplicationContext());
+        this.mGPSTracker = new GpsTracker(this.getApplicationContext());
 
         getDBHelper();
-
-        this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
 
         if (APPOINTMENT_TRACKER_ENABLED) {
             this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
@@ -187,13 +176,5 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_NEW_FAVORITE_LOCATION) {
             //Do something based on a new location
         }
-
-        refreshAppointmentList();
-    }
-
-    private void refreshAppointmentList() {
-        this.mAppointmentArrayList = (ArrayList<Appointment>) mDatabaseHelper.getAppointmentDaoRuntimeException().queryForAll();
-        this.mRecyclerViewListAdapterAppointments.setAppointmentList(mAppointmentArrayList);
-        this.mRecyclerViewListAdapterAppointments.notifyDataSetChanged();
     }
 }

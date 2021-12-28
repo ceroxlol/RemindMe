@@ -1,7 +1,8 @@
 package com.example.ceroxlol.remindme;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class EditSingleLocationActivity extends AppCompatActivity {
 

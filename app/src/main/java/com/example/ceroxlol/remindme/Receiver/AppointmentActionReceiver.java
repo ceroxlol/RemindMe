@@ -15,14 +15,14 @@ import Data.Appointment;
 
 public class AppointmentActionReceiver extends BroadcastReceiver {
 
-    private String TAG = "AppBroadRec";
+    private final String TAG = "AppBroadRec";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getStringExtra("action");
         int appointmentId = intent.getIntExtra("appointmentId", -1);
         if (action.equals("setInactive")) {
-            updateisActiveForAppointment(appointmentId);
+            updateIsActiveForAppointment(appointmentId);
             Toast.makeText(context, "Appointment done.", Toast.LENGTH_SHORT).show();
         } else if (action.equals("setSnooze")) {
             setSnoozeForAppointmentTime(appointmentId);
@@ -38,7 +38,7 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
         context.sendBroadcast(it);
     }
 
-    public void updateisActiveForAppointment(int appointmentId) {
+    public void updateIsActiveForAppointment(int appointmentId) {
         Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         appointmentToUpdate.setIsActive(false);
         MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);

@@ -1,7 +1,6 @@
 package adapter
 
 import Data.FavoriteLocation
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<Favorit
 
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val location = getItem(position)
 

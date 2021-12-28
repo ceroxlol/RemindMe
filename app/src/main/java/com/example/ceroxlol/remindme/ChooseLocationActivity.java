@@ -5,11 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,10 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -29,8 +32,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.tasks.Task;
 import com.google.maps.android.ui.IconGenerator;
 
@@ -45,27 +46,25 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     //TODO: Implement google places integration
 
     private static final String TAG = "CHOSE_LOCATION_ACTIVITY";
-    private UiSettings mUiSettings;
     private GoogleMap mMap;
-    private CameraPosition mCameraPosition;
-    private Button mButtonSave;
-    private EditText mEditTextName;
-    private List<FavoriteLocation> mSavedLocationsList;
-    private LatLng mNewLocationToBeSaved;
+    private CameraPosition cameraPosition;
+    private EditText editTextName;
+    private List<FavoriteLocation> favoriteLocationsList;
+    private LatLng locationCoordinates;
 
     // The entry point to the Fused LocationHandler Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private final LatLng defaultCoordinates = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
+    private boolean locationPermissionGranted;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused LocationHandler Provider.
-    private Location mLastKnownLocation;
+    private Location lastKnownLocation;
 
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -77,8 +76,8 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
         //TODO: Integrate Google maps suggestions for locations
@@ -87,17 +86,18 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         // Taken from https://developers.google.com/maps/documentation/android-api/current-place-tutorial
         // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        mEditTextName = findViewById(R.id.editTextLocationName);
-        mButtonSave = findViewById(R.id.buttonSaveLocation);
-        mButtonSave.setOnClickListener(v -> {
-            if (mNewLocationToBeSaved != null) {
-                String favoriteLocationName = mEditTextName.getText().toString();
+        editTextName = findViewById(R.id.editTextLocationName);
+        Button buttonSave = findViewById(R.id.buttonSaveLocation);
+        buttonSave.setOnClickListener(v -> {
+            if (locationCoordinates != null) {
+                String favoriteLocationName = editTextName.getText().toString();
                 if (!favoriteLocationName.equals("")) {
                     saveNewFavoriteLocation(favoriteLocationName);
                     Toast.makeText(getApplicationContext(), "Location '" + favoriteLocationName + "' was saved.", Toast.LENGTH_SHORT).show();
@@ -112,14 +112,14 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         });
 
         //Get all available favorite locations
-        mSavedLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        favoriteLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
     }
 
     private void saveNewFavoriteLocation(String favoriteLocationName) {
         //Save any set Markers
-        MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(mNewLocationToBeSaved, favoriteLocationName));
+        MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(locationCoordinates, favoriteLocationName));
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("new_favorite_location", mLastKnownLocation);
+        returnIntent.putExtra("new_favorite_location", lastKnownLocation);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
@@ -147,10 +147,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
      * Saves the state of the map when the activity is paused.
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         if (mMap != null) {
             outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation);
             super.onSaveInstanceState(outState);
         }
     }
@@ -168,11 +168,11 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mUiSettings = mMap.getUiSettings();
+        UiSettings uiSettings = mMap.getUiSettings();
 
         // Create an instance of the UI elements for zooming
-        mUiSettings.setZoomControlsEnabled(true);
-        mUiSettings.setMapToolbarEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setMapToolbarEnabled(true);
 
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerClickListener(this);
@@ -217,10 +217,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void loadSavedLocationsAsMarkers() {
-        if (mSavedLocationsList.isEmpty())
+        if (favoriteLocationsList.isEmpty())
             return;
 
-        for (FavoriteLocation location : mSavedLocationsList) {
+        for (FavoriteLocation location : favoriteLocationsList) {
             LatLng position = new LatLng(location.getLocation().getLatitude(), location.getLocation().getLongitude());
             IconGenerator iconFactory = new IconGenerator(this);
             MarkerOptions markerOptions = new MarkerOptions().
@@ -241,17 +241,17 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
          * cases when a location is not available.
          */
         try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+            if (locationPermissionGranted) {
+                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
-                        mLastKnownLocation = task.getResult();
-                        if (mLastKnownLocation == null)
+                        lastKnownLocation = task.getResult();
+                        if (lastKnownLocation == null)
                             locationIsNullError(task.getException());
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(mLastKnownLocation.getLatitude(),
-                                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                new LatLng(lastKnownLocation.getLatitude(),
+                                        lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     } else {
                         locationIsNullError(task.getException());
                     }
@@ -265,7 +265,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private void locationIsNullError(Exception e) {
         Log.d(TAG, "Current location is null. Using defaults.");
         Log.e(TAG, "Exception: %s", e);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultCoordinates, DEFAULT_ZOOM));
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
@@ -281,7 +281,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
+            locationPermissionGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -294,16 +294,15 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        locationPermissionGranted = false;
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
             }
         }
         updateLocationUI();
@@ -317,13 +316,13 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
             return;
         }
         try {
-            if (mLocationPermissionGranted) {
+            if (locationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mLastKnownLocation = null;
+                lastKnownLocation = null;
                 getLocationPermission();
             }
         } catch (SecurityException e) {
@@ -342,6 +341,6 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         loadSavedLocationsAsMarkers();
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng));
-        mNewLocationToBeSaved = marker.getPosition();
+        locationCoordinates = marker.getPosition();
     }
 }

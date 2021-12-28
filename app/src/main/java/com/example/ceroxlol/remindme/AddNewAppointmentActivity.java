@@ -2,10 +2,11 @@ package com.example.ceroxlol.remindme;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -17,13 +18,10 @@ import java.util.Locale;
 
 import Data.Appointment;
 import Data.FavoriteLocation;
-import DatabaseServices.DatabaseHelper;
 import Fragments.DatePickerFragment;
 import adapter.ArrayAdapterLocationsListSpinner;
 
 public class AddNewAppointmentActivity extends AppCompatActivity {
-
-    private DatabaseHelper mDBHelper;
 
     private Button mButtonAppointmentDate;
     private EditText mEditTextAppointmentText;
@@ -39,7 +37,6 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     }
 
     private void init() {
-        this.mDBHelper = MainActivity.mDatabaseHelper;
 
         //TODO: Add maps fragment with the corresponding location so you can draw a circle around it
         this.mEditTextAppointmentName = findViewById(R.id.editTextAddAppointmentAppointmentName);
@@ -62,7 +59,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     }
 
     private void loadLocations() {
-        ArrayList<FavoriteLocation> locations = (ArrayList<FavoriteLocation>) mDBHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        ArrayList<FavoriteLocation> locations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
         ArrayAdapterLocationsListSpinner adapter = new ArrayAdapterLocationsListSpinner(this, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         this.mSpinnerAddAppointmentLocations.setAdapter(adapter);
@@ -89,13 +86,13 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
                     mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
 
         try {
-            mDBHelper.getAppointmentDao().create(appointment);
+            MainActivity.mDatabaseHelper.getAppointmentDao().create(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    //When finishing this acitivity, an acknowledge to the main acitivity is sent to refresh the appointment list
+    //When finishing this activity, an acknowledge to the main activity is sent to refresh the appointment list
     private void finishActivity() {
         Intent i = new Intent();
         setResult(RESULT_OK, i);

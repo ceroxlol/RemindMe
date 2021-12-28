@@ -5,25 +5,24 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import android.util.Log;
 
 /**
  * Created by Ceroxlol on 07.04.2017.
  */
 
-public class GPSTracker extends Service implements LocationListener {
+public class GpsTracker extends Service implements LocationListener {
 
     private final Context mContext;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATIONS = 124;
@@ -44,12 +43,12 @@ public class GPSTracker extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60; // 1 minute
 
     // Declaring a LocationHandler Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context) {
+    public GpsTracker(Context context) {
         this.mContext = context;
         getLocation();
     }
@@ -97,6 +96,7 @@ public class GPSTracker extends Service implements LocationListener {
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (location == null) {
+                        assert locationManager != null;
                         locationManager.requestLocationUpdates(
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
@@ -188,7 +188,7 @@ public class GPSTracker extends Service implements LocationListener {
      */
     public void stopUsingGPS() {
         if (locationManager != null) {
-            locationManager.removeUpdates(GPSTracker.this);
+            locationManager.removeUpdates(GpsTracker.this);
         }
     }
 

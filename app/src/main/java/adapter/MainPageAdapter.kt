@@ -6,27 +6,29 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.example.ceroxlol.remindme.AppointmentsFragment
 import com.example.ceroxlol.remindme.LocationsFragment
 
-class MainPageAdapter(fm:FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+//TODO: Replace FragmentPagerAdapter
+class MainPageAdapter(fm: FragmentManager) :
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getCount(): Int {
         return 2
     }
 
     override fun getItem(position: Int): Fragment {
-        when(position) {
+        return when (position) {
             0 -> {
-                return AppointmentsFragment()
+                AppointmentsFragment()
             }
             1 -> {
-                return LocationsFragment()
+                LocationsFragment()
             }
             else -> {
-                return AppointmentsFragment()
+                AppointmentsFragment()
             }
         }
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        when(position) {
+        when (position) {
             0 -> {
                 return "Appointments"
             }

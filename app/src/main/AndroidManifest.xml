@@ -3,6 +3,8 @@
     package="com.example.ceroxlol.remindme">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -28,7 +30,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ceroxlol.remindme.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,9 +43,6 @@
             android:label="Add new appointment">
         </activity>
 
-        <activity
-            android:name=".AndroidDatabaseManager"
-            android:theme="@style/Theme.AppCompat.Light" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -65,7 +65,7 @@
         <activity android:name=".EditLocationActivity" />
         <activity android:name=".EditSingleLocationActivity" />
 
-        <receiver android:name=".Receiver.AppointmentActionReceiver"></receiver>
+        <receiver android:name=".Receiver.AppointmentActionReceiver" />
     </application>
 
 </manifest>

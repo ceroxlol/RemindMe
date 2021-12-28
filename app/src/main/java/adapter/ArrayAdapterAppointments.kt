@@ -18,7 +18,7 @@ import java.util.*
 
 class ArrayAdapterAppointments(context: Context,
                                private var data: ArrayList<Appointment>?,
-                               private val mLinearLayoutAppointments: LinearLayout) :
+                               private val linearLayoutAppointments: LinearLayout) :
         ArrayAdapter<Appointment>(context, 0, data!!) {
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -58,7 +58,7 @@ class ArrayAdapterAppointments(context: Context,
         buttonDeleteAppointment?.setOnClickListener {
             data?.remove(appointment)
             this.notifyDataSetChanged()
-            mLinearLayoutAppointments.removeView(rowView)
+            linearLayoutAppointments.removeView(rowView)
             MainActivity.mDatabaseHelper.appointmentDao.deleteById(appointment.id)
         }
 
