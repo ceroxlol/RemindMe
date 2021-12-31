@@ -1,6 +1,8 @@
 package com.example.ceroxlol.remindme.models;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -22,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable
-public class Appointment {
+public class Appointment implements Parcelable {
 
     @DatabaseField(generatedId = true, columnName = "AppointmentID")
     private int id;
@@ -71,6 +73,49 @@ public class Appointment {
         this.appointmentCreated = appointmentCreated;
         this.appointmentTime = appointmentTime;
         this.hasTime = true;
+    }
+
+    protected Appointment(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        appointmentText = in.readString();
+        location = in.readParcelable(Location.class.getClassLoader());
+        byte tmpHasTime = in.readByte();
+        hasTime = tmpHasTime == 0 ? null : tmpHasTime == 1;
+        priority = in.readInt();
+        type = in.readInt();
+        byte tmpIsActive = in.readByte();
+        isActive = tmpIsActive == 0 ? null : tmpIsActive == 1;
+    }
+
+    public static final Creator<Appointment> CREATOR = new Creator<Appointment>() {
+        @Override
+        public Appointment createFromParcel(Parcel in) {
+            return new Appointment(in);
+        }
+
+        @Override
+        public Appointment[] newArray(int size) {
+            return new Appointment[size];
+        }
+    };
+
+    //TODO: Implement Parcelable
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(appointmentText);
+        dest.writeParcelable(location, flags);
+        dest.writeByte((byte) (hasTime == null ? 0 : hasTime ? 1 : 2));
+        dest.writeInt(priority);
+        dest.writeInt(type);
+        dest.writeByte((byte) (isActive == null ? 0 : isActive ? 1 : 2));
     }
 }
 

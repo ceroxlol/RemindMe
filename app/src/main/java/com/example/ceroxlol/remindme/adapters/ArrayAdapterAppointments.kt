@@ -38,7 +38,7 @@ class ArrayAdapterAppointments(context: Context,
 
         textViewAppointmentName.text = appointment!!.name
         textViewAppointmentText.text = appointment.appointmentText
-        textViewAppointmentFavoriteLocation.text = MainActivity.mDatabaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
+        textViewAppointmentFavoriteLocation.text = MainActivity.databaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
         if (appointment.appointmentTime == null)
             textViewAppointmentAAppointmentTime.text = "No Date"
         else
@@ -59,7 +59,7 @@ class ArrayAdapterAppointments(context: Context,
             data?.remove(appointment)
             this.notifyDataSetChanged()
             linearLayoutAppointments.removeView(rowView)
-            MainActivity.mDatabaseHelper.appointmentDao.deleteById(appointment.id)
+            MainActivity.databaseHelper.appointmentDao.deleteById(appointment.id)
         }
 
         return rowView

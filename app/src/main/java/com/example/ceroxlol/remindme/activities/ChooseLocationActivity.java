@@ -113,12 +113,12 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         });
 
         //Get all available favorite locations
-        favoriteLocationsList = MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        favoriteLocationsList = MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
     }
 
     private void saveNewFavoriteLocation(String favoriteLocationName) {
         //Save any set Markers
-        MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(locationCoordinates, favoriteLocationName));
+        MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(locationCoordinates, favoriteLocationName));
         Intent returnIntent = new Intent();
         returnIntent.putExtra("new_favorite_location", lastKnownLocation);
         setResult(Activity.RESULT_OK, returnIntent);

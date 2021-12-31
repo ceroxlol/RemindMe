@@ -25,10 +25,10 @@ import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner;
 
 public class AddNewAppointmentActivity extends AppCompatActivity {
 
-    private Button mButtonAppointmentDate;
-    private EditText mEditTextAppointmentText;
-    private EditText mEditTextAppointmentName;
-    private Spinner mSpinnerAddAppointmentLocations;
+    private Button buttonAppointmentDate;
+    private EditText editTextAppointmentText;
+    private EditText editTextAppointmentName;
+    private Spinner spinnerAddAppointmentLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,62 +41,69 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     private void init() {
 
         //TODO: Add maps fragment with the corresponding location so you can draw a circle around it
-        this.mEditTextAppointmentName = findViewById(R.id.editTextAddAppointmentAppointmentName);
-        this.mEditTextAppointmentText = findViewById(R.id.editTextAddAppointmentAppointmentText);
-        this.mButtonAppointmentDate = findViewById(R.id.buttonAddAppointmentDate);
-        Button mButtonAppointmentSave = findViewById(R.id.buttonAddAppointmentSave);
-        this.mSpinnerAddAppointmentLocations = findViewById(R.id.spinnerAddAppointmentLocations);
+        editTextAppointmentName = findViewById(R.id.editTextAddAppointmentAppointmentName);
+        editTextAppointmentText = findViewById(R.id.editTextAddAppointmentAppointmentText);
+        buttonAppointmentDate = findViewById(R.id.buttonAddAppointmentDate);
+        spinnerAddAppointmentLocations = findViewById(R.id.spinnerAddAppointmentLocations);
 
-        this.mButtonAppointmentDate.setOnClickListener(view -> {
+        Button mButtonAppointmentSave = findViewById(R.id.buttonAddAppointmentSave);
+
+        this.buttonAppointmentDate.setOnClickListener(view -> {
             DatePickerFragment datePickerDialog = new DatePickerFragment(R.id.buttonAddAppointmentDate);
             datePickerDialog.show(getFragmentManager(), "Date Picker");
         });
 
         mButtonAppointmentSave.setOnClickListener(v -> {
-            saveNewAppointment();
-            finishActivity();
+            Appointment appointment = saveNewAppointment();
+            finishActivity(appointment);
         });
 
         loadLocations();
     }
 
     private void loadLocations() {
-        ArrayList<FavoriteLocation> locations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        ArrayList<FavoriteLocation> locations = (ArrayList<FavoriteLocation>) MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
         ArrayAdapterLocationsListSpinner adapter = new ArrayAdapterLocationsListSpinner(this, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        this.mSpinnerAddAppointmentLocations.setAdapter(adapter);
+        this.spinnerAddAppointmentLocations.setAdapter(adapter);
     }
 
-    private void saveNewAppointment() {
-        FavoriteLocation favoriteLocation = (FavoriteLocation) this.mSpinnerAddAppointmentLocations.getSelectedItem();
+    private Appointment saveNewAppointment() {
+        FavoriteLocation favoriteLocation = (FavoriteLocation) this.spinnerAddAppointmentLocations.getSelectedItem();
         Date appointmentTime = null;
         Appointment appointment;
 
-        try {
-            appointmentTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.mButtonAppointmentDate.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String date = this.buttonAppointmentDate.getText().toString();
+        if(!date.equals("No Date")){
+            try {
+                appointmentTime = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.GERMAN).parse(this.buttonAppointmentDate.getText().toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
-        if (appointmentTime != null)
-            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
-                    mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
+        if (appointmentTime != null) {
+            appointment = new Appointment(1, editTextAppointmentName.getText().toString(),
+                    editTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime(),
                     appointmentTime);
-            //No appointment Time
-        else
-            appointment = new Appointment(1, mEditTextAppointmentName.getText().toString(),
-                    mEditTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
+        } else {
+            appointment = new Appointment(1, editTextAppointmentName.getText().toString(),
+                    editTextAppointmentText.getText().toString(), favoriteLocation, Calendar.getInstance().getTime());
+        }
 
         try {
-            MainActivity.mDatabaseHelper.getAppointmentDao().create(appointment);
+            MainActivity.databaseHelper.getAppointmentDao().create(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return appointment;
     }
 
     //When finishing this activity, an acknowledge to the main activity is sent to refresh the appointment list
-    private void finishActivity() {
+    private void finishActivity(Appointment appointment) {
         Intent i = new Intent();
+        i.putExtra("appointment", appointment);
         setResult(RESULT_OK, i);
         finish();
     }

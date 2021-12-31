@@ -17,13 +17,13 @@
         <activity
             android:name=".activities.EditSingleAppointmentActivity"
             android:label="Edit appointment"
-            android:parentActivityName=".activities.EditAppointmentActivity">
+            android:parentActivityName=".activities.EditAppointmentsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ceroxlol.remindme.activities.EditAppointmentActivity" />
+                android:value="com.example.ceroxlol.remindme.activities.EditAppointmentsActivity" />
         </activity>
         <activity
-            android:name=".activities.EditAppointmentActivity"
+            android:name=".activities.EditAppointmentsActivity"
             android:label="All appointments"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
@@ -31,7 +31,7 @@
                 android:value="com.example.ceroxlol.remindme.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.MainActivity"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

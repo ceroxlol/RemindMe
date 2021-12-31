@@ -86,7 +86,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         mySwitch.isChecked = appointment.isActive
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
             appointment.isActive = isChecked
-            MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
+            MainActivity.databaseHelper.appointmentDao.update(appointment)
             Log.d(TAG, "Set appointment " + appointment.id + " isActive to " + appointment.isActive)
         }
 
@@ -109,7 +109,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         appointment.favoriteLocation =
             this.spinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
 
-        MainActivity.mDatabaseHelper.appointmentDao.update(appointment)
+        MainActivity.databaseHelper.appointmentDao.update(appointment)
         Log.i(
             TAG,
             "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentTime}"
@@ -118,7 +118,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun loadAppointment(id: Int) {
-        appointment = MainActivity.mDatabaseHelper.appointmentDaoRuntimeException.queryForId(id)
+        appointment = MainActivity.databaseHelper.appointmentDaoRuntimeException.queryForId(id)
 
         this.editTextSingleAppointmentAppointmentName.setText(appointment.name)
         this.editTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
@@ -139,7 +139,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
 
     private fun loadLocations() {
         val locations =
-            MainActivity.mDatabaseHelper.favoriteLocationDao.queryForAll() as ArrayList<FavoriteLocation>
+            MainActivity.databaseHelper.favoriteLocationDao.queryForAll() as ArrayList<FavoriteLocation>
         val adapter = ArrayAdapterLocationsListSpinner(this, locations)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         this.spinnerSingleAppointmentLocations.adapter = adapter

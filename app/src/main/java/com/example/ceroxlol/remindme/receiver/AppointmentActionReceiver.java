@@ -39,14 +39,14 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
     }
 
     public void updateIsActiveForAppointment(int appointmentId) {
-        Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
+        Appointment appointmentToUpdate = MainActivity.databaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         appointmentToUpdate.setIsActive(false);
-        MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);
+        MainActivity.databaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);
         Log.i(TAG, "Received update isActive for appointment ID " + appointmentId);
     }
 
     public void setSnoozeForAppointmentTime(int appointmentId) {
-        Appointment appointmentToUpdate = MainActivity.mDatabaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
+        Appointment appointmentToUpdate = MainActivity.databaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(appointmentToUpdate.getAppointmentTime());
         calendar.add(Calendar.MINUTE, 10);

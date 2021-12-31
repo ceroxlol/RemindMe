@@ -1,8 +1,5 @@
 package com.example.ceroxlol.remindme.fragments
 
-import com.example.ceroxlol.remindme.models.Appointment
-import com.example.ceroxlol.remindme.adapters.AppointmentViewHolder
-import com.example.ceroxlol.remindme.adapters.RecyclerViewListAdapterAppointments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ceroxlol.remindme.activities.MainActivity.mDatabaseHelper
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.activities.MainActivity.databaseHelper
+import com.example.ceroxlol.remindme.adapters.AppointmentViewHolder
+import com.example.ceroxlol.remindme.adapters.RecyclerViewListAdapterAppointments
+import com.example.ceroxlol.remindme.models.Appointment
 
 class AppointmentsFragment : Fragment() {
+
+    private var data : ArrayList<Appointment> = ArrayList()
+    private val adapter : RecyclerView.Adapter<AppointmentViewHolder> = initAdapter()
 
     companion object {
         fun newInstance() = AppointmentsFragment()
@@ -28,14 +31,19 @@ class AppointmentsFragment : Fragment() {
         val recyclerView : RecyclerView = view.findViewById(R.id.RecyclerViewAppointmentList)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-        recyclerView.adapter = getAdapter()
+        recyclerView.adapter = adapter
 
         return view
     }
 
-    private fun getAdapter(): RecyclerView.Adapter<AppointmentViewHolder> {
-        val appointmentArrayList : ArrayList<Appointment> =
-            mDatabaseHelper.appointmentDaoRuntimeException.queryForAll() as ArrayList<Appointment>
-        return RecyclerViewListAdapterAppointments(appointmentArrayList)
+    private fun initAdapter(): RecyclerView.Adapter<AppointmentViewHolder> {
+        data = databaseHelper.appointmentDaoRuntimeException.queryForAll() as ArrayList<Appointment>
+        return RecyclerViewListAdapterAppointments(data)
     }
+
+    fun insertData(appointment: Appointment){
+        data.add(appointment)
+        adapter.notifyDataSetChanged()
+    }
+
 }

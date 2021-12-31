@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,10 +9,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.ceroxlol.remindme.fragments.AppointmentsFragment;
+import com.example.ceroxlol.remindme.models.Appointment;
 import com.example.ceroxlol.remindme.utils.AppointmentMetCheckingService;
 import com.example.ceroxlol.remindme.utils.GpsTracker;
 import com.example.ceroxlol.remindme.R;
@@ -21,27 +27,33 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.example.ceroxlol.remindme.utils.DatabaseHelper;
 import com.example.ceroxlol.remindme.adapters.MainPageAdapter;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private final boolean APPOINTMENT_TRACKER_ENABLED = false;
 
-    public static DatabaseHelper mDatabaseHelper = null;
+    public static DatabaseHelper databaseHelper = null;
 
-    private GpsTracker mGPSTracker;
+    private GpsTracker gpsTracker;
 
-    private AppointmentMetCheckingService mAppointmentMetCheckingService;
+    private AppointmentMetCheckingService appointmentMetCheckingService;
 
-    private Button mButtonAddNewAppointment;
-    private Button mButtonEditAppointment;
-    private Button mAddNewLocation;
-    private Button mEditLocation;
+    private Button buttonAddNewAppointment;
+    private Button buttonEditAppointment;
+    private Button addNewLocation;
+    private Button editLocation;
 
     private final int REQUEST_APP_PERMISSIONS = 1;
     private final int REQUEST_NEW_FAVORITE_LOCATION = 10;
     private final int REQUEST_EDIT_FAVORITE_LOCATION = 11;
-    private final int REQUEST_NEW_APPOINTMENT = 20;
+    private final int REQUEST_CREATE_NEW_APPOINTMENT = 20;
     private final int REQUEST_EDIT_APPOINTMENT = 21;
+
+    private MainPageAdapter mainPageAdapter;
+
+    private ActivityResultLauncher<Intent> addAppointmentActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,54 +81,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initClasses() {
-        this.mGPSTracker = new GpsTracker(this.getApplicationContext());
+        gpsTracker = new GpsTracker(getApplicationContext());
 
         getDBHelper();
 
         if (APPOINTMENT_TRACKER_ENABLED) {
-            this.mAppointmentMetCheckingService = new AppointmentMetCheckingService(this.mGPSTracker, this);
-            this.mAppointmentMetCheckingService.setRun(true);
-            this.mAppointmentMetCheckingService.start();
+            appointmentMetCheckingService = new AppointmentMetCheckingService(gpsTracker, this);
+            appointmentMetCheckingService.setRun(true);
+            appointmentMetCheckingService.start();
         }
 
         //TODO: Improve the layout for appointments to be shown
         //Make them expandable. Show only name and time?
-        //UI elements
-
-        this.mButtonAddNewAppointment = findViewById(R.id.buttonAddNewAppointment);
-        this.mButtonEditAppointment = findViewById(R.id.buttonEditAppointment);
-        this.mAddNewLocation = findViewById(R.id.buttonAddNewLocation);
-        this.mEditLocation = findViewById(R.id.buttonEditLocation);
+        buttonAddNewAppointment = findViewById(R.id.buttonAddNewAppointment);
+        buttonEditAppointment = findViewById(R.id.buttonEditAppointment);
+        addNewLocation = findViewById(R.id.buttonAddNewLocation);
+        editLocation = findViewById(R.id.buttonEditLocation);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(new MainPageAdapter(getSupportFragmentManager()));
+        mainPageAdapter = new MainPageAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mainPageAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        addAppointmentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::updateRecyclerview);
+    }
+
+    private void updateRecyclerview(ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Appointment appointment = Objects.requireNonNull(result.getData()).getParcelableExtra("appointment");
+            AppointmentsFragment appointmentsFragment = (AppointmentsFragment) mainPageAdapter.getItem(0);
+            appointmentsFragment.insertData(appointment);
+        }
     }
 
     private void initUI() {
-        this.mButtonAddNewAppointment.setOnClickListener(v -> {
+        this.buttonAddNewAppointment.setOnClickListener(v -> {
             if (!checkIfLocationsAreAvailable()) {
-                showNoLocationsAvailableAlertDialog(
-                );
+                showNoLocationsAvailableAlertDialog();
             } else {
                 Intent i = new Intent(MainActivity.this, AddNewAppointmentActivity.class);
-                startActivityForResult(i, REQUEST_NEW_APPOINTMENT);
+                addAppointmentActivityResultLauncher.launch(i);
             }
         });
 
-        this.mButtonEditAppointment.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditAppointmentActivity.class);
+        this.buttonEditAppointment.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, EditAppointmentsActivity.class);
             startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
         });
 
-        this.mAddNewLocation.setOnClickListener(v -> {
+        this.addNewLocation.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, ChooseLocationActivity.class);
             startActivityForResult(i, REQUEST_NEW_FAVORITE_LOCATION);
         });
 
-        this.mEditLocation.setOnClickListener(v -> {
+        this.editLocation.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, EditLocationActivity.class);
             startActivityForResult(i, REQUEST_EDIT_FAVORITE_LOCATION);
         });
@@ -146,19 +166,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public DatabaseHelper getDBHelper() {
-        if (mDatabaseHelper == null) {
-            mDatabaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         }
-        return mDatabaseHelper;
+        return databaseHelper;
     }
 
     //Need another method to destroy the database connection as well
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mDatabaseHelper != null) {
+        if (databaseHelper != null) {
             OpenHelperManager.releaseHelper();
-            mDatabaseHelper = null;
+            databaseHelper = null;
         }
     }
 
@@ -167,9 +187,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "requestCode: " + requestCode + "  resultCode: " + resultCode);
 
-        if (requestCode == REQUEST_NEW_APPOINTMENT) {
+        if (requestCode == REQUEST_CREATE_NEW_APPOINTMENT) {
             if (resultCode == RESULT_OK) {
-                Log.d(TAG, "Successfully created new appointment.");
+                Log.i(TAG, "Successfully created new appointment.");
+
             }
         }
 

@@ -25,7 +25,7 @@ public class EditLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_location);
 
-        FavoriteLocations = (ArrayList<FavoriteLocation>) MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        FavoriteLocations = (ArrayList<FavoriteLocation>) MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
         linearLayoutLocations = findViewById(R.id.linearLayoutEditLocationsLocations);
         locationsArrayAdapter = new ArrayAdapterLocationsList(this, FavoriteLocations, linearLayoutLocations);
 

@@ -8,10 +8,11 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.activities.MainActivity.databaseHelper
 import java.util.*
 
-class EditAppointmentActivity(
-    private var appointmentArrayList: ArrayList<Appointment>? = null
+class EditAppointmentsActivity(
+    private var appointmentArrayList: ArrayList<Appointment>? = ArrayList()
 ) : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +21,8 @@ class EditAppointmentActivity(
 
         Log.i("EditAppointmentActivity", "Initializing edit appointments activity.")
         linearLayoutAppointments = findViewById(R.id.linearLayoutEditAppointmentsAppointments)
-        appointmentArrayList =
-            MainActivity.mDatabaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
-        val mAppointmentsAdapter =
-            ArrayAdapterAppointments(this, appointmentArrayList, linearLayoutAppointments)
+        appointmentArrayList = databaseHelper.appointmentDao.queryForAll() as ArrayList<Appointment>
+        val mAppointmentsAdapter = ArrayAdapterAppointments(this, appointmentArrayList, linearLayoutAppointments)
 
         Log.i("EditAppointmentActivity", "Found " + mAppointmentsAdapter.count + " appointments.")
         for (i in 0 until mAppointmentsAdapter.count) {

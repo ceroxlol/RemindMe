@@ -41,7 +41,7 @@ public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
                 {
                     this.locations.remove(favoriteLocation);
                     this.linearLayoutLocations.removeView(finalView);
-                    MainActivity.mDatabaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getId());
+                    MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getId());
                 }
         );
 
