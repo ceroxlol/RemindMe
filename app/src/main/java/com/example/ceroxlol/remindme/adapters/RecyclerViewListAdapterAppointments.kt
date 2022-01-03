@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.R
 
 
-class RecyclerViewListAdapterAppointments(private var list: List<Appointment>) :
+class RecyclerViewListAdapterAppointments(private val list: List<Appointment>) :
     RecyclerView.Adapter<AppointmentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -22,10 +22,6 @@ class RecyclerViewListAdapterAppointments(private var list: List<Appointment>) :
     }
 
     override fun getItemCount(): Int = list.size
-
-    fun setAppointmentList(list: List<Appointment>) {
-        this.list = list
-    }
 }
 
 class AppointmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :

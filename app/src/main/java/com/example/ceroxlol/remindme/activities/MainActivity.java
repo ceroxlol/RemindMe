@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Appointment appointment = Objects.requireNonNull(result.getData()).getParcelableExtra("appointment");
             AppointmentsFragment appointmentsFragment = (AppointmentsFragment) mainPageAdapter.getItem(0);
-            appointmentsFragment.insertData(appointment);
+            if (appointment != null) {
+                appointmentsFragment.insertData(appointment);
+            }
         }
     }
 

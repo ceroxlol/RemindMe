@@ -43,7 +43,7 @@ class AppointmentsFragment : Fragment() {
 
     fun insertData(appointment: Appointment){
         data.add(appointment)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(data.lastIndex)
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.activities.MainActivity.databaseHelper
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -86,7 +87,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         mySwitch.isChecked = appointment.isActive
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
             appointment.isActive = isChecked
-            MainActivity.databaseHelper.appointmentDao.update(appointment)
+            databaseHelper.appointmentDao.update(appointment)
             Log.d(TAG, "Set appointment " + appointment.id + " isActive to " + appointment.isActive)
         }
 
@@ -108,8 +109,8 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         }
         appointment.favoriteLocation =
             this.spinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
+        databaseHelper.appointmentDao.update(appointment)
 
-        MainActivity.databaseHelper.appointmentDao.update(appointment)
         Log.i(
             TAG,
             "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentTime}"
@@ -130,7 +131,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
             this.buttonSingleAppointmentDate.text = dateFormat.format(cal.time)
         }
         Log.i(
-            TAG, "Loaded appointment with parameters:\n" +
+            TAG, "Loaded appointment:\n" +
                     "${appointment.name} \n" +
                     "${appointment.appointmentText} \n" +
                     "${appointment.appointmentTime}"
@@ -138,8 +139,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
     }
 
     private fun loadLocations() {
-        val locations =
-            MainActivity.databaseHelper.favoriteLocationDao.queryForAll() as ArrayList<FavoriteLocation>
+        val locations = databaseHelper.favoriteLocationDao.queryForAll() as ArrayList<FavoriteLocation>
         val adapter = ArrayAdapterLocationsListSpinner(this, locations)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         this.spinnerSingleAppointmentLocations.adapter = adapter
