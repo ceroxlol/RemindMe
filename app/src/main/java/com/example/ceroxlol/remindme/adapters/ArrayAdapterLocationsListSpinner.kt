@@ -1,6 +1,5 @@
 package com.example.ceroxlol.remindme.adapters
 
-import com.example.ceroxlol.remindme.models.FavoriteLocation
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.models.LocationMarker
 
-class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<FavoriteLocation>?) : ArrayAdapter<FavoriteLocation>(context, 0, data!!) {
+class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<LocationMarker>?) : ArrayAdapter<LocationMarker>(context, 0, data!!) {
 
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

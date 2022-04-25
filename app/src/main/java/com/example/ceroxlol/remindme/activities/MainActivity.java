@@ -17,14 +17,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.ceroxlol.remindme.fragments.AppointmentsFragment;
-import com.example.ceroxlol.remindme.models.Appointment;
+import com.example.ceroxlol.remindme.models.AppointmentKT;
 import com.example.ceroxlol.remindme.utils.AppointmentMetCheckingService;
 import com.example.ceroxlol.remindme.utils.GpsTracker;
 import com.example.ceroxlol.remindme.R;
 import com.google.android.material.tabs.TabLayout;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-import com.example.ceroxlol.remindme.utils.DatabaseHelper;
 import com.example.ceroxlol.remindme.adapters.MainPageAdapter;
 
 import java.util.Objects;
@@ -33,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private final boolean APPOINTMENT_TRACKER_ENABLED = false;
-
-    public static DatabaseHelper databaseHelper = null;
 
     private GpsTracker gpsTracker;
 
@@ -83,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
     private void initClasses() {
         gpsTracker = new GpsTracker(getApplicationContext());
 
-        getDBHelper();
-
         if (APPOINTMENT_TRACKER_ENABLED) {
             appointmentMetCheckingService = new AppointmentMetCheckingService(gpsTracker, this);
             appointmentMetCheckingService.setRun(true);
@@ -110,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateRecyclerview(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            Appointment appointment = Objects.requireNonNull(result.getData()).getParcelableExtra("appointment");
+            AppointmentKT appointment = Objects.requireNonNull(result.getData()).getParcelableExtra("appointment");
             AppointmentsFragment appointmentsFragment = (AppointmentsFragment) mainPageAdapter.getItem(0);
             if (appointment != null) {
                 appointmentsFragment.insertData(appointment);
@@ -129,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.buttonEditAppointment.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditAppointmentsActivity.class);
+            Intent i = new Intent(MainActivity.this, EditAppointmentsFragment.class);
             startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
         });
 
@@ -164,24 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkIfLocationsAreAvailable() {
-        return this.getDBHelper().getFavoriteLocationDaoRuntimeException().queryForAll().size() != 0;
-    }
-
-    public DatabaseHelper getDBHelper() {
-        if (databaseHelper == null) {
-            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-        }
-        return databaseHelper;
-    }
-
-    //Need another method to destroy the database connection as well
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (databaseHelper != null) {
-            OpenHelperManager.releaseHelper();
-            databaseHelper = null;
-        }
+        return getDb().locationMarkerDao().entriesExist();
     }
 
     @Override

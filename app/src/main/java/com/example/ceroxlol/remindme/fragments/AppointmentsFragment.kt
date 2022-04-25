@@ -8,14 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.activities.MainActivity.databaseHelper
+import com.example.ceroxlol.remindme.activities.MainActivity.getDb
 import com.example.ceroxlol.remindme.adapters.AppointmentViewHolder
 import com.example.ceroxlol.remindme.adapters.RecyclerViewListAdapterAppointments
-import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.AppointmentKT
 
 class AppointmentsFragment : Fragment() {
 
-    private var data : ArrayList<Appointment> = ArrayList()
+    private var data : ArrayList<AppointmentKT> = ArrayList()
     private val adapter : RecyclerView.Adapter<AppointmentViewHolder> = initAdapter()
 
     companion object {
@@ -37,11 +37,11 @@ class AppointmentsFragment : Fragment() {
     }
 
     private fun initAdapter(): RecyclerView.Adapter<AppointmentViewHolder> {
-        data = databaseHelper.appointmentDaoRuntimeException.queryForAll() as ArrayList<Appointment>
+        data = getDb().appointmentDao().getAll() as ArrayList<AppointmentKT>
         return RecyclerViewListAdapterAppointments(data)
     }
 
-    fun insertData(appointment: Appointment){
+    fun insertData(appointment: AppointmentKT){
         data.add(appointment)
         adapter.notifyItemInserted(data.lastIndex)
     }

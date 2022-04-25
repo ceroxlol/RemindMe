@@ -14,11 +14,10 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.ceroxlol.remindme.R;
 import com.example.ceroxlol.remindme.activities.MainActivity;
+import com.example.ceroxlol.remindme.models.AppointmentKT;
 import com.example.ceroxlol.remindme.receiver.AppointmentActionReceiver;
 
 import java.util.Calendar;
-
-import com.example.ceroxlol.remindme.models.Appointment;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -44,11 +43,11 @@ public class AppointmentMetCheckingService extends Thread {
 
     public void run() {
         while (run) {
-            for (Appointment appointment : mainActivity.getDBHelper().getAppointmentDaoRuntimeException().queryForAll()) {
-                if (checkIfNotificationIsAlreadyShown(appointment) && !appointment.getIsActive())
-                    closeNotification(appointment.getId());
-                if (checkIfAppointmentShouldBeShown(appointment) && !checkIfNotificationIsAlreadyShown(appointment))
-                    showNotification(appointment);
+            for (AppointmentKT appointmentKT : mainActivity.getDb().appointmentDao().getAll()) {
+                if (checkIfNotificationIsAlreadyShown(appointmentKT.getId()) && !appointmentKT.getDone())
+                    closeNotification(appointmentKT.getId());
+                if (checkIfAppointmentShouldBeShown(appointmentKT) && !checkIfNotificationIsAlreadyShown(appointmentKT.getId()))
+                    showNotification(appointmentKT);
             }
             try {
                 sleep(5000);
@@ -59,16 +58,16 @@ public class AppointmentMetCheckingService extends Thread {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean checkIfAppointmentShouldBeShown(Appointment appointment) {
-        return appointment.getIsActive() &&
-                checkIfAppointmentDistanceIsMet(appointment, gpsTracker.getLocation()) &&
-                checkIfAppointmentIsDue(appointment);
+    private boolean checkIfAppointmentShouldBeShown(AppointmentKT appointmentKT) {
+        return appointmentKT.getDone() &&
+                checkIfAppointmentDistanceIsMet(appointmentKT, gpsTracker.getLocation()) &&
+                checkIfAppointmentIsDue(appointmentKT);
     }
 
-    private boolean checkIfAppointmentIsDue(Appointment appointment) {
-        if (appointment.getAppointmentTime() == null)
+    private boolean checkIfAppointmentIsDue(AppointmentKT appointmentKT) {
+        if (appointmentKT.getTime() == null)
             return true;
-        return appointment.getAppointmentTime().compareTo(Calendar.getInstance().getTime()) <= 0;
+        return appointmentKT.getTime().compareTo(Calendar.getInstance().getTime()) <= 0;
     }
 
     private void closeNotification(int id) {
@@ -79,27 +78,27 @@ public class AppointmentMetCheckingService extends Thread {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean checkIfNotificationIsAlreadyShown(Appointment appointment) {
+    private boolean checkIfNotificationIsAlreadyShown(int appointmentId) {
         NotificationManager mNotificationManager = (NotificationManager) mainActivity.getSystemService(NOTIFICATION_SERVICE);
         StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
         for (StatusBarNotification notification : notifications) {
-            if (notification.getId() == appointment.getId()) {
+            if (notification.getId() == appointmentId) {
                 return true;
             }
         }
         return false;
     }
 
-    private void showNotification(Appointment appointment) {
+    private void showNotification(AppointmentKT appointmentKT) {
         Intent intentActionSetInactive = new Intent(mainActivity.getApplicationContext(), AppointmentActionReceiver.class);
 
         intentActionSetInactive.putExtra("action", "setInactive");
-        intentActionSetInactive.putExtra("appointmentId", appointment.getId());
+        intentActionSetInactive.putExtra("appointmentId", appointmentKT.getId());
 
         Intent intentActionSnooze = new Intent(mainActivity.getApplicationContext(), AppointmentActionReceiver.class);
 
         intentActionSnooze.putExtra("action", "setSnooze");
-        intentActionSnooze.putExtra("appointmentId", appointment.getId());
+        intentActionSnooze.putExtra("appointmentId", appointmentKT.getId());
 
         PendingIntent pIntentSetActive = PendingIntent.getBroadcast(mainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pIntentSnooze = PendingIntent.getBroadcast(mainActivity.getApplicationContext(), 1, intentActionSetInactive, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -108,23 +107,23 @@ public class AppointmentMetCheckingService extends Thread {
         NotificationCompat.Builder mNotficationBuilder = new NotificationCompat.Builder(mainActivity.getApplicationContext(), channelId)
                 //TODO: implement cool icons
                 .setSmallIcon(R.drawable.amu_bubble_mask)
-                .setContentTitle("Appointment '" + appointment.getName() + "' is met")
-                .setContentText(appointment.getAppointmentText())
+                .setContentTitle("Appointment '" + appointmentKT.getName() + "' is met")
+                .setContentText(appointmentKT.getText())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "OK", pIntentSetActive))
                 .addAction(new NotificationCompat.Action(R.drawable.amu_bubble_shadow, "Snooze 10 mins", pIntentSnooze));
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mainActivity.getApplicationContext());
 
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(appointment.getId(), mNotficationBuilder.build());
+        notificationManager.notify(appointmentKT.getId(), mNotficationBuilder.build());
     }
 
     public void setRun(boolean run) {
         this.run = run;
     }
 
-    private boolean checkIfAppointmentDistanceIsMet(Appointment appointment, Location currentLocation) {
-        return appointment.getLocation().distanceTo(currentLocation) < 500;
+    private boolean checkIfAppointmentDistanceIsMet(AppointmentKT appointmentKT, Location currentLocation) {
+        return appointmentKT.getLocation().getLocation().distanceTo(currentLocation) < 500;
     }
 
     private void setUpNotificationChannel() {

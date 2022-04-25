@@ -1,5 +1,7 @@
 package com.example.ceroxlol.remindme.activities;
 
+import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.ceroxlol.remindme.R;
+import com.example.ceroxlol.remindme.models.LocationMarker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,8 +41,6 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.List;
 
-import com.example.ceroxlol.remindme.models.FavoriteLocation;
-
 public class ChooseLocationActivity extends FragmentActivity implements OnMapReadyCallback,
         OnMarkerClickListener,
         OnMapClickListener {
@@ -47,10 +48,10 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     //TODO: Implement google places integration
 
     private static final String TAG = "CHOSE_LOCATION_ACTIVITY";
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     private CameraPosition cameraPosition;
     private EditText editTextName;
-    private List<FavoriteLocation> favoriteLocationsList;
+    private List<LocationMarker> locationMarkers;
     private LatLng locationCoordinates;
 
     // The entry point to the Fused LocationHandler Provider.
@@ -113,12 +114,16 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         });
 
         //Get all available favorite locations
-        favoriteLocationsList = MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().queryForAll();
+        locationMarkers = getDb().locationMarkerDao().getAll();
     }
 
     private void saveNewFavoriteLocation(String favoriteLocationName) {
+        Location location = new Location("");//provider name is unnecessary
+        location.setLatitude(locationCoordinates.latitude);//your coords of course
+        location.setLongitude(locationCoordinates.longitude);
         //Save any set Markers
-        MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().create(new FavoriteLocation(locationCoordinates, favoriteLocationName));
+        LocationMarker locationMarker = new LocationMarker(0, location, favoriteLocationName);
+        getDb().locationMarkerDao().insert(locationMarker);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("new_favorite_location", lastKnownLocation);
         setResult(Activity.RESULT_OK, returnIntent);
@@ -149,8 +154,8 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (mMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
+        if (googleMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, googleMap.getCameraPosition());
             outState.putParcelable(KEY_LOCATION, lastKnownLocation);
             super.onSaveInstanceState(outState);
         }
@@ -168,19 +173,19 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        UiSettings uiSettings = mMap.getUiSettings();
+        this.googleMap = googleMap;
+        UiSettings uiSettings = this.googleMap.getUiSettings();
 
         // Create an instance of the UI elements for zooming
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setMapToolbarEnabled(true);
 
-        mMap.setOnMapClickListener(this);
-        mMap.setOnMarkerClickListener(this);
+        this.googleMap.setOnMapClickListener(this);
+        this.googleMap.setOnMarkerClickListener(this);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        this.googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
             // Return null here, so that getInfoContents() is called next.
@@ -218,17 +223,17 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void loadSavedLocationsAsMarkers() {
-        if (favoriteLocationsList.isEmpty())
+        if (locationMarkers.isEmpty())
             return;
 
-        for (FavoriteLocation location : favoriteLocationsList) {
+        for (LocationMarker location : locationMarkers) {
             LatLng position = new LatLng(location.getLocation().getLatitude(), location.getLocation().getLongitude());
             IconGenerator iconFactory = new IconGenerator(this);
             MarkerOptions markerOptions = new MarkerOptions().
                     icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(location.getName()))).
                     position(position).
                     anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-            Marker marker = mMap.addMarker(markerOptions);
+            Marker marker = googleMap.addMarker(markerOptions);
             /*Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(position)
                     .title(location.getName()));*/
@@ -250,7 +255,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
                         lastKnownLocation = task.getResult();
                         if (lastKnownLocation == null)
                             locationIsNullError(task.getException());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(lastKnownLocation.getLatitude(),
                                         lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     } else {
@@ -266,8 +271,8 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
     private void locationIsNullError(Exception e) {
         Log.d(TAG, "Current location is null. Using defaults.");
         Log.e(TAG, "Exception: %s", e);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultCoordinates, DEFAULT_ZOOM));
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultCoordinates, DEFAULT_ZOOM));
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     /**
@@ -313,16 +318,16 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
     private void updateLocationUI() {
-        if (mMap == null) {
+        if (googleMap == null) {
             return;
         }
         try {
             if (locationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                googleMap.setMyLocationEnabled(false);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
                 getLocationPermission();
             }
@@ -338,9 +343,9 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mMap.clear();
+        googleMap.clear();
         loadSavedLocationsAsMarkers();
-        Marker marker = mMap.addMarker(new MarkerOptions()
+        Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(latLng));
         locationCoordinates = marker.getPosition();
     }

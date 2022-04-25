@@ -1,7 +1,5 @@
 package com.example.ceroxlol.remindme.activities
 
-import com.example.ceroxlol.remindme.models.Appointment
-import com.example.ceroxlol.remindme.models.FavoriteLocation
 import com.example.ceroxlol.remindme.fragments.DatePickerFragment
 import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
 import android.annotation.SuppressLint
@@ -14,7 +12,9 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.activities.MainActivity.databaseHelper
+import com.example.ceroxlol.remindme.activities.MainActivity.getDb
+import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.LocationMarker
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +24,7 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
 
     private val TAG = "EditSA"
 
-    private lateinit var appointment: Appointment
+    private lateinit var appointmentKT: AppointmentKT
 
     private lateinit var buttonSingleAppointmentDate: Button
     private lateinit var editTextSingleAppointmentAppointmentName: EditText
@@ -84,11 +84,11 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         item.setActionView(R.layout.switch_layout)
 
         val mySwitch = item.actionView.findViewById<SwitchCompat>(R.id.switchForActionBar)
-        mySwitch.isChecked = appointment.isActive
+        mySwitch.isChecked = !appointmentKT.done
         mySwitch.setOnCheckedChangeListener { p0, isChecked ->
-            appointment.isActive = isChecked
-            databaseHelper.appointmentDao.update(appointment)
-            Log.d(TAG, "Set appointment " + appointment.id + " isActive to " + appointment.isActive)
+            appointmentKT.done = !isChecked
+            getDb().appointmentDao().update(appointmentKT)
+            Log.d(TAG, "Set appointment ${appointmentKT.id} to done ${appointmentKT.done}")
         }
 
         return true
@@ -96,50 +96,49 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun saveAppointment() {
-        appointment.name = this.editTextSingleAppointmentAppointmentName.text.toString()
-        appointment.appointmentText = this.editTextSingleAppointmentAppointmentText.text.toString()
-        val date_String = this.buttonSingleAppointmentDate.text.toString()
+        appointmentKT.name = this.editTextSingleAppointmentAppointmentName.text.toString()
+        appointmentKT.text = this.editTextSingleAppointmentAppointmentText.text.toString()
+        val dateString = this.buttonSingleAppointmentDate.text.toString()
         try {
-            val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(date_String)
-            appointment.appointmentTime = date
+            val date = SimpleDateFormat("dd MM yyyy HH:mm").parse(dateString)
+            appointmentKT.time = date
         } catch (exception: ParseException) {
-            appointment.appointmentTime = null
+            appointmentKT.time = null
             Log.e(TAG, "Couldn't parse the date. Set it to 'null'")
             Log.e(TAG, exception.toString())
         }
-        appointment.favoriteLocation =
-            this.spinnerSingleAppointmentLocations.selectedItem as FavoriteLocation
-        databaseHelper.appointmentDao.update(appointment)
+        appointmentKT.location = this.spinnerSingleAppointmentLocations.selectedItem as LocationMarker
+        getDb().appointmentDao().update(appointmentKT)
 
         Log.i(
             TAG,
-            "Saved appointment with the parameters \n${appointment.name} ${appointment.appointmentText} ${appointment.appointmentTime}"
+            "Saved appointment with the parameters \n${appointmentKT.name} ${appointmentKT.text} ${appointmentKT.time}"
         )
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun loadAppointment(id: Int) {
-        appointment = MainActivity.databaseHelper.appointmentDaoRuntimeException.queryForId(id)
+        appointmentKT = getDb().appointmentDao().getById(id)
 
-        this.editTextSingleAppointmentAppointmentName.setText(appointment.name)
-        this.editTextSingleAppointmentAppointmentText.setText(appointment.appointmentText)
-        if (appointment.appointmentTime != null) {
+        this.editTextSingleAppointmentAppointmentName.setText(appointmentKT.name)
+        this.editTextSingleAppointmentAppointmentText.setText(appointmentKT.text)
+        if (appointmentKT.time != null) {
             val cal = Calendar.getInstance()
-            cal.time = appointment.appointmentTime
+            cal.time = appointmentKT.time
             val dateFormat = SimpleDateFormat("dd MM yyyy HH:mm")
             Log.i(TAG, "${cal.time}")
             this.buttonSingleAppointmentDate.text = dateFormat.format(cal.time)
         }
         Log.i(
             TAG, "Loaded appointment:\n" +
-                    "${appointment.name} \n" +
-                    "${appointment.appointmentText} \n" +
-                    "${appointment.appointmentTime}"
+                    "${appointmentKT.name} \n" +
+                    "${appointmentKT.text} \n" +
+                    "${appointmentKT.time}"
         )
     }
 
     private fun loadLocations() {
-        val locations = databaseHelper.favoriteLocationDao.queryForAll() as ArrayList<FavoriteLocation>
+        val locations = getDb().locationMarkerDao().getAll() as ArrayList<LocationMarker>
         val adapter = ArrayAdapterLocationsListSpinner(this, locations)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         this.spinnerSingleAppointmentLocations.adapter = adapter
@@ -147,9 +146,9 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         this.spinnerSingleAppointmentLocations.setSelection(position)
     }
 
-    private fun getFavoriteLocationPositionWithID(locations: ArrayList<FavoriteLocation>): Int {
+    private fun getFavoriteLocationPositionWithID(locations: ArrayList<LocationMarker>): Int {
         locations.forEach { location ->
-            if (location.id == appointment.favoriteLocation.id)
+            if (location.id == appointmentKT.location.id)
                 return locations.indexOf(location)
         }
         return 0

@@ -17,13 +17,13 @@
         <activity
             android:name=".activities.EditSingleAppointmentActivity"
             android:label="Edit appointment"
-            android:parentActivityName=".activities.EditAppointmentsActivity">
+            android:parentActivityName=".activities.EditAppointmentsFragment">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ceroxlol.remindme.activities.EditAppointmentsActivity" />
+                android:value="com.example.ceroxlol.remindme.activities.EditAppointmentsFragment" />
         </activity>
         <activity
-            android:name=".activities.EditAppointmentsActivity"
+            android:name=".activities.EditAppointmentsFragment"
             android:label="All appointments"
             android:parentActivityName=".activities.MainActivity">
             <meta-data

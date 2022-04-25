@@ -1,5 +1,7 @@
 package com.example.ceroxlol.remindme.receiver;
 
+import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +10,10 @@ import android.widget.Toast;
 import android.util.Log;
 
 import com.example.ceroxlol.remindme.activities.MainActivity;
+import com.example.ceroxlol.remindme.models.AppointmentKT;
 
 import java.util.Calendar;
-
-import com.example.ceroxlol.remindme.models.Appointment;
+import java.util.Objects;
 
 public class AppointmentActionReceiver extends BroadcastReceiver {
 
@@ -39,18 +41,16 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
     }
 
     public void updateIsActiveForAppointment(int appointmentId) {
-        Appointment appointmentToUpdate = MainActivity.databaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
-        appointmentToUpdate.setIsActive(false);
-        MainActivity.databaseHelper.getAppointmentDaoRuntimeException().update(appointmentToUpdate);
-        Log.i(TAG, "Received update isActive for appointment ID " + appointmentId);
+        getDb().appointmentDao().setAppointmentDoneById(appointmentId);
+        Log.i(TAG, "Appointment ID " + appointmentId + " is done.");
     }
 
     public void setSnoozeForAppointmentTime(int appointmentId) {
-        Appointment appointmentToUpdate = MainActivity.databaseHelper.getAppointmentDaoRuntimeException().queryForId(appointmentId);
+        AppointmentKT appointmentToUpdate = getDb().appointmentDao().getById(appointmentId);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(appointmentToUpdate.getAppointmentTime());
+        calendar.setTime(Objects.requireNonNull(appointmentToUpdate.getTime()));
         calendar.add(Calendar.MINUTE, 10);
-        appointmentToUpdate.setAppointmentTime(calendar.getTime());
+        appointmentToUpdate.setTime(calendar.getTime());
         Log.i(TAG, "Set snooze timer for appointment to " + calendar.getTime());
     }
 

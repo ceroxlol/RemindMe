@@ -9,39 +9,39 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ceroxlol.remindme.activities.MainActivity;
 import com.example.ceroxlol.remindme.R;
 
 import java.util.ArrayList;
 
-import com.example.ceroxlol.remindme.models.FavoriteLocation;
+import com.example.ceroxlol.remindme.models.LocationMarker;
 
-public class ArrayAdapterLocationsList extends ArrayAdapter<FavoriteLocation> {
+public class ArrayAdapterLocationsList extends ArrayAdapter<LocationMarker> {
     private final LinearLayout linearLayoutLocations;
-    private final ArrayList<FavoriteLocation> locations;
+    private final ArrayList<LocationMarker> locationMarkers;
 
-    public ArrayAdapterLocationsList(Context context, ArrayList<FavoriteLocation> data, LinearLayout linearLayoutLocations)
+    public ArrayAdapterLocationsList(Context context, ArrayList<LocationMarker> data, LinearLayout linearLayoutLocations)
     {
         super(context, 0, data);
-        this.locations = data;
+        this.locationMarkers = data;
         this.linearLayoutLocations = linearLayoutLocations;
     }
 
     @Override
     public View getView(int i, View view, ViewGroup parent) {
-        final FavoriteLocation favoriteLocation = getItem(i);
+        final LocationMarker item = getItem(i);
         if (view == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.layout_locations_list, parent, false);
         }
         TextView favoriteLocationName = view.findViewById(R.id.textViewFavoriteLocation);
         Button favoriteLocationDelete = view.findViewById(R.id.buttonDeleteFavoriteLocation);
-        favoriteLocationName.setText(favoriteLocation.getName());
+        favoriteLocationName.setText(item.getName());
         View finalView = view;
         favoriteLocationDelete.setOnClickListener(v ->
                 {
-                    this.locations.remove(favoriteLocation);
+                    this.locationMarkers.remove(item);
                     this.linearLayoutLocations.removeView(finalView);
-                    MainActivity.databaseHelper.getFavoriteLocationDaoRuntimeException().deleteById(favoriteLocation.getId());
+                    //TODO
+                    //getDb().locationMarkerDao().delete(item);
                 }
         );
 

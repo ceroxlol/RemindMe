@@ -1,14 +1,14 @@
 package com.example.ceroxlol.remindme.adapters
 
-import com.example.ceroxlol.remindme.models.Appointment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.models.AppointmentKT
 
 
-class RecyclerViewListAdapterAppointments(private val list: List<Appointment>) :
+class RecyclerViewListAdapterAppointments(private val list: List<AppointmentKT>) :
     RecyclerView.Adapter<AppointmentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -17,7 +17,7 @@ class RecyclerViewListAdapterAppointments(private val list: List<Appointment>) :
     }
 
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
-        val appointment: Appointment = list[position]
+        val appointment: AppointmentKT = list[position]
         holder.bind(appointment)
     }
 
@@ -34,20 +34,14 @@ class AppointmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     ) {
     private var textViewAppointmentName: TextView? = null
     private var textViewAppointmentText: TextView? = null
-    private var textViewAppointmentType: TextView? = null
-    private var textViewAppointmentPrio: TextView? = null
 
     init {
         textViewAppointmentName = itemView.findViewById(R.id.text_view_appointment_name)
         textViewAppointmentText = itemView.findViewById(R.id.text_view_appointment_text)
-        textViewAppointmentType = itemView.findViewById(R.id.text_view_appointment_type)
-        textViewAppointmentPrio = itemView.findViewById(R.id.text_view_appointment_prio)
     }
 
-    fun bind(appointment: Appointment) {
+    fun bind(appointment: AppointmentKT) {
         textViewAppointmentName?.text = appointment.name
-        textViewAppointmentText?.text = appointment.appointmentText
-        textViewAppointmentType?.text = appointment.type.toString()
-        textViewAppointmentPrio?.text = appointment.priority.toString()
+        textViewAppointmentText?.text = appointment.text
     }
 }

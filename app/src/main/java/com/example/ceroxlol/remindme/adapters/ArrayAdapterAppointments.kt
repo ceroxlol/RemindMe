@@ -1,6 +1,5 @@
 package com.example.ceroxlol.remindme.adapters
 
-import com.example.ceroxlol.remindme.models.Appointment
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,13 +12,15 @@ import android.widget.TextView
 import com.example.ceroxlol.remindme.activities.EditSingleAppointmentActivity
 import com.example.ceroxlol.remindme.activities.MainActivity
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.activities.MainActivity.getDb
+import com.example.ceroxlol.remindme.models.AppointmentKT
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ArrayAdapterAppointments(context: Context,
-                               private var data: ArrayList<Appointment>?,
+                               private var data: ArrayList<AppointmentKT>?,
                                private val linearLayoutAppointments: LinearLayout) :
-        ArrayAdapter<Appointment>(context, 0, data!!) {
+        ArrayAdapter<AppointmentKT>(context, 0, data!!) {
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -37,18 +38,22 @@ class ArrayAdapterAppointments(context: Context,
         val textViewAppointmentAAppointmentTime: TextView = linearLayoutAppointmentsFold.findViewById(R.id.textViewUnfoldAppointmentTime)
 
         textViewAppointmentName.text = appointment!!.name
-        textViewAppointmentText.text = appointment.appointmentText
-        textViewAppointmentFavoriteLocation.text = MainActivity.databaseHelper.favoriteLocationDaoRuntimeException.queryForId(appointment.favoriteLocation.id).name
-        if (appointment.appointmentTime == null)
+        textViewAppointmentText.text = appointment.text
+        textViewAppointmentFavoriteLocation.text = getDb().locationMarkerDao().getById(appointment.location.id).name
+        if (appointment.time == null) {
             textViewAppointmentAAppointmentTime.text = "No Date"
-        else
-            textViewAppointmentAAppointmentTime.text = formateDate(appointment.appointmentTime)
+        }
+        else {
+            textViewAppointmentAAppointmentTime.text = formateDate(appointment.time!!)
+        }
 
         textViewAppointmentName.setOnClickListener {
-            if (linearLayoutAppointmentsFold.isShown)
+            if (linearLayoutAppointmentsFold.isShown) {
                 linearLayoutAppointmentsFold.visibility = View.GONE
-            else
+            }
+            else {
                 linearLayoutAppointmentsFold.visibility = View.VISIBLE
+            }
         }
 
         linearLayoutAppointmentsFold.setOnClickListener {
@@ -59,7 +64,8 @@ class ArrayAdapterAppointments(context: Context,
             data?.remove(appointment)
             this.notifyDataSetChanged()
             linearLayoutAppointments.removeView(rowView)
-            MainActivity.databaseHelper.appointmentDao.deleteById(appointment.id)
+            //TODO
+            //getDb().appointmentDao().delete(appointment)
         }
 
         return rowView
