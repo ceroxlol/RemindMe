@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android-extensions'
     id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'io.franzbecker.gradle-lombok' version '5.0.0'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.10'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -22,61 +23,65 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
     buildToolsVersion '31.0.0'
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
+    //material
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    implementation 'androidx.navigation:navigation-runtime-ktx:2.4.2'
-    implementation 'androidx.navigation:navigation-fragment:2.4.2'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.4.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    testImplementation 'junit:junit:4.13.2'
+
     implementation 'com.google.code.gson:gson:2.8.9'
-    implementation files('libs/ormlite-android-5.0/ormlite-android-5.0.jar')
-    implementation files('libs/ormlite-core-5.0/ormlite-core-5.0.jar')
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.google.android.material:material:1.2.1'
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 
+    //lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    kapt 'org.projectlombok:lombok:1.18.22'
+
+    //RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
     implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
 
-    def room_version = "2.4.2"
+    //androidx
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
 
+    // Room libraries
+    def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava3:$room_version"
 
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     // Navigation libraries
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.4.2'
     implementation "androidx.navigation:navigation-fragment-ktx:2.4.2"
     implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
 
     // Lifecycle libraries
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-}
-repositories {
-    mavenCentral()
+
+    implementation "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
 }

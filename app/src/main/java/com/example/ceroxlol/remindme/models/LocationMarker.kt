@@ -10,4 +10,8 @@ data class LocationMarker(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo val location: Location,
     @ColumnInfo val name: String
-)
+){
+    fun isValid() : Boolean{
+        return name.isNotEmpty()
+    }
+}

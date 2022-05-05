@@ -39,18 +39,18 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_single_appointment)
 
-        this.buttonSingleAppointmentCleareDate = findViewById(R.id.buttonSingleAppointmentClearDate)
-        this.buttonSingleAppointmentDate = findViewById(R.id.buttonSingleAppointmentDate)
+        this.buttonSingleAppointmentCleareDate = findViewById(R.id.buttonAppointmentClearDate)
+        this.buttonSingleAppointmentDate = findViewById(R.id.buttonAppointmentDate)
         this.editTextSingleAppointmentAppointmentName =
-            findViewById(R.id.editTextSingleAppointmentAppointmentName)
+            findViewById(R.id.editAppointmentName)
         this.editTextSingleAppointmentAppointmentText =
-            findViewById(R.id.editTextSingleAppointmentAppointmentText)
+            findViewById(R.id.editAppointmentText)
         this.spinnerSingleAppointmentLocations =
-            findViewById(R.id.spinnerSingleAppointmentLocations)
-        this.buttonSingleAppointmentSave = findViewById(R.id.buttonSingleAppointmentSave)
+            findViewById(R.id.spinnerAppointmentLocations)
+        this.buttonSingleAppointmentSave = findViewById(R.id.buttonAppointmentSave)
 
         this.buttonSingleAppointmentDate.setOnClickListener {
-            val datePickerDialog = DatePickerFragment(R.id.buttonSingleAppointmentDate)
+            val datePickerDialog = DatePickerFragment(R.id.buttonAppointmentDate)
             //TODO: Remove FragmentManager
             datePickerDialog.show(fragmentManager, "Date Picker")
         }

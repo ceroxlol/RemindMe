@@ -12,8 +12,8 @@ data class AppointmentKT(
     @ColumnInfo var name: String,
     @ColumnInfo var text: String?,
     @ColumnInfo var location: LocationMarker,
-    @ColumnInfo val created: Date = Date(System.currentTimeMillis()),
-    @ColumnInfo var time: Date?,
+    @ColumnInfo val created: Long,
+    @ColumnInfo var time: Long?,
     @ColumnInfo var done: Boolean
 )
 

@@ -85,8 +85,7 @@ public class GpsTracker extends Service implements LocationListener {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     Log.d("Network", "Network");
                     if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
@@ -103,8 +102,7 @@ public class GpsTracker extends Service implements LocationListener {
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         Log.d("GPS Enabled", "GPS Enabled");
                         if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();

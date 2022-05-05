@@ -17,37 +17,52 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/MainFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.ceroxlol.remindme.activities.EditAppointmentsFragment"
+        android:id="@+id/MainFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/activity_main">
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailFragment"
-            app:destination="@id/itemDetailFragment" />
+            app:destination="@id/addAppointmentFragment" />
         <action
             android:id="@+id/action_itemListFragment_to_addItemFragment"
-            app:destination="@id/addItemFragment" />
+            app:destination="@id/addLocationFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_editAppointmentFragment"
+            app:destination="@id/editAppointmentFragment" />
     </fragment>
     <fragment
-        android:id="@+id/itemDetailFragment"
-        android:name="com.example.inventory.ItemDetailFragment"
-        android:label="@string/item_detail_fragment_title"
-        tools:layout="@layout/fragment_item_detail">
+        android:id="@+id/editAppointmentFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.EditAppointmentFragment"
+        android:label="@string/appointment_detail_fragment_title"
+        tools:layout="@layout/fragment_edit_single_appointment">
         <argument
-            android:name="item_id"
+            android:name="appointment_id"
             app:argType="integer" />
         <action
-            android:id="@+id/action_itemDetailFragment_to_addItemFragment"
-            app:destination="@id/addItemFragment" />
+            android:id="@+id/action_appointmentDetailFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addItemFragment"
-        android:name="com.example.inventory.AddItemFragment"
+        android:id="@+id/addAppointmentFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.AddNewAppointmentFragmentKT"
+        android:label="@string/appointment_add_fragment_title"
+        tools:layout="@layout/fragment_add_new_appointment">
+        <argument
+            android:name="appointment_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_addAppointmentFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addLocationFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.LocationsFragment"
         android:label="{title}"
-        tools:layout="@layout/fragment_add_item">
+        tools:layout="@layout/fragment_locations">
         <argument
             android:name="title"
             app:argType="string" />
@@ -57,8 +72,7 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_addItemFragment_to_itemListFragment"
-            app:destination="@id/itemListFragment"
-            app:popUpTo="@id/itemListFragment"
+            app:destination="@id/MainFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

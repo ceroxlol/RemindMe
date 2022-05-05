@@ -3,12 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_add_new_appointment.xml" value="0.26443768996960487" />
         <entry key="app/src/main/res/layout/activity_add_new_location.xml" value="0.32395833333333335" />
+        <entry key="app/src/main/res/layout/activity_edit_appointment.xml" value="0.3072916666666667" />
+        <entry key="app/src/main/res/layout/activity_edit_single_appointment.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main_bak.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/activity_main_kt.xml" value="0.5036458333333333" />
+        <entry key="app/src/main/res/layout/appointment_list_item.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/appointments_fragment.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/fragment_add_appointment.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_add_new_appointment.xml" value="0.26443768996960487" />
+        <entry key="app/src/main/res/layout/fragment_appointments.xml" value="0.3072916666666667" />
+        <entry key="app/src/main/res/layout/fragment_edit_single_appointment.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/fragment_locations.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/layout_appointments_list.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/layout_unfold_appointment.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/locations_fragment.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/recycler_view_appointment_list.xml" value="0.19791666666666666" />
