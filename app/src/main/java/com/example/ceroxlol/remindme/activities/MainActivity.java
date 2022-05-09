@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.ceroxlol.remindme.fragments.AppointmentsFragment;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> addAppointmentActivityResultLauncher;
 
+    private NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initClasses() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = Objects.requireNonNull(navHostFragment).getNavController();
+
         gpsTracker = new GpsTracker(getApplicationContext());
 
         if (APPOINTMENT_TRACKER_ENABLED) {
