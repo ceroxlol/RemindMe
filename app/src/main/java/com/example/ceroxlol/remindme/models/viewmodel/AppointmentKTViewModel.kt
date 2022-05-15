@@ -17,22 +17,22 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         }
     }
 
-    fun addAppointmentKT(
+    fun addNewAppointmentKT(
         name: String,
         text: String?,
         locationMarker: LocationMarker,
-        time: Long?,
+        time: Date?,
         done: Boolean
     ) {
-        val newAppointmentKT = getNewAppointmentKTEntry(name, text, locationMarker, time, done)
+        val newAppointmentKT = getAppointmentKTEntry(name, text, locationMarker, time, done)
         insertAppointmentKT(newAppointmentKT)
     }
 
-    private fun getNewAppointmentKTEntry(
+    private fun getAppointmentKTEntry(
         name: String,
         text: String?,
         locationMarker: LocationMarker,
-        time: Long?,
+        time: Date?,
         done: Boolean
     ): AppointmentKT {
         return AppointmentKT(
@@ -43,6 +43,10 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
             time = time,
             done = done
         )
+    }
+
+    fun retrieveAppointmentKt(id: Int): LiveData<AppointmentKT> {
+        return appointmentDao.getById(id).asLiveData()
     }
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {

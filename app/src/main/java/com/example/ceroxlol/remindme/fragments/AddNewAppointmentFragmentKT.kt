@@ -1,9 +1,11 @@
 package com.example.ceroxlol.remindme.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,7 +26,9 @@ class AddNewAppointmentFragmentKT : Fragment() {
                 .appointmentDao()
         )
     }
-    private val navigationArgs: EditAppointmentFragmentArgs by navArgs()
+    private val navigationArgs: AddNewAppointmentFragmentKTArgs by navArgs()
+
+    lateinit var appointment: AppointmentKT
 
     private var _binding: FragmentAddAppointmentBinding? = null
     private val binding get() = _binding!!
@@ -33,7 +37,7 @@ class AddNewAppointmentFragmentKT : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddAppointmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -50,16 +54,16 @@ class AddNewAppointmentFragmentKT : Fragment() {
         }
     }
 
-    private fun addNewItem() {
+    private fun addNewAppointment() {
         if (isEntryValid()) {
-            viewModel.addAppointmentKT(
+            viewModel.addNewAppointmentKT(
                 binding.appointmentName.text.toString(),
                 binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker,
                 null,
                 false
             )
-            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
+            val action = AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
     }
@@ -83,9 +87,34 @@ class AddNewAppointmentFragmentKT : Fragment() {
                 this.binding.appointmentText.text.toString(),
                 this.binding.appointmentLocation.selectedItem as LocationMarker
             )
-            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
+            val action = AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val id = navigationArgs.appointmentId
+        if (id > 0) {
+            viewModel.retrieveAppointmentKt(id).observe(this.viewLifecycleOwner) { selectedItem ->
+                appointment = selectedItem
+                bind(appointment)
+            }
+        } else {
+            binding.saveAction.setOnClickListener {
+                addNewAppointment()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Hide keyboard.
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+        _binding = null
     }
 
 }
