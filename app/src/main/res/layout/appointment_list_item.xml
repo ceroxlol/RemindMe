@@ -27,14 +27,14 @@
         android:layout_marginStart="@dimen/margin_between_elements"
         android:fontFamily="sans-serif-medium"
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/appointment_time"
+        app:layout_constraintEnd_toStartOf="@+id/appointment_text"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/appointment_name"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Location" />
 
     <TextView
-        android:id="@+id/appointment_time"
+        android:id="@+id/appointment_text"
         style="@style/Widget.RemindMe.ListItemTextView"
         android:layout_width="80dp"
         android:layout_alignParentEnd="true"

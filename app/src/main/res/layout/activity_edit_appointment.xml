@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EditAppointmentsFragment">
+    tools:context=".activities.EditAppointmentFragment">
 
     <TextView
         android:id="@+id/textViewEditAppointmentsAppointments"
