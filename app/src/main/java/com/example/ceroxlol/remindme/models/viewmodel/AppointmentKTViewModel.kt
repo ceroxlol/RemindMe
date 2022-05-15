@@ -1,10 +1,13 @@
 package com.example.ceroxlol.remindme.models.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.dao.AppointmentDao
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.util.*
 
 class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
@@ -28,6 +31,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         insertAppointmentKT(newAppointmentKT)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getAppointmentKTEntry(
         name: String,
         text: String?,
@@ -39,7 +43,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
             name = name,
             text = text,
             location = locationMarker,
-            created = Date(System.currentTimeMillis()).time,
+            created = Date.from(Instant.now()),
             time = time,
             done = done
         )
@@ -72,6 +76,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getUpdatedAppointmentEntry(
         appointmentKTId : Int,
         appointmentKTName: String,
@@ -83,10 +88,16 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
             name = appointmentKTName,
             text = appointmentKTText,
             location = appointmentKTLocation,
-            created = Date(System.currentTimeMillis()).time,
+            created = Date.from(Instant.now()),
             done = false,
             time = null
         )
+    }
+
+    fun deleteAppointment(appointmentKT: AppointmentKT) {
+        viewModelScope.launch {
+            appointmentDao.delete(appointmentKT)
+        }
     }
 }
 

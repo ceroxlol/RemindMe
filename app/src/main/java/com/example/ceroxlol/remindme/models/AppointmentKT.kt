@@ -13,7 +13,7 @@ data class AppointmentKT(
     @ColumnInfo val name: String,
     @ColumnInfo val text: String?,
     @Embedded val location: LocationMarker,
-    @ColumnInfo val created: Long,
+    @ColumnInfo val created: Date,
     @ColumnInfo val time: Date?,
     @ColumnInfo val done: Boolean
 )
