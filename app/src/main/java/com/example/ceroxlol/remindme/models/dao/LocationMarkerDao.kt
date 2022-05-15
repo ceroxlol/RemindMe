@@ -8,7 +8,7 @@ interface LocationMarkerDao {
     @Query("SELECT * FROM LocationMarker")
     fun getAll(): List<LocationMarker>
 
-    @Query("SELECT * FROM LocationMarker WHERE id = :id")
+    @Query("SELECT * FROM LocationMarker WHERE location_id = :id")
     fun getById(id: Int): LocationMarker
 
     @Query("SELECT EXISTS(SELECT * FROM LocationMarker)")

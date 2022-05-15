@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme.models
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import lombok.Builder
@@ -8,13 +9,13 @@ import java.util.*
 
 @Entity
 data class AppointmentKT(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo var name: String,
-    @ColumnInfo var text: String?,
-    @ColumnInfo var location: LocationMarker,
+    @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo val name: String,
+    @ColumnInfo val text: String?,
+    @Embedded val location: LocationMarker,
     @ColumnInfo val created: Long,
-    @ColumnInfo var time: Long?,
-    @ColumnInfo var done: Boolean
+    @ColumnInfo val time: Date?,
+    @ColumnInfo val done: Boolean
 )
 
 /*
