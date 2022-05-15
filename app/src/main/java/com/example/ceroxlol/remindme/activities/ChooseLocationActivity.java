@@ -1,7 +1,5 @@
 package com.example.ceroxlol.remindme.activities;
 
-import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -114,7 +112,7 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         });
 
         //Get all available favorite locations
-        locationMarkers = getDb().locationMarkerDao().getAll();
+        //locationMarkers = getDb().locationMarkerDao().getAll();
     }
 
     private void saveNewFavoriteLocation(String favoriteLocationName) {
@@ -122,8 +120,8 @@ public class ChooseLocationActivity extends FragmentActivity implements OnMapRea
         location.setLatitude(locationCoordinates.latitude);//your coords of course
         location.setLongitude(locationCoordinates.longitude);
         //Save any set Markers
-        LocationMarker locationMarker = new LocationMarker(0, location, favoriteLocationName);
-        getDb().locationMarkerDao().insert(locationMarker);
+        //LocationMarker locationMarker = new LocationMarker(0, location, favoriteLocationName);
+        //getDb().locationMarkerDao().insert(locationMarker);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("new_favorite_location", lastKnownLocation);
         setResult(Activity.RESULT_OK, returnIntent);

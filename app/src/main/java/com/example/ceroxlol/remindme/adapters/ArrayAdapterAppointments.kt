@@ -1,3 +1,4 @@
+/*
 package com.example.ceroxlol.remindme.adapters
 
 import android.content.Context
@@ -9,9 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.ceroxlol.remindme.activities.EditSingleAppointmentActivity
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.activities.MainActivity.getDb
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import java.text.SimpleDateFormat
 import java.util.*
@@ -81,4 +80,4 @@ class ArrayAdapterAppointments(context: Context,
         i1.putExtra("AppointmentID", appointmentId)
         context.startActivity(i1)
     }
-}
+}*/

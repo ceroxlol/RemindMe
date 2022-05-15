@@ -1,7 +1,6 @@
+/*
 package com.example.ceroxlol.remindme.activities
 
-import com.example.ceroxlol.remindme.fragments.DatePickerFragment
-import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +11,8 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.activities.MainActivity.getDb
+import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
+import com.example.ceroxlol.remindme.fragments.DatePickerFragment
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.LocationMarker
 import java.text.ParseException
@@ -154,3 +154,4 @@ class EditSingleAppointmentActivity : AppCompatActivity() {
         return 0
     }
 }
+*/

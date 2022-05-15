@@ -1,26 +1,24 @@
+/*
 package com.example.ceroxlol.remindme.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.adapters.ArrayAdapterAppointments
+import com.example.ceroxlol.remindme.databinding.FragmentEditSingleAppointmentBinding
+import com.example.ceroxlol.remindme.fragments.EditAppointmentFragmentArgs
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModelFactory
 import java.util.*
 
-class EditAppointmentsFragment(
-    private var appointmentArrayList: ArrayList<AppointmentKT>? = ArrayList()
-) : Fragment() {
-
-    lateinit var appointmentKT: AppointmentKT
+class EditAppointmentFragment : Fragment() {
 
     private val viewModel: AppointmentKTViewModel by activityViewModels {
         AppointmentKTViewModelFactory(
@@ -28,12 +26,21 @@ class EditAppointmentsFragment(
                 .appointmentDao()
         )
     }
+    private val navigationArgs: EditAppointmentFragmentArgs by navArgs()
 
-    // Binding object instance corresponding to the fragment_add_item.xml layout
-    // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
-    // when the view hierarchy is attached to the fragment
-    private var _binding: FragmentAddItemBinding? = null
+    lateinit var appointment: AppointmentKT
+
+    private var _binding: FragmentEditSingleAppointmentBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEditSingleAppointmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +60,6 @@ class EditAppointmentsFragment(
         }
     }
 
-    companion object {
-        //TODO: Fix this!
-        private lateinit var linearLayoutAppointments: LinearLayout
-    }
+
 }
+*/

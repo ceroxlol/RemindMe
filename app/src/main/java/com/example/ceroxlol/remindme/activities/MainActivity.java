@@ -18,7 +18,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.ceroxlol.remindme.fragments.AppointmentsFragment;
+import com.example.ceroxlol.remindme.fragments.AppointmentsListFragment;
 import com.example.ceroxlol.remindme.models.AppointmentKT;
 import com.example.ceroxlol.remindme.utils.AppointmentMetCheckingService;
 import com.example.ceroxlol.remindme.utils.GpsTracker;
@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateRecyclerview(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
             AppointmentKT appointment = Objects.requireNonNull(result.getData()).getParcelableExtra("appointment");
-            AppointmentsFragment appointmentsFragment = (AppointmentsFragment) mainPageAdapter.getItem(0);
+            AppointmentsListFragment appointmentsListFragment = (AppointmentsListFragment) mainPageAdapter.getItem(0);
             if (appointment != null) {
-                appointmentsFragment.insertData(appointment);
+                //appointmentsListFragment.insertData(appointment);
             }
         }
     }
@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.buttonEditAppointment.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, EditAppointmentsFragment.class);
-            startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
+            //Intent i = new Intent(MainActivity.this, EditAppointmentFragment.class);
+            //startActivityForResult(i, REQUEST_EDIT_APPOINTMENT);
         });
 
         this.addNewLocation.setOnClickListener(v -> {
@@ -165,7 +165,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkIfLocationsAreAvailable() {
-        return getDb().locationMarkerDao().entriesExist();
+        return true;
+        //return getDb().locationMarkerDao().entriesExist();
     }
 
     @Override

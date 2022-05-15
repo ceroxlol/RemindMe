@@ -1,7 +1,5 @@
 package com.example.ceroxlol.remindme.receiver;
 
-import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,16 +39,16 @@ public class AppointmentActionReceiver extends BroadcastReceiver {
     }
 
     public void updateIsActiveForAppointment(int appointmentId) {
-        getDb().appointmentDao().setAppointmentDoneById(appointmentId);
+        //getDb().appointmentDao().setAppointmentDoneById(appointmentId);
         Log.i(TAG, "Appointment ID " + appointmentId + " is done.");
     }
 
     public void setSnoozeForAppointmentTime(int appointmentId) {
-        AppointmentKT appointmentToUpdate = getDb().appointmentDao().getById(appointmentId);
+        //AppointmentKT appointmentToUpdate = getDb().appointmentDao().getById(appointmentId);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.requireNonNull(appointmentToUpdate.getTime()));
+        //calendar.setTime(Objects.requireNonNull(appointmentToUpdate.getTime()));
         calendar.add(Calendar.MINUTE, 10);
-        appointmentToUpdate.setTime(calendar.getTime());
+        //appointmentToUpdate.setTime(calendar.getTime());
         Log.i(TAG, "Set snooze timer for appointment to " + calendar.getTime());
     }
 

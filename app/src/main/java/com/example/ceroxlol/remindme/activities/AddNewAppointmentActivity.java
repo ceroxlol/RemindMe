@@ -1,13 +1,13 @@
 package com.example.ceroxlol.remindme.activities;
 
-import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
-
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ceroxlol.remindme.R;
@@ -77,6 +77,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         this.spinnerAddAppointmentLocations.setAdapter(adapter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private AppointmentKT saveNewAppointment() {
         LocationMarker locationMarker = (LocationMarker) this.spinnerAddAppointmentLocations.getSelectedItem();
         Date appointmentTime = null;
@@ -95,16 +96,17 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
                 editTextAppointmentName.getText().toString(),
                 editTextAppointmentText.getText().toString(),
                 locationMarker,
-                Calendar.getInstance().getTime(),
+                //Calendar.getInstance().getTime(),
+                Date.from(Instant.now()),
                 appointmentTime,
                 false
         );
 
-        try {
+/*        try {
             database.appointmentDao().insert(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return appointment;
     }
@@ -112,7 +114,7 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
     //When finishing this activity, an acknowledge to the main activity is sent to refresh the appointment list
     private void finishActivity(AppointmentKT appointment) {
         Intent i = new Intent();
-        i.putExtra("appointment", appointment);
+        //i.putExtra("appointment", appointment);
         setResult(RESULT_OK, i);
         finish();
     }

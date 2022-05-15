@@ -43,12 +43,12 @@ public class AppointmentMetCheckingService extends Thread {
 
     public void run() {
         while (run) {
-            for (AppointmentKT appointmentKT : mainActivity.getDb().appointmentDao().getAll()) {
+            /*for (AppointmentKT appointmentKT : getDb().appointmentDao().getAll()) {
                 if (checkIfNotificationIsAlreadyShown(appointmentKT.getId()) && !appointmentKT.getDone())
                     closeNotification(appointmentKT.getId());
                 if (checkIfAppointmentShouldBeShown(appointmentKT) && !checkIfNotificationIsAlreadyShown(appointmentKT.getId()))
                     showNotification(appointmentKT);
-            }
+            }*/
             try {
                 sleep(5000);
             } catch (InterruptedException e) {
@@ -123,7 +123,8 @@ public class AppointmentMetCheckingService extends Thread {
     }
 
     private boolean checkIfAppointmentDistanceIsMet(AppointmentKT appointmentKT, Location currentLocation) {
-        return appointmentKT.getLocation().getLocation().distanceTo(currentLocation) < 500;
+        return false;
+        //return appointmentKT.getLocation().getLocation().distanceTo(currentLocation) < 500;
     }
 
     private void setUpNotificationChannel() {

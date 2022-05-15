@@ -1,7 +1,5 @@
 package com.example.ceroxlol.remindme.activities;
 
-import static com.example.ceroxlol.remindme.activities.MainActivity.getDb;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +24,7 @@ public class EditLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_location);
 
-        locationMarkers = (ArrayList<LocationMarker>) getDb().locationMarkerDao().getAll();
+        //locationMarkers = (ArrayList<LocationMarker>) getDb().locationMarkerDao().getAll();
         linearLayoutLocations = findViewById(R.id.linearLayoutEditLocationsLocations);
         locationMarkerArrayAdapter = new ArrayAdapterLocationsList(this, locationMarkers, linearLayoutLocations);
 
