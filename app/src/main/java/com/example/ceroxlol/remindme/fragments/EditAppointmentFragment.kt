@@ -1,27 +1,22 @@
 package com.example.ceroxlol.remindme.fragments
 
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.adapters.ArrayAdapterAppointments
-import com.example.ceroxlol.remindme.databinding.FragmentEditSingleAppointmentBinding
+import com.example.ceroxlol.remindme.databinding.FragmentAppointmentDetailBinding
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModelFactory
-import java.util.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EditAppointmentFragment : Fragment() {
-    private val navigationArgs: ItemDetailFragmentArgs by navArgs()
-
-    lateinit var appointmentKT: AppointmentKT
 
     private val viewModel: AppointmentKTViewModel by activityViewModels {
         AppointmentKTViewModelFactory(
@@ -30,32 +25,66 @@ class EditAppointmentFragment : Fragment() {
         )
     }
 
-    // Binding object instance corresponding to the fragment_add_item.xml layout
-    // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
-    // when the view hierarchy is attached to the fragment
-    private var _binding: FragmentEditSingleAppointmentBinding? = null
+    private val navigationArgs: AddNewAppointmentFragmentKTArgs by navArgs()
+
+    lateinit var appointmentKT: AppointmentKT
+
+    private var _binding: FragmentAppointmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_appointment)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAppointmentDetailBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
 
-        Log.i("EditAppointmentActivity", "Initializing edit appointments activity.")
-        linearLayoutAppointments = findViewById(R.id.linearLayoutEditAppointmentsAppointments)
-        appointmentArrayList = getDb().appointmentDao().getAll() as ArrayList<AppointmentKT>
-        val mAppointmentsAdapter =
-            ArrayAdapterAppointments(this, appointmentArrayList, linearLayoutAppointments)
-
-        Log.i("EditAppointmentActivity", "Found " + mAppointmentsAdapter.count + " appointments.")
-        for (i in 0 until mAppointmentsAdapter.count) {
-            val view: View = mAppointmentsAdapter.getView(i, null, linearLayoutAppointments)
-            linearLayoutAppointments.addView(view)
+    private fun bind(appointmentKT: AppointmentKT) {
+        binding.apply {
+            appointmentName.text = appointmentKT.name
+            appointmentText.text = appointmentKT.text
+            appointmentLocation.text = appointmentKT.location.name
+            removeAppointment.setOnClickListener { viewModel.deleteAppointment(appointmentKT) }
         }
     }
 
-    companion object {
-        //TODO: Fix this!
-        private lateinit var linearLayoutAppointments: LinearLayout
+    private fun showConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(android.R.string.dialog_alert_title))
+            .setMessage(getString(R.string.delete_question))
+            .setCancelable(false)
+            .setNegativeButton(getString(R.string.no)) { _, _ -> }
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                deleteItem()
+            }
+            .show()
+    }
+
+    private fun deleteItem() {
+        viewModel.deleteAppointment(appointmentKT)
+        findNavController().navigateUp()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val id = navigationArgs.appointmentId
+        // Retrieve the item details using the itemId.
+        // Attach an observer on the data (instead of polling for changes) and only update the
+        // the UI when the data actually changes.
+        viewModel.retrieveAppointmentKt(id).observe(this.viewLifecycleOwner) { selectedItem ->
+            appointmentKT = selectedItem
+            bind(appointmentKT)
+        }
+    }
+
+    /**
+     * Called when fragment is destroyed.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
