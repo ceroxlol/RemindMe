@@ -17,21 +17,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/MainFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
-        android:id="@+id/MainFragment"
+        android:id="@+id/mainFragment"
         android:name="com.example.ceroxlol.remindme.fragments.MainFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/activity_main">
+        tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_itemListFragment_to_itemDetailFragment"
+            android:id="@+id/action_MainFragment_to_AddAppointmentFragment"
             app:destination="@id/addAppointmentFragment" />
         <action
-            android:id="@+id/action_itemListFragment_to_addItemFragment"
+            android:id="@+id/action_MainFragment_to_AddLocationFragment"
             app:destination="@id/addLocationFragment" />
         <action
-            android:id="@+id/action_MainFragment_to_editAppointmentFragment"
+            android:id="@+id/action_MainFragment_to_EditAppointmentFragment"
             app:destination="@id/editAppointmentFragment" />
     </fragment>
     <fragment
@@ -43,20 +43,20 @@
             android:name="appointment_id"
             app:argType="integer" />
         <action
-            android:id="@+id/action_appointmentDetailFragment_to_MainFragment"
-            app:destination="@id/MainFragment" />
+            android:id="@+id/action_EditAppointmentFragment_to_MainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAppointmentFragment"
         android:name="com.example.ceroxlol.remindme.fragments.AddNewAppointmentFragmentKT"
         android:label="@string/appointment_add_fragment_title"
-        tools:layout="@layout/fragment_add_new_appointment">
+        tools:layout="@layout/fragment_add_appointment">
         <argument
             android:name="appointment_id"
             app:argType="integer" />
         <action
             android:id="@+id/action_addAppointmentFragment_to_MainFragment"
-            app:destination="@id/MainFragment" />
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/addLocationFragment"
@@ -67,12 +67,12 @@
             android:name="title"
             app:argType="string" />
         <argument
-            android:name="item_id"
+            android:name="appointment_id"
             android:defaultValue="-1"
             app:argType="integer" />
         <action
-            android:id="@+id/action_addItemFragment_to_itemListFragment"
-            app:destination="@id/MainFragment"
+            android:id="@+id/action_addLocationFragment_to_MainFragment"
+            app:destination="@id/mainFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>
