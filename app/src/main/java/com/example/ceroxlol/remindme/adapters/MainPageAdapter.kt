@@ -3,7 +3,7 @@ package com.example.ceroxlol.remindme.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.ceroxlol.remindme.fragments.AppointmentsFragment
+import com.example.ceroxlol.remindme.fragments.AppointmentsListFragment
 import com.example.ceroxlol.remindme.fragments.LocationsFragment
 
 //TODO: Replace FragmentPagerAdapter
@@ -16,13 +16,13 @@ class MainPageAdapter(fm: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                AppointmentsFragment()
+                AppointmentsListFragment()
             }
             1 -> {
                 LocationsFragment()
             }
             else -> {
-                AppointmentsFragment()
+                AppointmentsListFragment()
             }
         }
     }
