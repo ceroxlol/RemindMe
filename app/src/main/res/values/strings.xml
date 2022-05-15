@@ -26,4 +26,10 @@
     <string name="appointment_text_req">Appointment Text</string>
     <string name="appointment_location_req">Location</string>
     <string name="save_action">Save</string>
+    <string name="add_new_appointment">Add New Appointment</string>
+    <string name="remove_appointment">Remove</string>
+    <string name="delete">Delete</string>
+    <string name="delete_question">Are you sure you want to delete?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>
