@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.ceroxlol.remindme.activities.EditSingleAppointmentActivity
-import com.example.ceroxlol.remindme.activities.MainActivity
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.activities.MainActivity.getDb
 import com.example.ceroxlol.remindme.models.AppointmentKT
