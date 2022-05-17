@@ -8,32 +8,6 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="MainFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-29" />
-                            <option name="y" value="-41" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_itemListFragment_to_addItemFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_itemListFragment_to_itemDetailFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="addAppointmentFragment">
                     <value>
                       <LayoutPositions>
@@ -45,7 +19,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_appointmentDetailFragment_to_MainFragment">
+                            <entry key="action_addAppointmentFragment_to_MainFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -66,7 +40,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_addItemFragment_to_itemListFragment">
+                            <entry key="action_addLocationFragment_to_MainFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -87,7 +61,38 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_appointmentDetailFragment_to_MainFragment">
+                            <entry key="action_EditAppointmentFragment_to_MainFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="mainFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_MainFragment_to_AddAppointmentFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_MainFragment_to_AddLocationFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_MainFragment_to_EditAppointmentFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

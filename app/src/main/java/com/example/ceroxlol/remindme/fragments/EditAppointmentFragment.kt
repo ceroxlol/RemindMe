@@ -25,7 +25,7 @@ class EditAppointmentFragment : Fragment() {
         )
     }
 
-    private val navigationArgs: AddNewAppointmentFragmentKTArgs by navArgs()
+    private val navigationArgs: EditAppointmentFragmentArgs by navArgs()
 
     lateinit var appointmentKT: AppointmentKT
 
@@ -47,7 +47,7 @@ class EditAppointmentFragment : Fragment() {
             appointmentName.text = appointmentKT.name
             appointmentText.text = appointmentKT.text
             appointmentLocation.text = appointmentKT.location.name
-            removeAppointment.setOnClickListener { viewModel.deleteAppointment(appointmentKT) }
+            removeAppointment.setOnClickListener { showConfirmationDialog() }
         }
     }
 

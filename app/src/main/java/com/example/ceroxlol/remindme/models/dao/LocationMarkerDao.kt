@@ -2,20 +2,21 @@ package com.example.ceroxlol.remindme.models.dao
 
 import androidx.room.*
 import com.example.ceroxlol.remindme.models.LocationMarker
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocationMarkerDao {
     @Query("SELECT * FROM LocationMarker")
-    fun getAll(): List<LocationMarker>
+    fun getAll(): Flow<List<LocationMarker>>
 
     @Query("SELECT * FROM LocationMarker WHERE location_id = :id")
-    fun getById(id: Int): LocationMarker
+    fun getById(id: Int): Flow<LocationMarker>
 
     @Query("SELECT EXISTS(SELECT * FROM LocationMarker)")
     fun entriesExist() : Boolean
 
     @Update
-    fun updateAppointment(locationMarker: LocationMarker)
+    fun update(locationMarker: LocationMarker)
 
     @Delete
     suspend fun delete(locationMarker: LocationMarker)

@@ -60,17 +60,17 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         return true
     }
 
-    fun updateItem(
+    fun updateAppointmentKT(
         appointmentKTId: Int,
         appointmentKTName: String,
         appointmentKTText: String,
         appointmentKTLocation: LocationMarker
     ) {
         val updatedItem = getUpdatedAppointmentEntry(appointmentKTId, appointmentKTName, appointmentKTText, appointmentKTLocation)
-        updateItem(updatedItem)
+        updateAppointmentKT(updatedItem)
     }
 
-    private fun updateItem(appointmentKT: AppointmentKT) {
+    private fun updateAppointmentKT(appointmentKT: AppointmentKT) {
         viewModelScope.launch {
             appointmentDao.update(appointmentKT)
         }

@@ -51,9 +51,6 @@
         android:name="com.example.ceroxlol.remindme.fragments.AddNewAppointmentFragmentKT"
         android:label="@string/appointment_add_fragment_title"
         tools:layout="@layout/fragment_add_appointment">
-        <argument
-            android:name="appointment_id"
-            app:argType="integer" />
         <action
             android:id="@+id/action_addAppointmentFragment_to_MainFragment"
             app:destination="@id/mainFragment" />
