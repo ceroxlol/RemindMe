@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.ceroxlol.remindme.fragments.AppointmentsListFragment
-import com.example.ceroxlol.remindme.fragments.LocationsFragment
+import com.example.ceroxlol.remindme.fragments.LocationsListFragment
 
 //TODO: Replace FragmentPagerAdapter
 class MainPageAdapter(fm: FragmentManager) :
@@ -19,7 +19,7 @@ class MainPageAdapter(fm: FragmentManager) :
                 AppointmentsListFragment()
             }
             1 -> {
-                LocationsFragment()
+                LocationsListFragment()
             }
             else -> {
                 AppointmentsListFragment()
