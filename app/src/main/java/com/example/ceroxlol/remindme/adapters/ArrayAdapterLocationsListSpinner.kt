@@ -9,21 +9,33 @@ import android.widget.TextView
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.LocationMarker
 
-class ArrayAdapterLocationsListSpinner(context: Context, data: ArrayList<LocationMarker>?) :
+class ArrayAdapterLocationsListSpinner(context: Context, data: List<LocationMarker>?) :
     ArrayAdapter<LocationMarker>(context, 0, data!!) {
 
     private val inflater: LayoutInflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+    //TODO: Beautify
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val location = getItem(position)
 
-        val rowView = inflater.inflate(R.layout.spinner_text_view_locations, parent, false)
+        val view: View = convertView ?: inflater.inflate(R.layout.item_location, parent, false)
 
-        val textViewSpinnerLocation: TextView = rowView.findViewById(R.id.textView_spinner_location)
+        getItem(position)?.let {
+            val tv = view.findViewById<TextView>(R.id.textViewLocationName)
+            tv.text = it.name
+        }
 
-        textViewSpinnerLocation.text = location!!.name
+        return view
+    }
 
-        return rowView
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view: View = convertView ?: inflater.inflate(R.layout.item_location, parent, false)
+
+        getItem(position)?.let {
+            val tv = view.findViewById<TextView>(R.id.textViewLocationName)
+            tv.text = it.name
+        }
+
+        return view
     }
 }

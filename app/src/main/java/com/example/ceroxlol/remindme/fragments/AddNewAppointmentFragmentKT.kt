@@ -1,20 +1,19 @@
 package com.example.ceroxlol.remindme.fragments
 
-import android.R
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
+import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
 import com.example.ceroxlol.remindme.databinding.FragmentAddAppointmentBinding
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.LocationMarker
@@ -79,6 +78,12 @@ class AddNewAppointmentFragmentKT : Fragment() {
                 AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
+        else{
+            Toast.makeText(
+                requireContext(),
+                "Please recheck, something's not correct.", Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     /**
@@ -95,16 +100,16 @@ class AddNewAppointmentFragmentKT : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter : ArrayAdapter<LocationMarker> = ArrayAdapter(requireContext(), R.layout.simple_spinner_item)
-        locationMarkerViewModel.allItems.observe(viewLifecycleOwner) {
-            it?.forEach { locationMarker ->
-                adapter.add(locationMarker)
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
+            locationMarkers.let {
+                val adapter = ArrayAdapterLocationsListSpinner(requireContext(), it)
+
+                adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                binding.appointmentLocation.adapter = adapter
             }
         }
 
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        binding.appointmentLocation.adapter = adapter
-
+        //Todo: Change button to be floating?
         binding.saveAction.setOnClickListener {
             saveAppointment()
         }
