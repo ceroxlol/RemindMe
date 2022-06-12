@@ -4,4 +4,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="margin">16dp</dimen>
     <dimen name="margin_between_elements">8dp</dimen>
+    <dimen name="button_round_radius">10</dimen>
 </resources>
