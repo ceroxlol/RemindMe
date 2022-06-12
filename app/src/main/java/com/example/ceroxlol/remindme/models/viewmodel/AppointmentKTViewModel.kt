@@ -12,7 +12,7 @@ import java.util.*
 
 class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
 
-    val allItems: LiveData<List<AppointmentKT>> = appointmentDao.getAll().asLiveData()
+    val allAppointments: LiveData<List<AppointmentKT>> = appointmentDao.getAll().asLiveData()
 
     private fun insertAppointmentKT(appointmentKT: AppointmentKT) {
         viewModelScope.launch {
@@ -55,9 +55,9 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
         if (appointmentName.isBlank() || appointmentText.isBlank() || appointmentLocation.isValid()) {
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     fun updateAppointmentKT(
