@@ -16,7 +16,7 @@ import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModelFact
 
 class AppointmentsListFragment : Fragment() {
 
-    private val viewModel: AppointmentKTViewModel by activityViewModels {
+    private val appointmentKTViewModel: AppointmentKTViewModel by activityViewModels {
         AppointmentKTViewModelFactory(
             (activity?.application as RemindMeApplication).database.appointmentDao()
         )
@@ -39,21 +39,21 @@ class AppointmentsListFragment : Fragment() {
 
         val adapter = AppointmentListAdapter {
             val action =
-                AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
+                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment()
             this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
-        viewModel.allItems.observe(this.viewLifecycleOwner) { items ->
-            items.let {
+        appointmentKTViewModel.allAppointments.observe(this.viewLifecycleOwner) { appointments ->
+            appointments.let {
                 adapter.submitList(it)
             }
         }
 
-        binding.floatingActionButton.setOnClickListener {
-            val action = AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
+        binding.saveButton.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
             this.findNavController().navigate(action)
         }
     }
