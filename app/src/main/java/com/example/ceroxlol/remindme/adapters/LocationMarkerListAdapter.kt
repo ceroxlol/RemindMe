@@ -21,13 +21,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.databinding.SpinnerTextViewLocationsBinding
+import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.models.LocationMarker
 
 /**
  * [ListAdapter] implementation for the recyclerview.
  */
 
-class LocationMarkerListAdapter :
+class LocationMarkerListAdapter(private val onItemClicked: (AppointmentKT) -> Unit) :
     ListAdapter<LocationMarker, LocationMarkerListAdapter.LocationMarkerViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationMarkerViewHolder {
