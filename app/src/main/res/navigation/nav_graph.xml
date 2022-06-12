@@ -23,7 +23,7 @@
         android:id="@+id/mainFragment"
         android:name="com.example.ceroxlol.remindme.fragments.MainFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_main">
+        tools:layout="@layout/fragment_main_viewpager">
         <action
             android:id="@+id/action_MainFragment_to_AddAppointmentFragment"
             app:destination="@id/addAppointmentFragment" />
@@ -57,19 +57,11 @@
     </fragment>
     <fragment
         android:id="@+id/addLocationFragment"
-        android:name="com.example.ceroxlol.remindme.fragments.LocationsFragment"
-        android:label="{title}"
-        tools:layout="@layout/fragment_locations">
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="appointment_id"
-            android:defaultValue="-1"
-            app:argType="integer" />
+        android:name="com.example.ceroxlol.remindme.fragments.PickLocationMapsFragment"
+        android:label="Pick Location"
+        tools:layout="@layout/fragment_pick_location_maps">
         <action
             android:id="@+id/action_addLocationFragment_to_MainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/mainFragment"/>
     </fragment>
 </navigation>
