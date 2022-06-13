@@ -71,7 +71,7 @@ class EditAppointmentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = navigationArgs.appointmentId
-        // Retrieve the item details using the itemId.
+        // Retrieve the appointment details using the id.
         // Attach an observer on the data (instead of polling for changes) and only update the
         // the UI when the data actually changes.
         viewModel.retrieveAppointmentKt(id).observe(this.viewLifecycleOwner) { selectedItem ->

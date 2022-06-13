@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_MainFragment_to_EditAppointmentFragment"
             app:destination="@id/editAppointmentFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_editLocationFragment"
+            app:destination="@id/editLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/editAppointmentFragment"
@@ -63,5 +66,17 @@
         <action
             android:id="@+id/action_addLocationFragment_to_MainFragment"
             app:destination="@id/mainFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/editLocationFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.EditLocationFragment"
+        android:label="Edit location"
+        tools:layout="@layout/fragment_pick_location_maps">
+        <argument
+            android:name="locationMarker_id"
+            app:argType="com.example.ceroxlol.remindme.models.LocationMarker"/>
+        <action
+            android:id="@+id/action_editLocationFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

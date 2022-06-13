@@ -19,10 +19,12 @@
         <entry key="app/src/main/res/layout/appointment_list_fragment.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/appointment_list_item.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/appointments_fragment.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/content_edit_single_location.xml" value="0.5067708333333333" />
         <entry key="app/src/main/res/layout/fragment_add_appointment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_add_new_appointment.xml" value="0.26443768996960487" />
         <entry key="app/src/main/res/layout/fragment_appointment_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_appointments.xml" value="0.3072916666666667" />
+        <entry key="app/src/main/res/layout/fragment_edit_location.xml" value="0.5067708333333333" />
         <entry key="app/src/main/res/layout/fragment_edit_single_appointment.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/fragment_locations.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/fragment_main.xml" value="0.35572916666666665" />

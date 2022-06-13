@@ -66,6 +66,7 @@ class PickLocationMapsFragment : Fragment() {
             locationName = ""
             dbLocation = DbLocation(it)
             map.addMarker(MarkerOptions().position(it))
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 10F))
         }
 
         setToCurrentPosition()
@@ -75,14 +76,13 @@ class PickLocationMapsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)!!
         }
 
         _binding = FragmentPickLocationMapsBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -97,10 +97,6 @@ class PickLocationMapsFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             showSaveDialog()
-
-            val action =
-                PickLocationMapsFragmentDirections.actionAddLocationFragmentToMainFragment()
-            findNavController().navigate(action)
         }
 
         binding.svLocation.setOnQueryTextListener(
@@ -190,11 +186,18 @@ class PickLocationMapsFragment : Fragment() {
 
         alertDialog.setPositiveButton("Save") { p0, p1 ->
             locationMarkerViewModel.addNewLocationMarker(
-                locationName,
+                editText.text.toString(),
                 dbLocation
             )
+
+            //Navigate back
+            val action =
+                PickLocationMapsFragmentDirections.actionAddLocationFragmentToMainFragment()
+            findNavController().navigate(action)
         }
 
         alertDialog.setNegativeButton("Cancel", null)
+
+        alertDialog.show()
     }
 }

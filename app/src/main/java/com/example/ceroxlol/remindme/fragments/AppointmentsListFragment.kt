@@ -39,7 +39,7 @@ class AppointmentsListFragment : Fragment() {
 
         val adapter = AppointmentListAdapter {
             val action =
-                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment()
+                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.id)
             this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)

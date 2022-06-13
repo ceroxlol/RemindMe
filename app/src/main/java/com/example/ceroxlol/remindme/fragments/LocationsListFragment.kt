@@ -37,9 +37,10 @@ class LocationsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //TODO: Beautify items
         val adapter = LocationMarkerListAdapter {
-            val action = null
-            //this.findNavController().navigate(action)
+            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it)
+            this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
@@ -51,7 +52,7 @@ class LocationsListFragment : Fragment() {
             }
         }
 
-        binding.saveButton.setOnClickListener {
+        binding.addNewLocationButton.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToAddLocationFragment()
             this.findNavController().navigate(action)
         }
