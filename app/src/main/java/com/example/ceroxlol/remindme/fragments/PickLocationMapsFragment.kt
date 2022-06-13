@@ -19,11 +19,8 @@ import com.example.ceroxlol.remindme.databinding.FragmentPickLocationMapsBinding
 import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
-import com.example.ceroxlol.remindme.utils.permissions.Permission
-import com.example.ceroxlol.remindme.utils.permissions.PermissionManager
 import com.example.ceroxlol.remindme.utils.toLatLng
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,16 +30,16 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class PickLocationMapsFragment : Fragment() {
 
-    private val permissionManager = PermissionManager.from(this)
-    private var lastKnownLocation: Location? = null
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var map: GoogleMap
 
     private lateinit var dbLocation: DbLocation
     private lateinit var locationName: String
 
-    private val KEY_LOCATION = "location"
-    private val defaultCoordinates = LatLng(-33.8523341, 151.2106085)
+    private lateinit var lastKnownLocation: Location
+
+    private val defaultLocation = LatLng(53.551086, 9.993682)
+    private val DEFAULT_ZOOM = 5
 
     private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
@@ -77,11 +74,6 @@ class PickLocationMapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        if (savedInstanceState != null) {
-            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)!!
-        }
-
         _binding = FragmentPickLocationMapsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -145,35 +137,22 @@ class PickLocationMapsFragment : Fragment() {
     }
 
     private fun getDeviceLocation() {
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
-
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                permissionManager
-                    .request(Permission.Location)
-                    .rationale("Needs permission to access the location")
-                    .checkPermission { granted: Boolean ->
-                        if (granted) {
-                            if (location == null) {
-                                locationIsNullError()
-                            } else {
-                                lastKnownLocation = location
-                            }
-                        }
-                    }
+        val locationResult = fusedLocationProviderClient.lastLocation
+        locationResult.addOnCompleteListener(requireActivity()) { task ->
+            if (task.isSuccessful) {
+                // Set the map's camera position to the current location of the device.
+                lastKnownLocation = task.result
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    lastKnownLocation.toLatLng(), DEFAULT_ZOOM.toFloat()))
+                map.uiSettings.isMyLocationButtonEnabled = true
+            } else {
+                Log.d("EditLocation", "Current location is null. Using defaults.")
+                Log.e("EditLocation", "Exception: %s", task.exception)
+                map.moveCamera(CameraUpdateFactory
+                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                map.uiSettings.isMyLocationButtonEnabled = false
             }
-    }
-
-    private fun locationIsNullError() {
-        Log.d("PickLocationMapsFragment", "Current location is null. Using fallback.")
-        map.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    lastKnownLocation?.toLatLng() ?: defaultCoordinates,
-                    10F
-                )
-            )
-        map.uiSettings.isMyLocationButtonEnabled = false
+        }
     }
 
     private fun showSaveDialog() {

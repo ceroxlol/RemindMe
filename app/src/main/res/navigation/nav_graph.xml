@@ -74,7 +74,7 @@
         tools:layout="@layout/fragment_pick_location_maps">
         <argument
             android:name="locationMarker_id"
-            app:argType="com.example.ceroxlol.remindme.models.LocationMarker"/>
+            app:argType="integer"/>
         <action
             android:id="@+id/action_editLocationFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
