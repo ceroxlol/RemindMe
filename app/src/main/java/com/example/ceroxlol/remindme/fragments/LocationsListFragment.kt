@@ -39,7 +39,7 @@ class LocationsListFragment : Fragment() {
 
         //TODO: Beautify items
         val adapter = LocationMarkerListAdapter {
-            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it)
+            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.id)
             this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)

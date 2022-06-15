@@ -52,7 +52,7 @@ class AppointmentsListFragment : Fragment() {
             }
         }
 
-        binding.saveButton.setOnClickListener {
+        binding.addNewLocationButton.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
             this.findNavController().navigate(action)
         }

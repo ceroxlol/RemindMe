@@ -85,7 +85,7 @@ class PickLocationMapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         // Taken from https://developers.google.com/maps/documentation/android-api/current-place-tutorial
-        getDeviceLocation()
+        //getDeviceLocation()
 
         binding.saveButton.setOnClickListener {
             showSaveDialog()
@@ -129,13 +129,14 @@ class PickLocationMapsFragment : Fragment() {
         if(lastKnownLocation != null) {
             map.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
-                    lastKnownLocation!!.toLatLng(),
+                    lastKnownLocation.toLatLng(),
                     10F
                 )
             )
         }
     }
 
+    //Good to get the last location, but not if e.g. the phone got rebooted
     private fun getDeviceLocation() {
         val locationResult = fusedLocationProviderClient.lastLocation
         locationResult.addOnCompleteListener(requireActivity()) { task ->
