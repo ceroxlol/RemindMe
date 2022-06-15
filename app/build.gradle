@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'io.franzbecker.gradle-lombok' version '5.0.0'
-    id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.10'
     id 'androidx.navigation.safeargs'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
@@ -45,7 +44,6 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.google.maps.android:android-maps-utils:2.3.0'
-    implementation 'com.google.android.material:material:1.6.0'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
     //lombok
@@ -63,14 +61,15 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     // Room libraries
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava3:$room_version"
+    kapt 'android.arch.persistence.room:compiler:1.1.1'
 
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
@@ -81,6 +80,4 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
 
     // Lifecycle libraries
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
 }
