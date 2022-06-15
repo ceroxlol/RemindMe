@@ -1,11 +1,15 @@
 package com.example.ceroxlol.remindme.fragments
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -15,19 +19,23 @@ import com.example.ceroxlol.remindme.databinding.FragmentPickLocationMapsBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
+import com.example.ceroxlol.remindme.utils.permissions.Permission
 import com.example.ceroxlol.remindme.utils.permissions.PermissionManager
 import com.example.ceroxlol.remindme.utils.toLatLng
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
+
 
 class EditLocationFragment : Fragment() {
 
-    private val permissionManager = PermissionManager.from(this)
+    private val permissionManager: PermissionManager = PermissionManager.from(this)
 
     private val viewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
@@ -36,16 +44,19 @@ class EditLocationFragment : Fragment() {
         )
     }
 
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var map: GoogleMap
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val navigationArgs: EditLocationFragmentArgs by navArgs()
 
-    lateinit var locationMarker: LocationMarker
-    lateinit var lastKnownLocation: Location
+    private var locationMarker: LocationMarker? = null
+    private var lastKnownLocation: Location? = null
 
     private val defaultLocation = LatLng(53.551086, 9.993682)
-    private val DEFAULT_ZOOM = 5
+    private val DEFAULT_ZOOM = 5F
+    private val CLOSE_ZOOM = 13F
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+    private val TAG = "EditLocationFragment"
 
     private var _binding: FragmentPickLocationMapsBinding? = null
     private val binding get() = _binding!!
@@ -63,7 +74,18 @@ class EditLocationFragment : Fragment() {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 10F))
         }
 
+        updateLocationUI()
+
         getDeviceLocation()
+
+        moveCameraToLastKnownLocation()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
 
@@ -83,40 +105,102 @@ class EditLocationFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         val id = navigationArgs.locationMarkerId
-        // Retrieve the appointment details using the id.
-        // Attach an observer on the data (instead of polling for changes) and only update the
-        // the UI when the data actually changes.
         viewModel.retrieveLocationMarker(id).observe(this.viewLifecycleOwner) { selectedItem ->
             locationMarker = selectedItem
-            bind(locationMarker)
+            bind()
+            moveCameraToLocationMarker()
+            map.addMarker(MarkerOptions().position(locationMarker?.location!!.toLatLng()))
         }
     }
 
-    private fun bind(locationMarker: LocationMarker) {
+    private fun bind() {
         binding.apply {
-            appointmentName.text = appointmentKT.name
-            appointmentText.text = appointmentKT.text
-            appointmentLocation.text = appointmentKT.location.name
-            removeAppointment.setOnClickListener { showConfirmationDialog() }
+            this.svLocation.setQuery(locationMarker!!.name, false)
         }
     }
 
     private fun getDeviceLocation() {
-        val locationResult = fusedLocationProviderClient.lastLocation
-        locationResult.addOnCompleteListener(requireActivity()) { task ->
-            if (task.isSuccessful) {
-                // Set the map's camera position to the current location of the device.
-                lastKnownLocation = task.result
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    lastKnownLocation.toLatLng(), DEFAULT_ZOOM.toFloat()))
-                map.uiSettings.isMyLocationButtonEnabled = true
-            } else {
-                Log.d("EditLocation", "Current location is null. Using defaults.")
-                Log.e("EditLocation", "Exception: %s", task.exception)
-                map.moveCamera(CameraUpdateFactory
-                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
-                map.uiSettings.isMyLocationButtonEnabled = false
+        permissionManager
+            .request(Permission.Location)
+            .rationale("Needs permission to access the location")
+            .checkPermission { granted: Boolean ->
+                if (granted) {
+                    val locationResult: Task<Location> = fusedLocationProviderClient.lastLocation
+                    locationResult.addOnCompleteListener(
+                        requireActivity()
+                    ) { task ->
+                        if (task.isSuccessful) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.result
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.")
+                            Log.e(TAG, "Exception: %s", task.exception)
+                            map.moveCamera(
+                                CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                            )
+                            map.uiSettings.isMyLocationButtonEnabled = false
+                        }
+                    }
+                } else {
+                    getLocationPermission()
+                }
             }
+    }
+
+    private fun moveCameraToLocationMarker() {
+        locationMarker?.let {
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        it.location.latitude,
+                        it.location.longitude
+                    ), CLOSE_ZOOM
+                )
+            )
+        }
+    }
+
+    private fun moveCameraToLastKnownLocation() {
+        lastKnownLocation?.let {
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        it.latitude,
+                        it.longitude
+                    ), DEFAULT_ZOOM
+                )
+            )
+        }
+    }
+
+    private fun updateLocationUI() {
+        permissionManager
+            .request(Permission.Location)
+            .rationale("Needs permission to access the location")
+            .checkPermission { granted: Boolean ->
+                if (granted) {
+                    map.isMyLocationEnabled = true
+                    map.uiSettings.isMyLocationButtonEnabled = true
+                } else {
+                    map.isMyLocationEnabled = false
+                    map.uiSettings.isMyLocationButtonEnabled = false
+                    getLocationPermission()
+                }
+            }
+    }
+
+    private fun getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
         }
     }
 }
