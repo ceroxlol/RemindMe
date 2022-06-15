@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ceroxlol.remindme.databinding.LocationListItemBinding
 import com.example.ceroxlol.remindme.databinding.SpinnerTextViewLocationsBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
 
@@ -32,24 +33,27 @@ class LocationMarkerListAdapter(private val onItemClicked: (LocationMarker) -> U
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationMarkerViewHolder {
         return LocationMarkerViewHolder(
-            SpinnerTextViewLocationsBinding.inflate(
-                LayoutInflater.from(
-                    parent.context
-                )
+            LocationListItemBinding.inflate(
+                LayoutInflater.from(parent.context)
             )
         )
     }
 
     override fun onBindViewHolder(holder: LocationMarkerViewHolder, position: Int) {
         val current = getItem(position)
+        holder.itemView.setOnClickListener {
+            onItemClicked(current)
+        }
         holder.bind(current)
     }
 
-    class LocationMarkerViewHolder(private var binding: SpinnerTextViewLocationsBinding) :
+    class LocationMarkerViewHolder(private var binding: LocationListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(locationMarker: LocationMarker) {
-            binding.textViewSpinnerLocation.text = locationMarker.name
+            binding.locationName.text = locationMarker.name
+            binding.locationAddress.text = "No Address"
+            binding.locationDistance.text = "0 KM"
         }
     }
 
