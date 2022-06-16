@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.services.GpsTrackerService
 
 class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
 
@@ -35,6 +36,8 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         navController = navHostFragment.navController
         // Set up the action bar for use with the NavController
         setupActionBarWithNavController(this, navController)
+
+        GpsTrackerService.startService(this)
     }
 
     /**
@@ -42,5 +45,11 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
      */
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        GpsTrackerService.stopService(this)
     }
 }

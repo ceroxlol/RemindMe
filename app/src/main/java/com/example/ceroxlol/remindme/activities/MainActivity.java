@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = Objects.requireNonNull(navHostFragment).getNavController();
 
-        gpsTracker = new GpsTracker(getApplicationContext());
+        //gpsTracker = new GpsTracker(getApplicationContext());
 
         if (APPOINTMENT_TRACKER_ENABLED) {
             appointmentMetCheckingService = new AppointmentMetCheckingService(gpsTracker, this);
