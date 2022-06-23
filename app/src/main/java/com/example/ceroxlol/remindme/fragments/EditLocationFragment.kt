@@ -8,10 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
@@ -37,7 +40,7 @@ class EditLocationFragment : Fragment() {
 
     private val permissionManager: PermissionManager = PermissionManager.from(this)
 
-    private val viewModel: LocationMarkerViewModel by activityViewModels {
+    private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
             (activity?.application as RemindMeApplication).database
                 .locationMarkerDao()
@@ -52,12 +55,6 @@ class EditLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
 
-    private val defaultLocation = LatLng(53.551086, 9.993682)
-    private val DEFAULT_ZOOM = 5F
-    private val CLOSE_ZOOM = 13F
-    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
-    private val TAG = "EditLocationFragment"
-
     private var _binding: FragmentPickLocationMapsBinding? = null
     private val binding get() = _binding!!
 
@@ -71,14 +68,12 @@ class EditLocationFragment : Fragment() {
         map.setOnMapClickListener {
             map.clear()
             map.addMarker(MarkerOptions().position(it))
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 10F))
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
         }
 
         updateLocationUI()
 
         getDeviceLocation()
-
-        moveCameraToLastKnownLocation()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,11 +100,15 @@ class EditLocationFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         val id = navigationArgs.locationMarkerId
-        viewModel.retrieveLocationMarker(id).observe(this.viewLifecycleOwner) { selectedItem ->
+        locationMarkerViewModel.retrieveLocationMarker(id).observe(this.viewLifecycleOwner) { selectedItem ->
             locationMarker = selectedItem
             bind()
             moveCameraToLocationMarker()
             map.addMarker(MarkerOptions().position(locationMarker?.location!!.toLatLng()))
+        }
+
+        binding.saveButton.setOnClickListener {
+            showSaveDialog()
         }
     }
 
@@ -132,12 +131,13 @@ class EditLocationFragment : Fragment() {
                         if (task.isSuccessful) {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.result
+                            moveCameraToLastKnownLocation()
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.")
                             Log.e(TAG, "Exception: %s", task.exception)
                             map.moveCamera(
                                 CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                                    .newLatLngZoom(defaultLocation, CLOSE_ZOOM)
                             )
                             map.uiSettings.isMyLocationButtonEnabled = false
                         }
@@ -202,5 +202,42 @@ class EditLocationFragment : Fragment() {
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         }
+    }
+
+    private fun showSaveDialog() {
+        if(locationMarker == null){
+            Log.e(TAG, "locationMaker is null. This should not happen!")
+            return
+        }
+        val editText = EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
+        val alertDialog = AlertDialog.Builder(requireActivity())
+        alertDialog.setTitle("Add Location")
+        alertDialog.setMessage("Add a name for your location:")
+
+        alertDialog.setView(editText)
+
+        alertDialog.setPositiveButton("Save") { p0, p1 ->
+            locationMarkerViewModel.addNewLocationMarker(
+                editText.text.toString(),
+                locationMarker!!.location
+            )
+
+            //Navigate back
+            val action =
+                PickLocationMapsFragmentDirections.actionAddLocationFragmentToMainFragment()
+            findNavController().navigate(action)
+        }
+
+        alertDialog.setNegativeButton("Cancel", null)
+
+        alertDialog.show()
+    }
+
+    companion object{
+        private val defaultLocation = LatLng(53.551086, 9.993682)
+        private const val DEFAULT_ZOOM = 5F
+        private const val CLOSE_ZOOM = 18F
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private const val TAG = "EditLocationFragment"
     }
 }

@@ -15,17 +15,49 @@
  */
 package com.example.ceroxlol.remindme.activities
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.ServiceConnection
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.services.GpsTrackerService
 
-class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
+class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var navController: NavController
+
+    private var gpsTrackerServiceBound = false
+
+    private var gpsTrackerService: GpsTrackerService? = null
+
+    private lateinit var appointmentBroadcastReceiver: AppointmentBroadcastReceiver
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    // Monitors connection to the while-in-use service.
+    private val foregroundOnlyServiceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder = service as GpsTrackerService.LocalBinder
+            gpsTrackerService = binder.service
+            gpsTrackerServiceBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            gpsTrackerService = null
+            gpsTrackerServiceBound = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +69,10 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         // Set up the action bar for use with the NavController
         setupActionBarWithNavController(this, navController)
 
-        GpsTrackerService.startService(this)
+        gpsTrackerService = GpsTrackerService()
+
+        sharedPreferences =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
     }
 
     /**
@@ -51,5 +86,47 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         super.onDestroy()
 
         GpsTrackerService.stopService(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        // Updates button states if new while in use location is added to SharedPreferences.
+
+    }
+
+    private fun foregroundPermissionApproved(): Boolean {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    private fun requestForegroundPermissions() {
+        val provideRationale = foregroundPermissionApproved()
+
+        // If the user denied a previous request, but didn't check "Don't ask again", provide
+        // additional rationale.
+        if (provideRationale) {
+            Snackbar.make(
+                findViewById(R.id.activity_main),
+                R.string.permission_rationale,
+                Snackbar.LENGTH_LONG
+            )
+                .setAction(R.string.ok) {
+                    // Request permission
+                    ActivityCompat.requestPermissions(
+                        this@MainActivity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
+                    )
+                }
+                .show()
+        } else {
+            Log.d(TAG, "Request foreground only permission")
+            ActivityCompat.requestPermissions(
+                this@MainActivity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
+            )
+        }
     }
 }

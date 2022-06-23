@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class AppointmentActionReceiver extends BroadcastReceiver {
 
-    private final String TAG = "AppBroadRec";
+    private final String TAG = "AppointmentActionReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
