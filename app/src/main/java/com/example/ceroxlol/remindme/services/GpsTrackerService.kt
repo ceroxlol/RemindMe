@@ -7,7 +7,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.location.Location
 import android.os.Binder
 import android.os.Build
@@ -19,17 +18,15 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.AppointmentKT
 import com.example.ceroxlol.remindme.receiver.AppointmentActionReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
-import com.example.ceroxlol.remindme.utils.SharedPreferenceUtil
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.Task
 import java.util.concurrent.TimeUnit
 
 
@@ -40,9 +37,6 @@ class GpsTrackerService : LifecycleService() {
     * Checks whether the bound activity has really gone away (foreground service with notification
     * created) or simply orientation change (no-op).
     */
-    private var configurationChange = false
-    private var serviceRunningInForeground = false
-    private val localBinder = LocalBinder()
     private lateinit var notificationManager: NotificationManager
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -54,132 +48,45 @@ class GpsTrackerService : LifecycleService() {
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: Location? = null
 
-    private val database = AppDatabase.getDatabase(applicationContext)
-    private var appointmentsKT = database.appointmentDao().getAll().asLiveData()
+    private lateinit var database: AppDatabase
+    private lateinit var appointmentsKT: LiveData<List<AppointmentKT>>
+    private lateinit var appointments: MutableList<AppointmentKT>
 
-    //TODO: Get appointments via livedata and pass them to the locationCallback check
-    @RequiresApi(Build.VERSION_CODES.S)
+    private val localBinder = LocalBinder()
+
     override fun onCreate() {
         super.onCreate()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(baseContext)
+            LocationServices.getFusedLocationProviderClient(applicationContext)
 
         setupLocationUpdates()
 
         getLastKnownLocation()
 
+        database = AppDatabase.getDatabase(applicationContext)
+        appointmentsKT = database.appointmentDao().getAll().asLiveData()
+
+        appointments = mutableListOf()
+        appointmentsKT.observe(this) {
+            appointments.addAll(it)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
         checkPermissions()
 
-        val locationResult: Task<Location> = fusedLocationProviderClient.lastLocation
-        locationResult.addOnCompleteListener(
-            baseContext as Activity
-        ) { task ->
-            if (task.isSuccessful) {
-                currentLocation = task.result
-            } else {
-                Log.d(TAG, "Current location is null. Using defaults.")
-                Log.e(TAG, "Exception: %s", task.exception)
-            }
-        }
-    }
-
-    override fun onBind(intent: Intent): IBinder {
-        //TODO?
-        //super.onBind(intent)
-        Log.d(TAG, "onBind()")
-
-        // MainActivity (client) comes into foreground and binds to service, so the service can
-        // become a background services.
-        stopForeground(true)
-        serviceRunningInForeground = false
-        configurationChange = false
-        return localBinder
-    }
-
-    override fun onRebind(intent: Intent) {
-        Log.d(TAG, "onRebind()")
-
-        // MainActivity (client) returns to the foreground and rebinds to service, so the service
-        // can become a background services.
-        stopForeground(true)
-        serviceRunningInForeground = false
-        configurationChange = false
-        super.onRebind(intent)
-    }
-
-    override fun onUnbind(intent: Intent): Boolean {
-        Log.d(TAG, "onUnbind()")
-
-        // MainActivity (client) leaves foreground, so service needs to become a foreground service
-        // to maintain the 'while-in-use' label.
-        // NOTE: If this method is called due to a configuration change in MainActivity,
-        // we do nothing.
-        if (!configurationChange && SharedPreferenceUtil.getLocationTrackingPref(this)) {
-            Log.d(TAG, "Start foreground service")
-            val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
-                .build()
-            startForeground(NOTIFICATION_ID, notification)
-            serviceRunningInForeground = true
-        }
-
-        // Ensures onRebind() is called if MainActivity (client) rebinds.
-        return true
-    }
-
-    fun subscribeToLocationUpdates() {
-        Log.d(TAG, "subscribeToLocationUpdates()")
-
-        SharedPreferenceUtil.saveLocationTrackingPref(this, true)
-
-        // Binding to this service doesn't actually trigger onStartCommand(). That is needed to
-        // ensure this Service can be promoted to a foreground service, i.e., the service needs to
-        // be officially started (which we do here).
-        startService(Intent(applicationContext, GpsTrackerService::class.java))
-
-        try {
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest, locationCallback, Looper.getMainLooper()
-            )
-        } catch (unlikely: SecurityException) {
-            SharedPreferenceUtil.saveLocationTrackingPref(this, false)
-            Log.e(TAG, "Lost location permissions. Couldn't remove updates. $unlikely")
-        }
-    }
-
-    fun unsubscribeToLocationUpdates() {
-        Log.d(TAG, "unsubscribeToLocationUpdates()")
-
-        try {
-            val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-            removeTask.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "Location Callback removed.")
-                    stopSelf()
+        fusedLocationProviderClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    currentLocation = location
                 } else {
-                    Log.d(TAG, "Failed to remove Location Callback.")
+                    Log.d(TAG, "Current location is null. Using defaults.")
                 }
             }
-            SharedPreferenceUtil.saveLocationTrackingPref(this, false)
-        } catch (unlikely: SecurityException) {
-            SharedPreferenceUtil.saveLocationTrackingPref(this, true)
-            Log.e(TAG, "Lost location permissions. Couldn't remove updates. $unlikely")
-        }
-    }
-
-    override fun onDestroy() {
-        Log.d(TAG, "onDestroy()")
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        configurationChange = true
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -195,8 +102,6 @@ class GpsTrackerService : LifecycleService() {
             this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
         }
 
-
-
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
@@ -208,46 +113,48 @@ class GpsTrackerService : LifecycleService() {
 
                 if (appointmentsInRange.isNotEmpty()) {
 
+                    Log.i(TAG, "found some appointments!")
+
                     val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
                     intent.putExtra(EXTRA_LOCATION, currentLocation)
                     LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
-                    if (serviceRunningInForeground) {
-                        appointmentsInRange.forEach{
-                            notificationManager.notify(
-                                NOTIFICATION_ID,
-                                generateNotification(it)
-                            )
-                        }
+                    appointmentsInRange.forEach {
+                        notificationManager.notify(
+                            NOTIFICATION_ID,
+                            generateNotification(it)
+                        )
                     }
                 }
             }
         }
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback, Looper.myLooper()!!
+        )
     }
 
     private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<AppointmentKT> {
-        val appointments = mutableListOf<AppointmentKT>()
-        appointmentsKT.observe(this) {
-            appointments.addAll(
-                it.filter { appointmentKT ->
-                    val results = FloatArray(0)
-                    Location.distanceBetween(
-                        currentLocation.latitude,
-                        currentLocation.longitude,
-                        appointmentKT.location.location.latitude,
-                        appointmentKT.location.location.longitude,
-                        results
-                    )
-                    results[0] < 50
-                })
+        Log.i(TAG, "Filtering $appointments")
+        return appointments.filter { appointmentKT ->
+            val results = FloatArray(0)
+            Location.distanceBetween(
+                currentLocation.latitude,
+                currentLocation.longitude,
+                appointmentKT.location.location.latitude,
+                appointmentKT.location.location.longitude,
+                results
+            )
+            Log.i(TAG, "$results")
+            results[0] < 100
         }
-        return appointments
     }
 
     private fun checkPermissions() {
-        if (ActivityCompat.checkSelfPermission(baseContext, ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(baseContext, ACCESS_FINE_LOCATION)
+            && ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
@@ -255,24 +162,6 @@ class GpsTrackerService : LifecycleService() {
                 arrayOf(android.Manifest.permission_group.LOCATION),
                 1
             )
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        return START_NOT_STICKY
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID, "Foreground Service Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-
-            val manager = getSystemService(NotificationManager::class.java)
-            manager!!.createNotificationChannel(serviceChannel)
         }
     }
 
@@ -313,28 +202,28 @@ class GpsTrackerService : LifecycleService() {
 
         // 3. Set up main Intent/Pending Intents for notification.
         val intentSetAppointmentKTDone = Intent(
-            applicationContext,
+            this,
             AppointmentActionReceiver::class.java
         )
         intentSetAppointmentKTDone.putExtra("action", "setDone")
         intentSetAppointmentKTDone.putExtra("appointmentId", appointmentKT.id)
 
         val appointmentDonePendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
+            this,
             0,
             intentSetAppointmentKTDone,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val intentSnoozeUntilNextTime = Intent(
-            applicationContext,
+            this,
             AppointmentActionReceiver::class.java
         )
         intentSnoozeUntilNextTime.putExtra("action", "setSnooze")
         intentSnoozeUntilNextTime.putExtra("appointmentId", appointmentKT.id)
 
         val appointmentSnoozePendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
+            this,
             0,
             intentSnoozeUntilNextTime,
             PendingIntent.FLAG_UPDATE_CURRENT
@@ -343,7 +232,7 @@ class GpsTrackerService : LifecycleService() {
         // 4. Build and issue the notification.
         // Notification Channel Id is ignored for Android pre O (26).
         val notificationCompatBuilder =
-            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
+            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 
         return notificationCompatBuilder
             .setStyle(bigTextStyle)
@@ -365,23 +254,57 @@ class GpsTrackerService : LifecycleService() {
             .build()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.let { onTaskRemoved(it) }
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent): IBinder {
+        //TODO: Maybe this helps
+        //super.onBind(intent)
+        Log.d(TAG, "onBind()")
+
+        // MainActivity (client) comes into foreground and binds to service, so the service can
+        // become a background services.
+        stopForeground(true)
+        return localBinder
+    }
+
+    override fun onRebind(intent: Intent) {
+        Log.d(TAG, "onRebind()")
+
+        // MainActivity (client) returns to the foreground and rebinds to service, so the service
+        // can become a background services.
+        stopForeground(true)
+        super.onRebind(intent)
+    }
+
+    override fun onUnbind(intent: Intent): Boolean {
+        Log.d(TAG, "onUnbind()")
+
+        // MainActivity (client) leaves foreground, so service needs to become a foreground service
+        // to maintain the 'while-in-use' label.
+        // NOTE: If this method is called due to a configuration change in MainActivity,
+        // we do nothing.
+        startForeground(1, Notification())
+
+        // Ensures onRebind() is called if MainActivity (client) rebinds.
+        return true
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent) {
+        val restartServiceIntent = Intent(this, this.javaClass)
+        restartServiceIntent.setPackage(packageName)
+        startService(restartServiceIntent)
+        super.onTaskRemoved(rootIntent)
+    }
+
     inner class LocalBinder : Binder() {
         internal val service: GpsTrackerService
             get() = this@GpsTrackerService
     }
 
-
     companion object {
-
-        fun startService(context: Context) {
-            val startIntent = Intent(context, GpsTrackerService::class.java)
-            ContextCompat.startForegroundService(context, startIntent)
-        }
-
-        fun stopService(context: Context) {
-            val stopIntent = Intent(context, GpsTrackerService::class.java)
-            context.stopService(stopIntent)
-        }
 
         internal const val ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST =
             "$PACKAGE_NAME.action.FOREGROUND_ONLY_LOCATION_BROADCAST"

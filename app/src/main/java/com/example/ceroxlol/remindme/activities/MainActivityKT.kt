@@ -15,47 +15,45 @@
  */
 package com.example.ceroxlol.remindme.activities
 
-import android.Manifest
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.ServiceConnection
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.services.GpsTrackerService
+import com.google.android.material.snackbar.Snackbar
 
-class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt), SharedPreferences.OnSharedPreferenceChangeListener {
+
+class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
+
+    private val TAG = this.javaClass.simpleName
 
     private lateinit var navController: NavController
 
-    private var gpsTrackerServiceBound = false
-
     private var gpsTrackerService: GpsTrackerService? = null
 
-    private lateinit var appointmentBroadcastReceiver: AppointmentBroadcastReceiver
-
-    private lateinit var sharedPreferences: SharedPreferences
-
     // Monitors connection to the while-in-use service.
-    private val foregroundOnlyServiceConnection = object : ServiceConnection {
+    private val gpsTrackerServiceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             val binder = service as GpsTrackerService.LocalBinder
             gpsTrackerService = binder.service
-            gpsTrackerServiceBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             gpsTrackerService = null
-            gpsTrackerServiceBound = false
         }
     }
 
@@ -71,8 +69,9 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt), SharedPrefe
 
         gpsTrackerService = GpsTrackerService()
 
-        sharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val intent = Intent(this, GpsTrackerService::class.java)
+        startService(intent)
+        bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     /**
@@ -84,49 +83,56 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt), SharedPrefe
 
     override fun onDestroy() {
         super.onDestroy()
-
-        GpsTrackerService.stopService(this)
+        stopService(Intent(applicationContext, GpsTrackerService::class.java))
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        // Updates button states if new while in use location is added to SharedPreferences.
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Log.i(TAG, "onRequestPermissionResult")
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.isEmpty()) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.")
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted.
+            } else {
+                // Permission denied.
 
-    }
+                // Notify the user via a SnackBar that they have rejected a core permission for the
+                // app, which makes the Activity useless. In a real app, core permissions would
+                // typically be best requested during a welcome-screen flow.
 
-    private fun foregroundPermissionApproved(): Boolean {
-        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    }
-
-    private fun requestForegroundPermissions() {
-        val provideRationale = foregroundPermissionApproved()
-
-        // If the user denied a previous request, but didn't check "Don't ask again", provide
-        // additional rationale.
-        if (provideRationale) {
-            Snackbar.make(
-                findViewById(R.id.activity_main),
-                R.string.permission_rationale,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(R.string.ok) {
-                    // Request permission
-                    ActivityCompat.requestPermissions(
-                        this@MainActivity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-                    )
-                }
-                .show()
-        } else {
-            Log.d(TAG, "Request foreground only permission")
-            ActivityCompat.requestPermissions(
-                this@MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-            )
+                // Additionally, it is important to remember that a permission might have been
+                // rejected without asking the user for permission (device policy or "Never ask
+                // again" prompts). Therefore, a user interface affordance is typically implemented
+                // when permissions are denied. Otherwise, your app could appear unresponsive to
+                // touches or interactions which have required permissions.
+                Snackbar.make(
+                    findViewById(R.layout.activity_main_kt),
+                    R.string.permission_denied_explanation,
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction(R.string.settings) { // Build intent that displays the App settings screen.
+                        val intent = Intent()
+                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        val uri: Uri = Uri.fromParts(
+                            "package",
+                            BuildConfig.APPLICATION_ID, null
+                        )
+                        intent.data = uri
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                    }
+                    .show()
+            }
         }
+    }
+
+    companion object {
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     }
 }

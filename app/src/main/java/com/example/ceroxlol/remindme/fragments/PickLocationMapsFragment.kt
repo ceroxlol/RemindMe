@@ -245,7 +245,7 @@ class PickLocationMapsFragment : Fragment() {
 
     companion object{
         private val defaultLocation = LatLng(53.551086, 9.993682)
-        private const val DEFAULT_ZOOM = 5F
+        private const val DEFAULT_ZOOM = 10F
         private const val CLOSE_ZOOM = 18F
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private const val TAG = "PickLocationMapsFragment"

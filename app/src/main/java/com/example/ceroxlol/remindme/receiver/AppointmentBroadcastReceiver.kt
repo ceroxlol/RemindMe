@@ -37,5 +37,9 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
 
     companion object{
         const val TAG = "AppointmentBroadcastReceiver"
+
+        const val ACTION_PROCESS_UPDATES =
+            "com.google.android.gms.location.sample.locationupdatespendingintent.action" +
+                    ".PROCESS_UPDATES"
     }
 }
