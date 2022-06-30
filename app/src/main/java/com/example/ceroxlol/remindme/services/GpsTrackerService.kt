@@ -77,9 +77,7 @@ class GpsTrackerService : LifecycleService() {
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
-        checkPermissions()
 
         fusedLocationProviderClient.lastLocation
             .addOnSuccessListener { location: Location? ->
@@ -89,12 +87,11 @@ class GpsTrackerService : LifecycleService() {
                     Log.d(TAG, "Current location is null. Using defaults.")
                 }
             }
+
     }
 
 
-    @SuppressLint("MissingPermission")
     private fun setupLocationUpdates() {
-        checkPermissions()
 
         locationRequest = LocationRequest.create().apply {
             this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -133,8 +130,10 @@ class GpsTrackerService : LifecycleService() {
 
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
-            locationCallback, Looper.myLooper()!!
+            locationCallback,
+            Looper.myLooper()!!
         )
+
     }
 
     private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<AppointmentKT> {
@@ -149,20 +148,6 @@ class GpsTrackerService : LifecycleService() {
                 results
             )
             results[0] < appointmentNotificationDistance
-        }
-    }
-
-    private fun checkPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                baseContext as Activity,
-                arrayOf(android.Manifest.permission_group.LOCATION),
-                1
-            )
         }
     }
 

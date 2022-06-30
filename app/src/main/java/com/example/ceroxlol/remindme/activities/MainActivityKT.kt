@@ -15,18 +15,19 @@
  */
 package com.example.ceroxlol.remindme.activities
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
@@ -67,11 +68,43 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         // Set up the action bar for use with the NavController
         setupActionBarWithNavController(this, navController)
 
-        gpsTrackerService = GpsTrackerService()
+        if (!checkPermissions()){
+            requestPermissions()
+        }
+
+            gpsTrackerService = GpsTrackerService()
 
         val intent = Intent(this, GpsTrackerService::class.java)
         startService(intent)
         bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun checkPermissions(): Boolean {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+            this, Manifest.permission_group.LOCATION
+        )
+    }
+
+    private fun requestPermissions() {
+        val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
+            this, Manifest.permission_group.LOCATION
+        )
+
+        if(shouldProvideRationale){
+            Log.i(TAG, "Displaying permission rationale to provide additional context.")
+            Snackbar.make(
+                findViewById(R.layout.activity_main_kt),
+                R.string.permission_denied_explanation,
+                Snackbar.LENGTH_INDEFINITE
+            )
+                .setAction(R.string.settings) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        REQUEST_PERMISSIONS_REQUEST_CODE)
+                }
+                .show()
+        }
     }
 
     /**
