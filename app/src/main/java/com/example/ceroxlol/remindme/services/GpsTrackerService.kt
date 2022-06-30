@@ -51,6 +51,7 @@ class GpsTrackerService : LifecycleService() {
     private lateinit var database: AppDatabase
     private lateinit var appointmentsKT: LiveData<List<AppointmentKT>>
     private lateinit var appointments: MutableList<AppointmentKT>
+    private val appointmentNotificationDistance = 100
 
     private val localBinder = LocalBinder()
 
@@ -71,6 +72,7 @@ class GpsTrackerService : LifecycleService() {
 
         appointments = mutableListOf()
         appointmentsKT.observe(this) {
+            Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
             appointments.addAll(it)
         }
     }
@@ -89,7 +91,7 @@ class GpsTrackerService : LifecycleService() {
             }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     @SuppressLint("MissingPermission")
     private fun setupLocationUpdates() {
         checkPermissions()
@@ -138,7 +140,7 @@ class GpsTrackerService : LifecycleService() {
     private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<AppointmentKT> {
         Log.i(TAG, "Filtering $appointments")
         return appointments.filter { appointmentKT ->
-            val results = FloatArray(0)
+            val results = FloatArray(1)
             Location.distanceBetween(
                 currentLocation.latitude,
                 currentLocation.longitude,
@@ -146,8 +148,7 @@ class GpsTrackerService : LifecycleService() {
                 appointmentKT.location.location.longitude,
                 results
             )
-            Log.i(TAG, "$results")
-            results[0] < 100
+            results[0] < appointmentNotificationDistance
         }
     }
 
@@ -243,29 +244,28 @@ class GpsTrackerService : LifecycleService() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .addAction(
                 R.drawable.amu_bubble_mask,
-                "Test title",
+                "Ok",
                 appointmentDonePendingIntent
             )
             .addAction(
                 R.drawable.ic_cancel,
-                "Test title 2",
+                "Snooze",
                 appointmentSnoozePendingIntent
             )
             .build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         intent?.let { onTaskRemoved(it) }
         return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder {
-        //TODO: Maybe this helps
-        //super.onBind(intent)
+        super.onBind(intent)
         Log.d(TAG, "onBind()")
 
-        // MainActivity (client) comes into foreground and binds to service, so the service can
-        // become a background services.
+        // become a background service.
         stopForeground(true)
         return localBinder
     }
@@ -290,13 +290,6 @@ class GpsTrackerService : LifecycleService() {
 
         // Ensures onRebind() is called if MainActivity (client) rebinds.
         return true
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent) {
-        val restartServiceIntent = Intent(this, this.javaClass)
-        restartServiceIntent.setPackage(packageName)
-        startService(restartServiceIntent)
-        super.onTaskRemoved(rootIntent)
     }
 
     inner class LocalBinder : Binder() {

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.app.ActivityCompat
@@ -112,7 +113,15 @@ class PickLocationMapsFragment : Fragment() {
 
                     if (queryName != "") {
                         val address =
-                            Geocoder(requireActivity()).getFromLocationName(queryName, 1).first()
+                            Geocoder(requireActivity()).getFromLocationName(queryName, 1).firstOrNull()
+                        if(address == null)
+                        {
+                            Toast.makeText(
+                                requireContext(),
+                                "No place found with this name", Toast.LENGTH_SHORT
+                            ).show()
+                            return false
+                        }
                         val latLng = LatLng(address.latitude, address.longitude)
                         map.addMarker(
                             MarkerOptions()
@@ -244,7 +253,7 @@ class PickLocationMapsFragment : Fragment() {
     }
 
     companion object{
-        private val defaultLocation = LatLng(53.551086, 9.993682)
+        private val defaultLocation = LatLng(9.993682, 53.551086)
         private const val DEFAULT_ZOOM = 10F
         private const val CLOSE_ZOOM = 18F
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
