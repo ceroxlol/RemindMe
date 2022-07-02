@@ -38,7 +38,7 @@
         <service
             android:name=".services.GpsTrackerService"
             android:exported="false" />
-        <receiver android:name=".receiver.AppointmentActionReceiver" />
+        <receiver android:name=".receiver.AppointmentBroadcastReceiver" />
     </application>
 
 </manifest>
