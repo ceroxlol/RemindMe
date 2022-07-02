@@ -18,7 +18,7 @@ class ArrayAdapterLocationsListSpinner(context: Context, data: List<LocationMark
     //TODO: Beautify
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val view: View = convertView ?: inflater.inflate(R.layout.item_location, parent, false)
+        val view: View = convertView ?: inflater.inflate(R.layout.spinner_item_location, parent, false)
 
         getItem(position)?.let {
             val tv = view.findViewById<TextView>(R.id.textViewLocationName)
@@ -29,7 +29,7 @@ class ArrayAdapterLocationsListSpinner(context: Context, data: List<LocationMark
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View = convertView ?: inflater.inflate(R.layout.item_location, parent, false)
+        val view: View = convertView ?: inflater.inflate(R.layout.spinner_item_location, parent, false)
 
         getItem(position)?.let {
             val tv = view.findViewById<TextView>(R.id.textViewLocationName)
