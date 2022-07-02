@@ -14,5 +14,5 @@ data class AppointmentKT(
     @Embedded val location: LocationMarker,
     @ColumnInfo val created: Date,
     @ColumnInfo val time: Date?,
-    @ColumnInfo val done: Boolean
+    @ColumnInfo val done: Boolean = false
 )
