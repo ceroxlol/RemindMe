@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -58,13 +61,22 @@ class EditLocationFragment : Fragment() {
     private var _binding: FragmentPickLocationMapsBinding? = null
     private val binding get() = _binding!!
 
+    @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
 
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.uiSettings.isMapToolbarEnabled = true
+        map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isMapToolbarEnabled = true
 
-        //Todo: set element to be the nearest senseful element
+        val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
+        val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))
+        val layoutParams = locationButton?.layoutParams as RelativeLayout.LayoutParams
+        // position on right bottom
+        // position on right bottom
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+        layoutParams.setMargins(0, 0, 30, 300)
+
         map.setOnMapClickListener {
             map.clear()
             map.addMarker(MarkerOptions().position(it))
@@ -96,8 +108,8 @@ class EditLocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(callback)
 
         val id = navigationArgs.locationMarkerId
         locationMarkerViewModel.retrieveLocationMarker(id).observe(this.viewLifecycleOwner) { selectedItem ->
@@ -180,6 +192,7 @@ class EditLocationFragment : Fragment() {
             .rationale("Needs permission to access the location")
             .checkPermission { granted: Boolean ->
                 if (granted) {
+                    Log.i(TAG, "location permission granted")
                     map.isMyLocationEnabled = true
                     map.uiSettings.isMyLocationButtonEnabled = true
                 } else {
