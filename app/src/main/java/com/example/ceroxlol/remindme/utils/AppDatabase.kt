@@ -21,6 +21,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun appointmentDao(): AppointmentDao
     abstract fun locationMarkerDao(): LocationMarkerDao
 
+    fun updateAppointment(){
+
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
