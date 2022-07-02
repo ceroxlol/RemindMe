@@ -9,7 +9,9 @@
         android:id="@+id/textViewLocationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="22sp"
+        android:paddingBottom="2dp"
+        android:layout_centerHorizontal="true"
         tools:text=""/>
 
 </RelativeLayout>
