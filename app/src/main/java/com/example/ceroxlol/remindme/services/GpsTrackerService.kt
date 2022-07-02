@@ -1,5 +1,6 @@
 package com.example.ceroxlol.remindme.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -25,7 +26,6 @@ import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
 
 
-//https://github.com/googlecodelabs/while-in-use-location/blob/master/complete/src/main/java/com/example/android/whileinuselocation/ForegroundOnlyLocationService.kt
 class GpsTrackerService : LifecycleService() {
 
     /*
@@ -72,6 +72,7 @@ class GpsTrackerService : LifecycleService() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
 
         fusedLocationProviderClient.lastLocation
@@ -86,6 +87,7 @@ class GpsTrackerService : LifecycleService() {
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun setupLocationUpdates() {
 
         locationRequest = LocationRequest.create().apply {
