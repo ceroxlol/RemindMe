@@ -1,30 +1,25 @@
 package com.example.ceroxlol.remindme.services
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.annotation.SuppressLint
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.provider.ContactsContract.Directory.PACKAGE_NAME
-import android.telecom.TelecomManager.EXTRA_LOCATION
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.AppointmentKT
-import com.example.ceroxlol.remindme.receiver.AppointmentActionReceiver
+import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
@@ -98,7 +93,8 @@ class GpsTrackerService : LifecycleService() {
             this.interval = MIN_TIME_BW_UPDATES
             this.fastestInterval = STANDARD_TIME_BW_UPDATES
             this.maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-            this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
+            //TODO: Reuse once debugging is done
+            //this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
         }
 
         locationCallback = object : LocationCallback() {
@@ -114,13 +110,14 @@ class GpsTrackerService : LifecycleService() {
 
                     Log.i(TAG, "found some appointments!")
 
-                    val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
+/*                    val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
                     intent.putExtra(EXTRA_LOCATION, currentLocation)
-                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)*/
 
                     appointmentsInRange.forEach {
                         notificationManager.notify(
-                            NOTIFICATION_ID,
+                            TAG,
+                            it.id + 10,
                             generateNotification(it)
                         )
                     }
@@ -138,17 +135,22 @@ class GpsTrackerService : LifecycleService() {
 
     private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<AppointmentKT> {
         Log.i(TAG, "Filtering $appointments")
-        return appointments.filter { appointmentKT ->
-            val results = FloatArray(1)
-            Location.distanceBetween(
-                currentLocation.latitude,
-                currentLocation.longitude,
-                appointmentKT.location.location.latitude,
-                appointmentKT.location.location.longitude,
-                results
-            )
-            results[0] < appointmentNotificationDistance
-        }
+        return appointments
+            //TODO: Remove once testing is done
+            /*.filter { appointmentKT ->
+                !appointmentKT.done
+            }*/
+            .filter { appointmentKT ->
+                val results = FloatArray(1)
+                Location.distanceBetween(
+                    currentLocation.latitude,
+                    currentLocation.longitude,
+                    appointmentKT.location.location.latitude,
+                    appointmentKT.location.location.longitude,
+                    results
+                )
+                results[0] < appointmentNotificationDistance
+            }
     }
 
     /*
@@ -165,8 +167,8 @@ class GpsTrackerService : LifecycleService() {
         //      4. Build and issue the notification
 
         // 0. Get data
-        val mainNotificationText = appointmentKT.text
-        val titleText = "Appointment '" + appointmentKT.name + "' is met"
+        val titleText = "Remember! " + appointmentKT.name
+        val mainNotificationText = "Note: " + appointmentKT.text
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -189,10 +191,11 @@ class GpsTrackerService : LifecycleService() {
         // 3. Set up main Intent/Pending Intents for notification.
         val intentSetAppointmentKTDone = Intent(
             this,
-            AppointmentActionReceiver::class.java
-        )
-        intentSetAppointmentKTDone.putExtra("action", "setDone")
-        intentSetAppointmentKTDone.putExtra("appointmentId", appointmentKT.id)
+            AppointmentBroadcastReceiver::class.java
+        ).apply {
+            action = "setDone"
+            putExtra("appointmentId", appointmentKT.id)
+        }
 
         val appointmentDonePendingIntent = PendingIntent.getBroadcast(
             this,
@@ -203,10 +206,11 @@ class GpsTrackerService : LifecycleService() {
 
         val intentSnoozeUntilNextTime = Intent(
             this,
-            AppointmentActionReceiver::class.java
-        )
-        intentSnoozeUntilNextTime.putExtra("action", "setSnooze")
-        intentSnoozeUntilNextTime.putExtra("appointmentId", appointmentKT.id)
+            AppointmentBroadcastReceiver::class.java
+        ).apply {
+            action = "setSnooze"
+            putExtra("appointmentId", appointmentKT.id)
+        }
 
         val appointmentSnoozePendingIntent = PendingIntent.getBroadcast(
             this,
@@ -242,6 +246,7 @@ class GpsTrackerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        Log.d(TAG, "onStartCommand")
         intent?.let { onTaskRemoved(it) }
         return START_STICKY
     }
@@ -271,7 +276,7 @@ class GpsTrackerService : LifecycleService() {
         // to maintain the 'while-in-use' label.
         // NOTE: If this method is called due to a configuration change in MainActivity,
         // we do nothing.
-        startForeground(1, Notification())
+        startForeground(NOTIFICATION_ID, Notification())
 
         // Ensures onRebind() is called if MainActivity (client) rebinds.
         return true
@@ -293,8 +298,8 @@ class GpsTrackerService : LifecycleService() {
 
         private const val TAG = "GpsTrackerService"
 
-        private const val MIN_TIME_BW_UPDATES = (1000 * 60).toLong() // 1 minute
-        private const val STANDARD_TIME_BW_UPDATES = (1000 * 30).toLong() // 30 secs
+        private const val MIN_TIME_BW_UPDATES = (1000 * 30).toLong() // 1 minute
+        private const val STANDARD_TIME_BW_UPDATES = (1000 * 60).toLong() // 30 secs
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES = 50.toFloat() // 50 metres
     }
 }
