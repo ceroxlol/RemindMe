@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -27,7 +29,6 @@ import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 import com.example.ceroxlol.remindme.utils.permissions.Permission
 import com.example.ceroxlol.remindme.utils.permissions.PermissionManager
-import com.example.ceroxlol.remindme.utils.toLatLng
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -64,12 +65,21 @@ class PickLocationMapsFragment : Fragment() {
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isMapToolbarEnabled = true
 
-        //Todo: set element to be the nearest senseful element
+        val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
+        val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))
+        val layoutParams = locationButton?.layoutParams as RelativeLayout.LayoutParams
+        // position on right bottom
+        // position on right bottom
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+        layoutParams.setMargins(0, 0, 30, 300)
+
         map.setOnMapClickListener {
             map.clear()
             locationMarker = LocationMarker(
                 location = DbLocation(it),
-                name = ""
+                name = "",
+                address = null
             )
             map.addMarker(MarkerOptions().position(it))
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
@@ -80,6 +90,7 @@ class PickLocationMapsFragment : Fragment() {
         getDeviceLocation()
     }
 
+    //TODO: Set Home location
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,10 +123,11 @@ class PickLocationMapsFragment : Fragment() {
                     val queryName = binding.svLocation.query.toString()
 
                     if (queryName != "") {
+                        //TODO: show list of potential results in a dropdown view
                         val address =
-                            Geocoder(requireActivity()).getFromLocationName(queryName, 1).firstOrNull()
-                        if(address == null)
-                        {
+                            Geocoder(requireActivity()).getFromLocationName(queryName, 1)
+                                .firstOrNull()
+                        if (address == null) {
                             Toast.makeText(
                                 requireContext(),
                                 "No place found with this name", Toast.LENGTH_SHORT
@@ -131,13 +143,16 @@ class PickLocationMapsFragment : Fragment() {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, CLOSE_ZOOM))
 
                         locationMarker = LocationMarker(
-                            location = DbLocation(latitude = latLng.latitude, longitude = latLng.longitude),
-                            name = queryName
+                            location = DbLocation(
+                                latitude = latLng.latitude,
+                                longitude = latLng.longitude
+                            ),
+                            name = queryName,
+                            address = address
                         )
 
                         return true
                     }
-
                     return false
                 }
 
@@ -224,7 +239,7 @@ class PickLocationMapsFragment : Fragment() {
     }
 
     private fun showSaveDialog() {
-        if(locationMarker == null){
+        if (locationMarker == null) {
             Log.e(TAG, "locationMaker is null. This should not happen!")
             return
         }
@@ -252,7 +267,7 @@ class PickLocationMapsFragment : Fragment() {
         alertDialog.show()
     }
 
-    companion object{
+    companion object {
         private val defaultLocation = LatLng(9.993682, 53.551086)
         private const val DEFAULT_ZOOM = 10F
         private const val CLOSE_ZOOM = 18F

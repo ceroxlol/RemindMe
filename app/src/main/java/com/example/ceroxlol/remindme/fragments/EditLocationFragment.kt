@@ -3,6 +3,7 @@ package com.example.ceroxlol.remindme.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,6 +25,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.databinding.FragmentPickLocationMapsBinding
+import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
@@ -112,16 +116,68 @@ class EditLocationFragment : Fragment() {
         mapFragment.getMapAsync(callback)
 
         val id = navigationArgs.locationMarkerId
-        locationMarkerViewModel.retrieveLocationMarker(id).observe(this.viewLifecycleOwner) { selectedItem ->
-            locationMarker = selectedItem
-            bind()
-            moveCameraToLocationMarker()
-            map.addMarker(MarkerOptions().position(locationMarker?.location!!.toLatLng()))
-        }
+        locationMarkerViewModel.retrieveLocationMarker(id)
+            .observe(this.viewLifecycleOwner) { selectedItem ->
+                locationMarker = selectedItem
+                bind()
+                moveCameraToLocationMarker()
+                map.addMarker(MarkerOptions().position(locationMarker?.location!!.toLatLng()))
+            }
 
         binding.saveButton.setOnClickListener {
             showSaveDialog()
         }
+
+        binding.svLocation.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    val queryName = binding.svLocation.query.toString()
+
+                    if (queryName != "") {
+                        //TODO: show list of potential results
+                        val address =
+                            Geocoder(requireActivity()).getFromLocationName(queryName, 1)
+                                .firstOrNull()
+                        if (address == null) {
+                            Toast.makeText(
+                                requireContext(),
+                                "No place found with this name", Toast.LENGTH_SHORT
+                            ).show()
+                            return false
+                        }
+                        val latLng = LatLng(address.latitude, address.longitude)
+                        map.addMarker(
+                            MarkerOptions()
+                                .position(latLng)
+                                .title(queryName)
+                        )
+                        map.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                latLng,
+                                CLOSE_ZOOM
+                            )
+                        )
+
+                        locationMarker = LocationMarker(
+                            location = DbLocation(
+                                latitude = latLng.latitude,
+                                longitude = latLng.longitude
+                            ),
+                            name = queryName
+                        )
+
+                        return true
+                    }
+
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
+                }
+
+            }
+        )
     }
 
     private fun bind() {
@@ -151,7 +207,6 @@ class EditLocationFragment : Fragment() {
                                 CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, CLOSE_ZOOM)
                             )
-                            map.uiSettings.isMyLocationButtonEnabled = false
                         }
                     }
                 } else {
@@ -203,6 +258,7 @@ class EditLocationFragment : Fragment() {
             }
     }
 
+    //TODO: This should be handled in an introduction screen
     private fun getLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -218,7 +274,7 @@ class EditLocationFragment : Fragment() {
     }
 
     private fun showSaveDialog() {
-        if(locationMarker == null){
+        if (locationMarker == null) {
             Log.e(TAG, "locationMaker is null. This should not happen!")
             return
         }
@@ -246,7 +302,7 @@ class EditLocationFragment : Fragment() {
         alertDialog.show()
     }
 
-    companion object{
+    companion object {
         private val defaultLocation = LatLng(9.993682, 53.551086)
         private const val DEFAULT_ZOOM = 13F
         private const val CLOSE_ZOOM = 18F
