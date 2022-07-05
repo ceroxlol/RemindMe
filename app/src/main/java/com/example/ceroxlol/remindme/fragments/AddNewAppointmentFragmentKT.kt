@@ -53,18 +53,6 @@ class AddNewAppointmentFragmentKT : Fragment() {
         return binding.root
     }
 
-    /**
-     * Binds views with the passed in item data.
-     */
-    private fun bind(appointmentKT: AppointmentKT) {
-        binding.apply {
-            appointmentName.setText(appointmentKT.name, TextView.BufferType.SPANNABLE)
-            appointmentText.setText(appointmentKT.text, TextView.BufferType.SPANNABLE)
-            //appointmentLocation.selectedItem(appointmentKT.location.id, TextView.BufferType.SPANNABLE)
-            saveAction.setOnClickListener { saveAppointment() }
-        }
-    }
-
     private fun saveAppointment() {
         if (isEntryValid()) {
             appointmentViewModel.addNewAppointmentKT(
@@ -110,7 +98,7 @@ class AddNewAppointmentFragmentKT : Fragment() {
         }
 
         //Todo: Change button to be floating?
-        binding.saveAction.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             saveAppointment()
         }
     }
