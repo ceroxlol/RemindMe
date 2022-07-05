@@ -77,7 +77,6 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
         this.spinnerAddAppointmentLocations.setAdapter(adapter);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private AppointmentKT saveNewAppointment() {
         LocationMarker locationMarker = (LocationMarker) this.spinnerAddAppointmentLocations.getSelectedItem();
         Date appointmentTime = null;
@@ -91,24 +90,21 @@ public class AddNewAppointmentActivity extends AppCompatActivity {
             }
         }
 
-        AppointmentKT appointment = new AppointmentKT(
-                0,
-                editTextAppointmentName.getText().toString(),
-                editTextAppointmentText.getText().toString(),
-                locationMarker,
-                //Calendar.getInstance().getTime(),
-                Date.from(Instant.now()),
-                appointmentTime,
-                false
-        );
-
-/*        try {
+        /*        try {
             database.appointmentDao().insert(appointment);
         } catch (SQLException e) {
             e.printStackTrace();
         }*/
 
-        return appointment;
+        return new AppointmentKT(
+                0,
+                editTextAppointmentName.getText().toString(),
+                editTextAppointmentText.getText().toString(),
+                locationMarker,
+                Calendar.getInstance().getTime(),
+                appointmentTime,
+                false
+        );
     }
 
     //When finishing this activity, an acknowledge to the main activity is sent to refresh the appointment list
