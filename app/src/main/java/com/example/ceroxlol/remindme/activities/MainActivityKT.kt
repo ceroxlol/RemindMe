@@ -58,6 +58,11 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         }
     }
 
+    //TODO: Setup Home
+    //TODO: Create Settings Page
+        // have a radius changeable
+        // have a snooze minute setup
+    //TODO: Implement appointments snoozable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,7 +98,7 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         if(shouldProvideRationale){
             Log.i(TAG, "Displaying permission rationale to provide additional context.")
             Snackbar.make(
-                findViewById(R.layout.activity_main_kt),
+                findViewById(R.id.mainFragment),
                 R.string.permission_denied_explanation,
                 Snackbar.LENGTH_INDEFINITE
             )
@@ -124,6 +129,7 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Log.i(TAG, "onRequestPermissionResult")
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.isEmpty()) {
@@ -145,7 +151,7 @@ class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
                 // when permissions are denied. Otherwise, your app could appear unresponsive to
                 // touches or interactions which have required permissions.
                 Snackbar.make(
-                    findViewById(R.layout.activity_main_kt),
+                    findViewById(R.id.mainFragment),
                     R.string.permission_denied_explanation,
                     Snackbar.LENGTH_INDEFINITE
                 )
