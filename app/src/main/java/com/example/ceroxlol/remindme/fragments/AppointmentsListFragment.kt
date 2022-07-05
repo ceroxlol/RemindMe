@@ -22,6 +22,8 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
+    //TODO: Add "show done" check
+    //TODO: Make elements deletable by clicking long or moving them to the side
     private var _binding: AppointmentListFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -48,6 +50,7 @@ class AppointmentsListFragment : Fragment() {
         // changes.
         appointmentKTViewModel.allAppointments.observe(this.viewLifecycleOwner) { appointments ->
             appointments.let {
+                //TODO: Make adapter react to show done
                 adapter.submitList(it)
             }
         }
