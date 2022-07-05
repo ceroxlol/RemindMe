@@ -31,7 +31,6 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         insertAppointmentKT(newAppointmentKT)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getAppointmentKTEntry(
         name: String,
         text: String?,
@@ -43,7 +42,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
             name = name,
             text = text,
             location = locationMarker,
-            created = Date.from(Instant.now()),
+            created = Calendar.getInstance().time,
             time = time,
             done = done
         )
@@ -54,7 +53,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
     }
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
-        if (appointmentName.isBlank() || appointmentText.isBlank() || appointmentLocation.isValid()) {
+        if (appointmentName.isBlank() || appointmentText.isBlank() || !appointmentLocation.isValid()) {
             return true
         }
         return false
@@ -76,7 +75,6 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getUpdatedAppointmentEntry(
         appointmentKTId : Int,
         appointmentKTName: String,
@@ -88,7 +86,7 @@ class AppointmentKTViewModel(private val appointmentDao: AppointmentDao) : ViewM
             name = appointmentKTName,
             text = appointmentKTText,
             location = appointmentKTLocation,
-            created = Date.from(Instant.now()),
+            created = Calendar.getInstance().time,
             done = false,
             time = null
         )
