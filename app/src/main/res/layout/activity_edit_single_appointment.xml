@@ -109,7 +109,7 @@
         android:id="@+id/buttonAppointmentSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Save"
+        android:text="@string/save"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
