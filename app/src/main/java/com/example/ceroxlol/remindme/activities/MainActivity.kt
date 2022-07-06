@@ -37,7 +37,7 @@ import com.example.ceroxlol.remindme.services.GpsTrackerService
 import com.google.android.material.snackbar.Snackbar
 
 
-class MainActivityKT : AppCompatActivity(R.layout.activity_main_kt) {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val TAG = this.javaClass.simpleName
 

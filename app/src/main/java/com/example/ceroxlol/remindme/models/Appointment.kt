@@ -7,12 +7,13 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity
-data class AppointmentKT(
+data class Appointment(
     @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo val name: String,
-    @ColumnInfo val text: String?,
+    val name: String,
+    val text: String?,
     @Embedded val location: LocationMarker,
-    @ColumnInfo val created: Date,
-    @ColumnInfo val time: Date?,
-    @ColumnInfo val done: Boolean = false
+    val created: Date,
+    val time: Date?,
+    val done: Boolean = false,
+    val snooze: Date?
 )

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,18 +14,18 @@ import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
 import com.example.ceroxlol.remindme.databinding.FragmentAddAppointmentBinding
-import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
-import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModel
-import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModelFactory
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 
 
 class AddNewAppointmentFragmentKT : Fragment() {
 
-    private val appointmentViewModel: AppointmentKTViewModel by activityViewModels {
-        AppointmentKTViewModelFactory(
+    private val appointmentViewModel: AppointmentViewModel by activityViewModels {
+        AppointmentViewModelFactory(
             (activity?.application as RemindMeApplication).database
                 .appointmentDao()
         )
@@ -39,7 +38,7 @@ class AddNewAppointmentFragmentKT : Fragment() {
         )
     }
 
-    lateinit var appointment: AppointmentKT
+    lateinit var appointment: Appointment
 
     private var _binding: FragmentAddAppointmentBinding? = null
     private val binding get() = _binding!!
@@ -55,7 +54,7 @@ class AddNewAppointmentFragmentKT : Fragment() {
 
     private fun saveAppointment() {
         if (isEntryValid()) {
-            appointmentViewModel.addNewAppointmentKT(
+            appointmentViewModel.addNewAppointment(
                 binding.appointmentName.text.toString(),
                 binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker,

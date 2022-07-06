@@ -38,8 +38,8 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         return locationMarkerDao.getById(id).asLiveData()
     }
 
-    fun isEntryValid(name: String, longitude : Double, latitude : Double): Boolean {
-        if (name.isBlank()) {
+    fun isEntryValid(name: String, longitude : Double?, latitude : Double?): Boolean {
+        if (name.isBlank() || longitude == null || latitude == null) {
             return false
         }
         return true

@@ -285,7 +285,7 @@ class EditLocationFragment : Fragment() {
 
         alertDialog.setView(editText)
 
-        alertDialog.setPositiveButton("Save") { p0, p1 ->
+        alertDialog.setPositiveButton("Save") { _, _ ->
             locationMarkerViewModel.addNewLocationMarker(
                 editText.text.toString(),
                 locationMarker!!.location
