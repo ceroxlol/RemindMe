@@ -19,7 +19,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.google.android.gms.location.*
@@ -44,8 +44,8 @@ class GpsTrackerService : LifecycleService() {
     private var currentLocation: Location? = null
 
     private lateinit var database: AppDatabase
-    private lateinit var appointmentsKT: LiveData<List<AppointmentKT>>
-    private lateinit var appointments: MutableList<AppointmentKT>
+    private lateinit var appointmentsKT: LiveData<List<Appointment>>
+    private lateinit var appointments: MutableList<Appointment>
     private val appointmentNotificationDistance = 100
 
     private val localBinder = LocalBinder()
@@ -135,7 +135,7 @@ class GpsTrackerService : LifecycleService() {
 
     }
 
-    private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<AppointmentKT> {
+    private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<Appointment> {
         Log.i(TAG, "Filtering $appointments")
         return appointments
             //TODO: Remove once testing is done
@@ -158,7 +158,7 @@ class GpsTrackerService : LifecycleService() {
     /*
      * Generates a BIG_TEXT_STYLE Notification that represent latest location.
      */
-    private fun generateNotification(appointmentKT: AppointmentKT): Notification {
+    private fun generateNotification(appointment: Appointment): Notification {
         Log.d(TAG, "generateNotification()")
 
         // Main steps for building a BIG_TEXT_STYLE notification:
@@ -169,8 +169,8 @@ class GpsTrackerService : LifecycleService() {
         //      4. Build and issue the notification
 
         // 0. Get data
-        val titleText = "Remember! " + appointmentKT.name
-        val mainNotificationText = "Note: " + appointmentKT.text
+        val titleText = "Remember! " + appointment.name
+        val mainNotificationText = "Note: " + appointment.text
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -196,7 +196,7 @@ class GpsTrackerService : LifecycleService() {
             AppointmentBroadcastReceiver::class.java
         ).apply {
             action = "setDone"
-            putExtra("appointmentId", appointmentKT.id)
+            putExtra("appointmentId", appointment.id)
         }
 
         val appointmentDonePendingIntent = PendingIntent.getBroadcast(
@@ -211,7 +211,7 @@ class GpsTrackerService : LifecycleService() {
             AppointmentBroadcastReceiver::class.java
         ).apply {
             action = "setSnooze"
-            putExtra("appointmentId", appointmentKT.id)
+            putExtra("appointmentId", appointment.id)
         }
 
         val appointmentSnoozePendingIntent = PendingIntent.getBroadcast(

@@ -1,29 +1,29 @@
 package com.example.ceroxlol.remindme.models.dao
 
 import androidx.room.*
-import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.Appointment
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppointmentDao {
-    @Query("SELECT * FROM AppointmentKT")
-    fun getAll(): Flow<List<AppointmentKT>>
+    @Query("SELECT * FROM Appointment")
+    fun getAll(): Flow<List<Appointment>>
 
-    @Query("SELECT * FROM AppointmentKT WHERE appointment_id = :id")
-    fun getById(id: Int): Flow<AppointmentKT>
+    @Query("SELECT * FROM Appointment WHERE appointment_id = :id")
+    fun getById(id: Int): Flow<Appointment>
 
-    @Query("UPDATE AppointmentKT SET done = 'true' WHERE appointment_id = :id")
+    @Query("UPDATE Appointment SET done = 'true' WHERE appointment_id = :id")
     fun setAppointmentDoneById(id:Int)
 
     @Update
-    fun update(appointment: AppointmentKT)
+    fun update(appointment: Appointment)
 
     @Delete
-    suspend fun delete(appointment: AppointmentKT)
+    suspend fun delete(appointment: Appointment)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(appointment: AppointmentKT)
+    suspend fun insert(appointment: Appointment)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(vararg appointments: AppointmentKT)
+    suspend fun insertAll(vararg appointments: Appointment)
 }

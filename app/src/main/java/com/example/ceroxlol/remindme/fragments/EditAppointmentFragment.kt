@@ -14,18 +14,18 @@ import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
 import com.example.ceroxlol.remindme.databinding.FragmentAppointmentDetailBinding
-import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
-import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModel
-import com.example.ceroxlol.remindme.models.viewmodel.AppointmentKTViewModelFactory
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EditAppointmentFragment : Fragment() {
 
-    private val appointmentViewModel: AppointmentKTViewModel by activityViewModels {
-        AppointmentKTViewModelFactory(
+    private val appointmentViewModel: AppointmentViewModel by activityViewModels {
+        AppointmentViewModelFactory(
             (activity?.application as RemindMeApplication).database
                 .appointmentDao()
         )
@@ -40,7 +40,7 @@ class EditAppointmentFragment : Fragment() {
 
     private val navigationArgs: EditAppointmentFragmentArgs by navArgs()
 
-    lateinit var appointmentKT: AppointmentKT
+    lateinit var appointment: Appointment
 
     private var _binding: FragmentAppointmentDetailBinding? = null
     private val binding get() = _binding!!
@@ -60,9 +60,9 @@ class EditAppointmentFragment : Fragment() {
         // Retrieve the appointment details using the id.
         // Attach an observer on the data (instead of polling for changes) and only update the
         // the UI when the data actually changes.
-        appointmentViewModel.retrieveAppointmentKt(id).observe(this.viewLifecycleOwner) { selectedItem ->
-            appointmentKT = selectedItem
-            bind(appointmentKT)
+        appointmentViewModel.retrieveAppointment(id).observe(this.viewLifecycleOwner) { selectedItem ->
+            appointment = selectedItem
+            bind(appointment)
         }
 
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
@@ -72,7 +72,7 @@ class EditAppointmentFragment : Fragment() {
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 binding.appointmentLocation.adapter = adapter
 
-                val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointmentKT.location.id }}.first()
+                val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location.id }}.first()
                 binding.appointmentLocation.setSelection(selectionPosition)
             }
         }
@@ -82,10 +82,10 @@ class EditAppointmentFragment : Fragment() {
         }
     }
 
-    private fun bind(appointmentKT: AppointmentKT) {
+    private fun bind(appointment: Appointment) {
         binding.apply {
-            appointmentName.setText(appointmentKT.name, TextView.BufferType.SPANNABLE)
-            appointmentText.setText(appointmentKT.text, TextView.BufferType.SPANNABLE)
+            appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
+            appointmentText.setText(appointment.text, TextView.BufferType.SPANNABLE)
             saveButton.setOnClickListener { saveAppointment() }
             //removeAppointment.setOnClickListener { showDeletionDialog() }
         }
@@ -104,7 +104,7 @@ class EditAppointmentFragment : Fragment() {
     }
 
     private fun deleteItem() {
-        appointmentViewModel.deleteAppointment(appointmentKT)
+        appointmentViewModel.deleteAppointment(appointment)
         findNavController().navigateUp()
     }
 
@@ -118,8 +118,8 @@ class EditAppointmentFragment : Fragment() {
 
     private fun saveAppointment() {
         if (isEntryValid()) {
-            appointmentViewModel.updateAppointmentKT(
-                appointmentKT.id,
+            appointmentViewModel.updateAppointment(
+                appointment.id,
                 binding.appointmentName.text.toString(),
                 binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker

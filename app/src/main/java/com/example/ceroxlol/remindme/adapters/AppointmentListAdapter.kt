@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.databinding.AppointmentListItemBinding
-import com.example.ceroxlol.remindme.models.AppointmentKT
+import com.example.ceroxlol.remindme.models.Appointment
 
 /**
  * [ListAdapter] implementation for the recyclerview.
  */
 
-class AppointmentListAdapter(private val onItemClicked: (AppointmentKT) -> Unit) :
-    ListAdapter<AppointmentKT, AppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
+class AppointmentListAdapter(private val onItemClicked: (Appointment) -> Unit) :
+    ListAdapter<Appointment, AppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
         return AppointmentViewHolder(
@@ -51,7 +51,7 @@ class AppointmentListAdapter(private val onItemClicked: (AppointmentKT) -> Unit)
     class AppointmentViewHolder(private var binding: AppointmentListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(appointment: AppointmentKT) {
+        fun bind(appointment: Appointment) {
             binding.appointmentName.text = appointment.name
             binding.appointmentText.text = appointment.text
             binding.appointmentLocationName.text = appointment.location.name
@@ -59,12 +59,12 @@ class AppointmentListAdapter(private val onItemClicked: (AppointmentKT) -> Unit)
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<AppointmentKT>() {
-            override fun areItemsTheSame(oldItem: AppointmentKT, newItem: AppointmentKT): Boolean {
+        private val DiffCallback = object : DiffUtil.ItemCallback<Appointment>() {
+            override fun areItemsTheSame(oldItem: Appointment, newItem: Appointment): Boolean {
                 return oldItem === newItem
             }
 
-            override fun areContentsTheSame(oldItem: AppointmentKT, newItem: AppointmentKT): Boolean {
+            override fun areContentsTheSame(oldItem: Appointment, newItem: Appointment): Boolean {
                 return oldItem.id == newItem.id
             }
         }
