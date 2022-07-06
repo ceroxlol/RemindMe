@@ -23,6 +23,7 @@ import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.google.android.gms.location.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -105,10 +106,10 @@ class GpsTrackerService : LifecycleService() {
 
                 currentLocation = locationResult.lastLocation
 
-                val appointmentsInRange =
-                    checkIfAppointmentsAreInInRange(currentLocation as Location)
+                val appointmentsToNotify =
+                    checkIfAppointmentsShouldNotify(currentLocation as Location)
 
-                if (appointmentsInRange.isNotEmpty()) {
+                if (appointmentsToNotify.isNotEmpty()) {
 
                     Log.i(TAG, "found some appointments!")
 
@@ -116,10 +117,10 @@ class GpsTrackerService : LifecycleService() {
                     intent.putExtra(EXTRA_LOCATION, currentLocation)
                     LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)*/
 
-                    appointmentsInRange.forEach {
+                    appointmentsToNotify.forEach {
                         notificationManager.notify(
                             TAG,
-                            it.id + 10,
+                            it.id,
                             generateNotification(it)
                         )
                     }
@@ -135,12 +136,12 @@ class GpsTrackerService : LifecycleService() {
 
     }
 
-    private fun checkIfAppointmentsAreInInRange(currentLocation: Location): List<Appointment> {
+    private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
         Log.i(TAG, "Filtering $appointments")
         return appointments
             //TODO: Remove once testing is done
             /*.filter { appointmentKT ->
-                !appointmentKT.done
+                !appointmentKT.done && appointmentKT.snooze?.before(Calendar.getInstance().time) == true
             }*/
             .filter { appointmentKT ->
                 val results = FloatArray(1)
