@@ -3,6 +3,7 @@ package com.example.ceroxlol.remindme.models.dao
 import androidx.room.*
 import com.example.ceroxlol.remindme.models.Appointment
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Dao
 interface AppointmentDao {
@@ -13,7 +14,10 @@ interface AppointmentDao {
     fun getById(id: Int): Flow<Appointment>
 
     @Query("UPDATE Appointment SET done = 'true' WHERE appointment_id = :id")
-    fun setAppointmentDoneById(id:Int)
+    fun setAppointmentDoneById(id: Int)
+
+    @Query("UPDATE Appointment SET snooze = :snooze WHERE appointment_id = :id")
+    fun setAppointmentSnooze(id: Int, snooze: Date)
 
     @Update
     fun update(appointment: Appointment)

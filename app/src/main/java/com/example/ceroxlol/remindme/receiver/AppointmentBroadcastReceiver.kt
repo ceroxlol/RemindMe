@@ -7,6 +7,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.ceroxlol.remindme.utils.AppDatabase
+import java.util.*
 
 class AppointmentBroadcastReceiver : BroadcastReceiver() {
 
@@ -26,7 +27,7 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
                     Thread {
                         database.appointmentDao().setAppointmentDoneById(appointmentId)
                     }.start()
-                    notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId + 10)
+                    notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId)
                     pendingResult.finish()
                 }
             }
@@ -36,7 +37,15 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
                     Log.e(TAG, "No appointmentId passed")
                 } else {
                     Log.d(TAG, "Set snooze for appointmentId $appointmentId")
+                    val pendingResult = goAsync()
+                    Thread {
+                        database.appointmentDao().setAppointmentSnooze(
+                            appointmentId,
+                            Calendar.getInstance().apply { this.add(Calendar.MINUTE, 10) }.time
+                        )
+                    }.start()
                     notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId)
+                    pendingResult.finish()
                 }
             }
         }
