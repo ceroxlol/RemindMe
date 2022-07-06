@@ -148,7 +148,7 @@ class PickLocationMapsFragment : Fragment() {
                                 longitude = latLng.longitude
                             ),
                             name = queryName,
-                            address = address
+                            address = address.toString()
                         )
 
                         return true

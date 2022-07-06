@@ -12,7 +12,7 @@ data class LocationMarker(
     @ColumnInfo(name = "location_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @Embedded val location: DbLocation,
     @ColumnInfo(name = "location_name") val name: String,
-    @Embedded val address: Address? = null
+    @ColumnInfo(name = "location_address") val address: String? = null
 ) {
     fun isValid(): Boolean {
         return name.isNotEmpty()

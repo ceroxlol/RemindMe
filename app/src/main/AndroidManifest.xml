@@ -27,13 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.ChooseLocationActivity"
-            android:label="@string/title_activity_choose_location">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ceroxlol.remindme.activities.MainActivity" />
-        </activity>
 
         <service
             android:name=".services.GpsTrackerService"
