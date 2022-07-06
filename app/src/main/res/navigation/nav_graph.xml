@@ -21,44 +21,62 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.ceroxlol.remindme.activities.EditAppointmentsFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.MainFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/activity_main">
+        tools:layout="@layout/fragment_main_viewpager">
         <action
-            android:id="@+id/action_itemListFragment_to_itemDetailFragment"
-            app:destination="@id/itemDetailFragment" />
+            android:id="@+id/action_MainFragment_to_AddAppointmentFragment"
+            app:destination="@id/addAppointmentFragment" />
         <action
-            android:id="@+id/action_itemListFragment_to_addItemFragment"
-            app:destination="@id/addItemFragment" />
+            android:id="@+id/action_MainFragment_to_AddLocationFragment"
+            app:destination="@id/addLocationFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_EditAppointmentFragment"
+            app:destination="@id/editAppointmentFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_editLocationFragment"
+            app:destination="@id/editLocationFragment" />
     </fragment>
     <fragment
-        android:id="@+id/itemDetailFragment"
-        android:name="com.example.inventory.ItemDetailFragment"
-        android:label="@string/item_detail_fragment_title"
-        tools:layout="@layout/fragment_item_detail">
+        android:id="@+id/editAppointmentFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.EditAppointmentFragment"
+        android:label="@string/appointment_detail_fragment_title"
+        tools:layout="@layout/fragment_edit_single_appointment">
         <argument
-            android:name="item_id"
+            android:name="appointment_id"
             app:argType="integer" />
         <action
-            android:id="@+id/action_itemDetailFragment_to_addItemFragment"
-            app:destination="@id/addItemFragment" />
+            android:id="@+id/action_EditAppointmentFragment_to_MainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addItemFragment"
-        android:name="com.example.inventory.AddItemFragment"
-        android:label="{title}"
-        tools:layout="@layout/fragment_add_item">
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="item_id"
-            android:defaultValue="-1"
-            app:argType="integer" />
+        android:id="@+id/addAppointmentFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.AddNewAppointmentFragmentKT"
+        android:label="@string/appointment_add_fragment_title"
+        tools:layout="@layout/fragment_add_appointment">
         <action
-            android:id="@+id/action_addItemFragment_to_itemListFragment"
-            app:destination="@id/itemListFragment"
-            app:popUpTo="@id/itemListFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_addAppointmentFragment_to_MainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addLocationFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.PickLocationMapsFragment"
+        android:label="Pick Location"
+        tools:layout="@layout/fragment_pick_location_maps">
+        <action
+            android:id="@+id/action_addLocationFragment_to_MainFragment"
+            app:destination="@id/mainFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/editLocationFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.EditLocationFragment"
+        android:label="Edit location"
+        tools:layout="@layout/fragment_pick_location_maps">
+        <argument
+            android:name="locationMarker_id"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_editLocationFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

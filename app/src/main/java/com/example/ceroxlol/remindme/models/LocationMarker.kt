@@ -1,13 +1,20 @@
 package com.example.ceroxlol.remindme.models
 
-import android.location.Location
+import android.location.Address
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity
 data class LocationMarker(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo val location: Location,
-    @ColumnInfo val name: String
-)
+    @ColumnInfo(name = "location_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @Embedded val location: DbLocation,
+    @ColumnInfo(name = "location_name") val name: String,
+    @ColumnInfo(name = "location_address") val address: String? = null
+) {
+    fun isValid(): Boolean {
+        return name.isNotEmpty()
+    }
+}
