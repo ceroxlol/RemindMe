@@ -62,19 +62,20 @@ class EditAppointmentFragment : Fragment() {
         // the UI when the data actually changes.
         appointmentViewModel.retrieveAppointment(id).observe(this.viewLifecycleOwner) { selectedItem ->
             appointment = selectedItem
-            bind(appointment)
-        }
 
-        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
-            locationMarkers.let {
-                val adapter = ArrayAdapterLocationsListSpinner(requireContext(), it)
+            locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
+                locationMarkers.let {
+                    val adapter = ArrayAdapterLocationsListSpinner(requireContext(), it)
 
-                adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                binding.appointmentLocation.adapter = adapter
+                    adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                    binding.appointmentLocation.adapter = adapter
 
-                val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location.id }}.first()
-                binding.appointmentLocation.setSelection(selectionPosition)
+                    val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location.id }}.first()
+                    binding.appointmentLocation.setSelection(selectionPosition)
+                }
             }
+
+            bind(appointment)
         }
 
         binding.saveButton.setOnClickListener {
@@ -125,7 +126,7 @@ class EditAppointmentFragment : Fragment() {
                 binding.appointmentLocation.selectedItem as LocationMarker
             )
             val action =
-                AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
+                EditAppointmentFragmentDirections.actionEditAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
         else{

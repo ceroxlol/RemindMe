@@ -22,7 +22,7 @@ import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 
 
-class AddNewAppointmentFragmentKT : Fragment() {
+class AddNewAppointmentFragment : Fragment() {
 
     private val appointmentViewModel: AppointmentViewModel by activityViewModels {
         AppointmentViewModelFactory(
@@ -62,7 +62,7 @@ class AddNewAppointmentFragmentKT : Fragment() {
                 false
             )
             val action =
-                AddNewAppointmentFragmentKTDirections.actionAddAppointmentFragmentToMainFragment()
+                AddNewAppointmentFragmentDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
         else{
@@ -96,7 +96,6 @@ class AddNewAppointmentFragmentKT : Fragment() {
             }
         }
 
-        //Todo: Change button to be floating?
         binding.saveButton.setOnClickListener {
             saveAppointment()
         }

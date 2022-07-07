@@ -13,14 +13,14 @@ interface AppointmentDao {
     @Query("SELECT * FROM Appointment WHERE appointment_id = :id")
     fun getById(id: Int): Flow<Appointment>
 
-    @Query("UPDATE Appointment SET done = 'true' WHERE appointment_id = :id")
+    @Query("UPDATE Appointment SET done = 1 WHERE appointment_id = :id")
     fun setAppointmentDoneById(id: Int)
 
     @Query("UPDATE Appointment SET snooze = :snooze WHERE appointment_id = :id")
     fun setAppointmentSnooze(id: Int, snooze: Date)
 
     @Update
-    fun update(appointment: Appointment)
+    suspend fun update(appointment: Appointment)
 
     @Delete
     suspend fun delete(appointment: Appointment)

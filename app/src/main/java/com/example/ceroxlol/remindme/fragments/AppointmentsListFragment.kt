@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.AppointmentListAdapter
 import com.example.ceroxlol.remindme.databinding.AppointmentListFragmentBinding
+import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 
@@ -22,11 +23,11 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
-    //TODO: Add "show done" check
     //TODO: Make elements deletable by clicking long or moving them to the side
     private var _binding: AppointmentListFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var appointmentList : List<Appointment>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,8 +51,8 @@ class AppointmentsListFragment : Fragment() {
         // changes.
         appointmentViewModel.allAppointments.observe(this.viewLifecycleOwner) { appointments ->
             appointments.let {
-                //TODO: Make adapter react to show done
-                adapter.submitList(it)
+                appointmentList = it
+                adapter.submitList(filterAppointments())
             }
         }
 
@@ -59,5 +60,21 @@ class AppointmentsListFragment : Fragment() {
             val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
             this.findNavController().navigate(action)
         }
+
+        binding.checkBoxDone.setOnCheckedChangeListener { buttonView, isChecked ->
+            adapter.submitList(filterAppointments())
+            adapter.notifyDataSetChanged()
+        }
     }
+
+    private fun filterAppointments(): List<Appointment> {
+        if(!binding.checkBoxDone.isChecked){
+            return appointmentList.filter {
+                !it.done
+            }
+        }
+        //TODO: move this to database?
+        return appointmentList.sortedBy { it.done }
+    }
+
 }

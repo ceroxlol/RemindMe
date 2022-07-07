@@ -51,7 +51,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     }
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
-        if (appointmentName.isBlank() || appointmentText.isBlank() || !appointmentLocation.isValid()) {
+        if (appointmentName.isNotBlank() || appointmentText.isNotBlank() || appointmentLocation.isValid()) {
             return true
         }
         return false

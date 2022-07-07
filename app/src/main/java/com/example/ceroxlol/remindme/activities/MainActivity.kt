@@ -58,11 +58,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
+    //TODO: Create Introduction Screen
     //TODO: Setup Home
     //TODO: Create Settings Page
         // have a radius changeable
         // have a snooze minute setup
-    //TODO: Implement appointments snoozable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
