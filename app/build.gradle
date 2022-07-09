@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'io.franzbecker.gradle-lombok' version '5.0.0'
     id 'androidx.navigation.safeargs'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
@@ -39,16 +38,12 @@ android {
 
 dependencies {
     //material
-    implementation 'com.google.android.material:material:1.6.0'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation "com.google.android.material:material:$material_version"
 
-    implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
-    implementation 'com.google.android.gms:play-services-location:19.0.1'
-
-    //lombok
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    kapt 'org.projectlombok:lombok:1.18.24'
+    //maps
+    implementation "com.google.android.gms:play-services-maps:$play_services_maps_version"
+    implementation "com.google.maps.android:android-maps-utils:$maps_utils_version"
+    implementation "com.google.android.gms:play-services-location:$play_services_version"
 
     //RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
@@ -72,13 +67,13 @@ dependencies {
     implementation "androidx.room:room-rxjava3:$room_version"
     kapt 'android.arch.persistence.room:compiler:1.1.1'
 
-    implementation "androidx.activity:activity-ktx:1.4.0"
-    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.activity:activity-ktx:1.5.0"
+    implementation "androidx.fragment:fragment-ktx:1.5.0"
 
     // Navigation libraries
-    implementation 'androidx.navigation:navigation-runtime-ktx:2.4.2'
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
+    implementation "androidx.navigation:navigation-runtime-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // Lifecycle libraries
 }
