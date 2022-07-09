@@ -11,4 +11,5 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="red_700">#FFD32F2F</color>
+    <color name="light_gray">#4DFFFFFF</color>
 </resources>
