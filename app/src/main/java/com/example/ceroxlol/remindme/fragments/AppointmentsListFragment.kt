@@ -51,8 +51,6 @@ class AppointmentsListFragment : Fragment() {
                 this.findNavController().navigate(action)
             },
             { appointment, itemView ->
-                //TODO: use onTouchListener instead, because of this:
-                //https://stackoverflow.com/questions/7934245/longclick-event-happens-too-quickly-how-can-i-increase-the-clicktime-required-t
                 val transition = itemView.background as TransitionDrawable
                 transition.startTransition(200)
                 appointmentViewModel.deleteAppointment(appointment)

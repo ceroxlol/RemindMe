@@ -18,7 +18,16 @@
         android:layout_margin="10dp"
         android:elevation="5dp"
         android:background="@drawable/bg_black_blue_round"
-        app:iconifiedByDefault="false"
+        app:iconifiedByDefault="false">
+
+        <requestFocus />
+
+    </androidx.appcompat.widget.SearchView>
+
+    <ListView
+        android:id="@+id/sv_location_results"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

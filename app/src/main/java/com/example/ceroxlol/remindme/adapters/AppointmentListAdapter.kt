@@ -15,7 +15,6 @@
  */
 package com.example.ceroxlol.remindme.adapters
 
-import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,12 +63,6 @@ class AppointmentListAdapter(
             binding.appointmentText.text = appointment.text
             binding.appointmentLocationName.text = appointment.location.name
         }
-    }
-
-    private fun getPositionByItem(appointment: Appointment) = currentList.indexOf(appointment)
-
-    fun reverseTransition(appointment: Appointment) {
-
     }
 
     companion object {

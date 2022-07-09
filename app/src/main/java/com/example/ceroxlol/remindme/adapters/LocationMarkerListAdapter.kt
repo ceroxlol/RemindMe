@@ -15,7 +15,6 @@
  */
 package com.example.ceroxlol.remindme.adapters
 
-import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

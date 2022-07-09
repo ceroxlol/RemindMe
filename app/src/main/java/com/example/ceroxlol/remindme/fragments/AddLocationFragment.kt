@@ -117,43 +117,46 @@ class AddLocationFragment : Fragment() {
             showSaveDialog()
         }
 
+        binding.svLocation.queryHint = "Search for a location..."
         binding.svLocation.setOnQueryTextListener(
             object : OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
 
-                    if (queryName != "") {
-                        //TODO: show list of potential results in a dropdown view
-                        val address =
-                            Geocoder(requireActivity()).getFromLocationName(queryName, 1)
-                                .firstOrNull()
-                        if (address == null) {
-                            Toast.makeText(
-                                requireContext(),
-                                "No place found with this name", Toast.LENGTH_SHORT
-                            ).show()
-                            return false
-                        }
-                        val latLng = LatLng(address.latitude, address.longitude)
-                        map.addMarker(
-                            MarkerOptions()
-                                .position(latLng)
-                                .title(queryName)
-                        )
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, CLOSE_ZOOM))
-
-                        locationMarker = LocationMarker(
-                            location = DbLocation(
-                                latitude = latLng.latitude,
-                                longitude = latLng.longitude
-                            ),
-                            name = queryName,
-                            address = address.toString()
-                        )
-
-                        return true
+                    if (queryName == "") {
+                        return false
                     }
-                    return false
+                    //TODO: show list of potential results in a dropdown view
+                    val address =
+                        Geocoder(requireActivity()).getFromLocationName(queryName, 1)
+                            .firstOrNull()
+
+                    if (address == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "No place found with this name", Toast.LENGTH_SHORT
+                        ).show()
+                        return false
+                    }
+
+                    val latLng = LatLng(address.latitude, address.longitude)
+                    map.addMarker(
+                        MarkerOptions()
+                            .position(latLng)
+                            .title(queryName)
+                    )
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, CLOSE_ZOOM))
+
+                    locationMarker = LocationMarker(
+                        location = DbLocation(
+                            latitude = latLng.latitude,
+                            longitude = latLng.longitude
+                        ),
+                        name = queryName,
+                        address = address.toString()
+                    )
+
+                    return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
