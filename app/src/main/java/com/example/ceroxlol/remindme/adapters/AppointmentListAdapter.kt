@@ -27,7 +27,10 @@ import com.example.ceroxlol.remindme.models.Appointment
  * [ListAdapter] implementation for the recyclerview.
  */
 
-class AppointmentListAdapter(private val onItemClicked: (Appointment) -> Unit) :
+class AppointmentListAdapter(
+    private val onItemClicked: (Appointment) -> Unit,
+    private val onItemLongClicked: (Appointment) -> Boolean
+) :
     ListAdapter<Appointment, AppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -44,6 +47,10 @@ class AppointmentListAdapter(private val onItemClicked: (Appointment) -> Unit) :
         val current = getItem(position)
         holder.itemView.setOnClickListener {
             onItemClicked(current)
+        }
+        //TODO: Set Remove on this
+        holder.itemView.setOnLongClickListener {
+            onItemLongClicked(current)
         }
         holder.bind(current)
     }

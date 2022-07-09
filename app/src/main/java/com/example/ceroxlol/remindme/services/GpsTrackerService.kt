@@ -69,7 +69,7 @@ class GpsTrackerService : LifecycleService() {
         appointments = mutableListOf()
         appointmentsKT.observe(this) {
             Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
-            appointments.addAll(it)
+            appointments = it.toMutableList()
         }
     }
 
@@ -143,6 +143,7 @@ class GpsTrackerService : LifecycleService() {
             /*.filter { appointmentKT ->
                 !appointmentKT.done && appointmentKT.snooze?.before(Calendar.getInstance().time) == true
             }*/
+                //TODO: Check that notification is not shown already
             .filter { appointmentKT ->
                 val results = FloatArray(1)
                 Location.distanceBetween(

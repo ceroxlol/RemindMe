@@ -2,9 +2,7 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -64,8 +62,7 @@ class AddNewAppointmentFragment : Fragment() {
             val action =
                 AddNewAppointmentFragmentDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
-        }
-        else{
+        } else {
             Toast.makeText(
                 requireContext(),
                 "Please recheck, something's not correct.", Toast.LENGTH_SHORT
@@ -96,6 +93,7 @@ class AddNewAppointmentFragment : Fragment() {
             }
         }
 
+        //TODO: Move this button when the keyboard comes up
         binding.saveButton.setOnClickListener {
             saveAppointment()
         }

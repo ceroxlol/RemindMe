@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     //TODO: Create Introduction Screen
     //TODO: Setup Home
     //TODO: Create Settings Page
-        // have a radius changeable
-        // have a snooze minute setup
+    // have a radius changeable
+    // have a snooze minute setup
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,11 +73,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         // Set up the action bar for use with the NavController
         setupActionBarWithNavController(this, navController)
 
-        if (!checkPermissions()){
+        if (!checkPermissions()) {
             requestPermissions()
         }
 
-            gpsTrackerService = GpsTrackerService()
+        gpsTrackerService = GpsTrackerService()
 
         val intent = Intent(this, GpsTrackerService::class.java)
         startService(intent)
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             this, Manifest.permission_group.LOCATION
         )
 
-        if(shouldProvideRationale){
+        if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.")
             Snackbar.make(
                 findViewById(R.id.mainFragment),
@@ -106,7 +106,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     ActivityCompat.requestPermissions(
                         this,
                         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        REQUEST_PERMISSIONS_REQUEST_CODE)
+                        REQUEST_PERMISSIONS_REQUEST_CODE
+                    )
                 }
                 .show()
         }

@@ -40,11 +40,18 @@ class AppointmentsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = AppointmentListAdapter {
-            val action =
-                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.id)
-            this.findNavController().navigate(action)
-        }
+        val adapter = AppointmentListAdapter (
+            {
+                val action =
+                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.id)
+                this.findNavController().navigate(action)
+            },
+            {
+                //TODO: Show snackbar for undo
+                appointmentViewModel.deleteAppointment(it)
+                true
+            }
+        )
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
@@ -61,7 +68,7 @@ class AppointmentsListFragment : Fragment() {
             this.findNavController().navigate(action)
         }
 
-        binding.checkBoxDone.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.checkBoxDone.setOnCheckedChangeListener { _, _ ->
             adapter.submitList(filterAppointments())
             adapter.notifyDataSetChanged()
         }
