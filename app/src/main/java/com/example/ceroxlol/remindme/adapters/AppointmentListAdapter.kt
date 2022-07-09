@@ -15,6 +15,7 @@
  */
 package com.example.ceroxlol.remindme.adapters
 
+import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -48,8 +49,9 @@ class AppointmentListAdapter(
         holder.itemView.setOnClickListener {
             onItemClicked(current)
         }
-        //TODO: Set Remove on this
         holder.itemView.setOnLongClickListener {
+            val transition = it.background as TransitionDrawable
+            transition.startTransition(500)
             onItemLongClicked(current)
         }
         holder.bind(current)

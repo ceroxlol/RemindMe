@@ -15,20 +15,23 @@
  */
 package com.example.ceroxlol.remindme.adapters
 
+import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.databinding.LocationListItemBinding
-import com.example.ceroxlol.remindme.databinding.SpinnerTextViewLocationsBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
 
 /**
  * [ListAdapter] implementation for the recyclerview.
  */
 
-class LocationMarkerListAdapter(private val onItemClicked: (LocationMarker) -> Unit) :
+class LocationMarkerListAdapter(
+    private val onItemClicked: (LocationMarker) -> Unit,
+    private val onItemLongClicked: (LocationMarker) -> Boolean
+) :
     ListAdapter<LocationMarker, LocationMarkerListAdapter.LocationMarkerViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationMarkerViewHolder {
@@ -43,6 +46,11 @@ class LocationMarkerListAdapter(private val onItemClicked: (LocationMarker) -> U
         val current = getItem(position)
         holder.itemView.setOnClickListener {
             onItemClicked(current)
+        }
+        holder.itemView.setOnLongClickListener {
+            val transition = it.background as TransitionDrawable
+            transition.startTransition(500)
+            onItemLongClicked(current)
         }
         holder.bind(current)
     }

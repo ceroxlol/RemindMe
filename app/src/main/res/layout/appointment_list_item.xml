@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/bg_round">
+    android:background="@drawable/long_click_transition">
 
     <TextView
         android:id="@+id/appointment_name"

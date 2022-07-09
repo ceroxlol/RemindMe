@@ -38,10 +38,16 @@ class LocationsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //TODO: Beautify items
-        val adapter = LocationMarkerListAdapter {
+        //TODO: On release, color back!
+        val adapter = LocationMarkerListAdapter ({
             val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.id)
             this.findNavController().navigate(action)
+        },{
+            //TODO: Show snackbar for undo
+            locationMarkerViewModel.deleteLocationMarker(it)
+            true
         }
+        )
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
