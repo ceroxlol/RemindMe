@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/addAppointmentFragment"
-        android:name="com.example.ceroxlol.remindme.fragments.AddNewAppointmentFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.AddAppointmentFragment"
         android:label="@string/appointment_add_fragment_title"
         tools:layout="@layout/fragment_add_appointment">
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/addLocationFragment"
-        android:name="com.example.ceroxlol.remindme.fragments.PickLocationMapsFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.AddLocationFragment"
         android:label="Pick Location"
         tools:layout="@layout/fragment_pick_location_maps">
         <action

@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 
-class PickLocationMapsFragment : Fragment() {
+class AddLocationFragment : Fragment() {
 
     private val permissionManager: PermissionManager = PermissionManager.from(this)
 
@@ -258,7 +258,7 @@ class PickLocationMapsFragment : Fragment() {
 
             //Navigate back
             val action =
-                PickLocationMapsFragmentDirections.actionAddLocationFragmentToMainFragment()
+                AddLocationFragmentDirections.actionAddLocationFragmentToMainFragment()
             findNavController().navigate(action)
         }
 

@@ -20,7 +20,7 @@ import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 
 
-class AddNewAppointmentFragment : Fragment() {
+class AddAppointmentFragment : Fragment() {
 
     private val appointmentViewModel: AppointmentViewModel by activityViewModels {
         AppointmentViewModelFactory(
@@ -60,7 +60,7 @@ class AddNewAppointmentFragment : Fragment() {
                 false
             )
             val action =
-                AddNewAppointmentFragmentDirections.actionAddAppointmentFragmentToMainFragment()
+                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         } else {
             Toast.makeText(
@@ -93,7 +93,6 @@ class AddNewAppointmentFragment : Fragment() {
             }
         }
 
-        //TODO: Move this button when the keyboard comes up
         binding.saveButton.setOnClickListener {
             saveAppointment()
         }
