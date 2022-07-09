@@ -17,6 +17,12 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
     }
 
     fun addNewLocationMarker(
+        locationMarker: LocationMarker
+    ) {
+        insertLocationMarker(locationMarker)
+    }
+
+    fun addNewLocationMarker(
         name: String,
         dbLocation: DbLocation
     ) {

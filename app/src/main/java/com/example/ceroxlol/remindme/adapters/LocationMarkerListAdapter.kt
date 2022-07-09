@@ -17,6 +17,7 @@ package com.example.ceroxlol.remindme.adapters
 
 import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -30,7 +31,7 @@ import com.example.ceroxlol.remindme.models.LocationMarker
 
 class LocationMarkerListAdapter(
     private val onItemClicked: (LocationMarker) -> Unit,
-    private val onItemLongClicked: (LocationMarker) -> Boolean
+    private val onItemLongClicked: (LocationMarker, View) -> Boolean
 ) :
     ListAdapter<LocationMarker, LocationMarkerListAdapter.LocationMarkerViewHolder>(DiffCallback) {
 
@@ -48,9 +49,7 @@ class LocationMarkerListAdapter(
             onItemClicked(current)
         }
         holder.itemView.setOnLongClickListener {
-            val transition = it.background as TransitionDrawable
-            transition.startTransition(500)
-            onItemLongClicked(current)
+            onItemLongClicked(current, it)
         }
         holder.bind(current)
     }

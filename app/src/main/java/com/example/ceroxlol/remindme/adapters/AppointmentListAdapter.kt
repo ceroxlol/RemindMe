@@ -17,6 +17,7 @@ package com.example.ceroxlol.remindme.adapters
 
 import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -30,7 +31,7 @@ import com.example.ceroxlol.remindme.models.Appointment
 
 class AppointmentListAdapter(
     private val onItemClicked: (Appointment) -> Unit,
-    private val onItemLongClicked: (Appointment) -> Boolean
+    private val onItemLongClicked: (Appointment, View) -> Boolean
 ) :
     ListAdapter<Appointment, AppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
 
@@ -50,14 +51,12 @@ class AppointmentListAdapter(
             onItemClicked(current)
         }
         holder.itemView.setOnLongClickListener {
-            val transition = it.background as TransitionDrawable
-            transition.startTransition(500)
-            onItemLongClicked(current)
+            onItemLongClicked(current, it)
         }
         holder.bind(current)
     }
 
-    class AppointmentViewHolder(private var binding: AppointmentListItemBinding) :
+    inner class AppointmentViewHolder(private var binding: AppointmentListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(appointment: Appointment) {
@@ -65,6 +64,12 @@ class AppointmentListAdapter(
             binding.appointmentText.text = appointment.text
             binding.appointmentLocationName.text = appointment.location.name
         }
+    }
+
+    private fun getPositionByItem(appointment: Appointment) = currentList.indexOf(appointment)
+
+    fun reverseTransition(appointment: Appointment) {
+
     }
 
     companion object {

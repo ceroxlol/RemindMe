@@ -17,6 +17,10 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         }
     }
 
+    fun addNewAppointment(appointment: Appointment){
+        insertAppointment(appointment)
+    }
+
     fun addNewAppointment(
         name: String,
         text: String?,
