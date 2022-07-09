@@ -293,7 +293,7 @@ class EditLocationFragment : Fragment() {
 
             //Navigate back
             val action =
-                PickLocationMapsFragmentDirections.actionAddLocationFragmentToMainFragment()
+                EditAppointmentFragmentDirections.actionEditAppointmentFragmentToMainFragment()
             findNavController().navigate(action)
         }
 
