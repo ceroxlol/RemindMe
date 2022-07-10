@@ -2,6 +2,7 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -22,7 +23,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.databinding.FragmentPickLocationMapsBinding
+import com.example.ceroxlol.remindme.adapters.SearchResultAdapter
+import com.example.ceroxlol.remindme.databinding.FragmentAddLocationBinding
 import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
@@ -49,6 +51,8 @@ class AddLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
 
+    private var addressResultWasSelected = false
+
     private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
             (activity?.application as RemindMeApplication).database
@@ -56,7 +60,7 @@ class AddLocationFragment : Fragment() {
         )
     }
 
-    private var _binding: FragmentPickLocationMapsBinding? = null
+    private var _binding: FragmentAddLocationBinding? = null
     private val binding get() = _binding!!
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -103,7 +107,7 @@ class AddLocationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPickLocationMapsBinding.inflate(inflater, container, false)
+        _binding = FragmentAddLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -123,9 +127,10 @@ class AddLocationFragment : Fragment() {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
 
-                    if (queryName == "") {
+                    if (queryName.isBlank() || queryName == "") {
                         return false
                     }
+
                     //TODO: show list of potential results in a dropdown view
                     val address =
                         Geocoder(requireActivity()).getFromLocationName(queryName, 1)
@@ -159,8 +164,38 @@ class AddLocationFragment : Fragment() {
                     return true
                 }
 
+                //TODO: Copy this to EditLocationFragment
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    return false
+                    val queryName = binding.svLocation.query.toString()
+                    if(addressResultWasSelected){
+                        addressResultWasSelected = false
+                        return false
+                    }
+                    if (queryName.isBlank() || queryName == "") {
+                        return false
+                    }
+                    //TODO: Improve results?
+                    //Maybe use this https://developer.here.com/documentation/android-sdk-explore/4.3.2.0/dev_guide/topics/search.html
+                    val results = Geocoder(requireActivity()).getFromLocationName(queryName, 10)
+                    val adapter = SearchResultAdapter(
+                        requireContext(),
+                        results
+                    )
+                    Log.i(TAG, adapter.count.toString())
+
+                    binding.svLocationResults.adapter = adapter
+
+                    binding.svLocationResults.setOnItemClickListener { _, _, position, _ ->
+                        addressResultWasSelected = true
+                        binding.svLocation.setQuery(
+                            results[position].getHumanReadableAddress(),
+                            true
+                        )
+                        adapter.clear()
+                        adapter.notifyDataSetChanged()
+                        Log.i(TAG, adapter.count.toString())
+                    }
+                    return true
                 }
 
             }
@@ -277,4 +312,9 @@ class AddLocationFragment : Fragment() {
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private const val TAG = "PickLocationMapsFragment"
     }
+}
+
+//TODO: Set the correct address here
+fun Address.getHumanReadableAddress(): CharSequence {
+    return this.featureName + ", " + this.adminArea + ", " + this.countryName
 }
