@@ -96,8 +96,7 @@ class GpsTrackerService : LifecycleService() {
             this.interval = MIN_TIME_BW_UPDATES
             this.fastestInterval = STANDARD_TIME_BW_UPDATES
             this.maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-            //TODO: Reuse once debugging is done
-            //this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
+            this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
         }
 
         locationCallback = object : LocationCallback() {
@@ -111,11 +110,7 @@ class GpsTrackerService : LifecycleService() {
 
                 if (appointmentsToNotify.isNotEmpty()) {
 
-                    Log.i(TAG, "found some appointments!")
-
-/*                    val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
-                    intent.putExtra(EXTRA_LOCATION, currentLocation)
-                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)*/
+                    Log.i(TAG, "Creating notifcations for ${appointmentsToNotify.size} appointments...")
 
                     appointmentsToNotify.forEach {
                         notificationManager.notify(
@@ -235,6 +230,7 @@ class GpsTrackerService : LifecycleService() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setOnlyAlertOnce(true)
             .addAction(
                 R.drawable.amu_bubble_mask,
                 "Ok",
