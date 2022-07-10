@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.LocationMarker
 
-class ArrayAdapterLocationsListSpinner(context: Context, data: List<LocationMarker>?) :
+class LocationsSpinnerAdapter(context: Context, data: List<LocationMarker>?) :
     ArrayAdapter<LocationMarker>(context, 0, data!!) {
 
     private val inflater: LayoutInflater =

@@ -10,6 +10,7 @@ import java.util.*
 class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
 
     val allAppointments: LiveData<List<Appointment>> = appointmentDao.getAll().asLiveData()
+    val allAppointmentsSortedByDone: LiveData<List<Appointment>> = appointmentDao.getAllSortedByDone().asLiveData()
 
     private fun insertAppointment(appointment: Appointment) {
         viewModelScope.launch {

@@ -24,7 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.databinding.FragmentPickLocationMapsBinding
+import com.example.ceroxlol.remindme.databinding.FragmentAddLocationBinding
 import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
@@ -62,7 +62,7 @@ class EditLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
 
-    private var _binding: FragmentPickLocationMapsBinding? = null
+    private var _binding: FragmentAddLocationBinding? = null
     private val binding get() = _binding!!
 
     @SuppressLint("MissingPermission")
@@ -105,7 +105,7 @@ class EditLocationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPickLocationMapsBinding.inflate(inflater, container, false)
+        _binding = FragmentAddLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
 

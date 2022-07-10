@@ -62,7 +62,7 @@
         android:id="@+id/addLocationFragment"
         android:name="com.example.ceroxlol.remindme.fragments.AddLocationFragment"
         android:label="Pick Location"
-        tools:layout="@layout/fragment_pick_location_maps">
+        tools:layout="@layout/fragment_add_location">
         <action
             android:id="@+id/action_addLocationFragment_to_MainFragment"
             app:destination="@id/mainFragment"/>
@@ -71,7 +71,7 @@
         android:id="@+id/editLocationFragment"
         android:name="com.example.ceroxlol.remindme.fragments.EditLocationFragment"
         android:label="Edit location"
-        tools:layout="@layout/fragment_pick_location_maps">
+        tools:layout="@layout/fragment_add_location">
         <argument
             android:name="locationMarker_id"
             app:argType="integer"/>

@@ -27,7 +27,6 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
-    //TODO: Make elements deletable by clicking long or moving them to the side
     private var _binding: AppointmentListFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -63,7 +62,7 @@ class AppointmentsListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
-        appointmentViewModel.allAppointments.observe(this.viewLifecycleOwner) { appointments ->
+        appointmentViewModel.allAppointmentsSortedByDone.observe(this.viewLifecycleOwner) { appointments ->
             appointments.let {
                 appointmentList = it
                 adapter.submitList(filterAppointments())
@@ -87,8 +86,7 @@ class AppointmentsListFragment : Fragment() {
                 !it.done
             }
         }
-        //TODO: move this to database?
-        return appointmentList.sortedBy { it.done }
+        return appointmentList
     }
 
     private fun createUndoSnackbar(itemView: View, appointment: Appointment) {

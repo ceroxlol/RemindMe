@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.adapters.ArrayAdapterLocationsListSpinner
+import com.example.ceroxlol.remindme.adapters.LocationsSpinnerAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentAppointmentDetailBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
@@ -65,7 +65,7 @@ class EditAppointmentFragment : Fragment() {
 
             locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
                 locationMarkers.let {
-                    val adapter = ArrayAdapterLocationsListSpinner(requireContext(), it)
+                    val adapter = LocationsSpinnerAdapter(requireContext(), it)
 
                     adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                     binding.appointmentLocation.adapter = adapter

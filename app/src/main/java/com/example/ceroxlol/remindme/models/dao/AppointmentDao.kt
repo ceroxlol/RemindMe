@@ -10,6 +10,9 @@ interface AppointmentDao {
     @Query("SELECT * FROM Appointment")
     fun getAll(): Flow<List<Appointment>>
 
+    @Query("SELECT * FROM Appointment ORDER BY done")
+    fun getAllSortedByDone(): Flow<List<Appointment>>
+
     @Query("SELECT * FROM Appointment WHERE appointment_id = :id")
     fun getById(id: Int): Flow<Appointment>
 

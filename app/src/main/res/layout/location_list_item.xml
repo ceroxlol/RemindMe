@@ -14,10 +14,12 @@
         android:layout_width="180dp"
         android:layout_marginStart="@dimen/margin_between_elements"
         android:fontFamily="sans-serif"
+        android:paddingStart="2dp"
         app:layout_constraintEnd_toStartOf="@+id/location_distance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Location Name" />
+        tools:text="Location Name"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/location_distance"
@@ -41,9 +43,11 @@
         android:layout_marginEnd="@dimen/margin_between_elements"
         android:fontFamily="sans-serif-medium"
         android:textAlignment="center"
+        android:paddingEnd="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Address" />
+        tools:text="Address"
+        tools:ignore="RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
