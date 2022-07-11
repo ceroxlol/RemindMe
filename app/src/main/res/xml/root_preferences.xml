@@ -1,34 +1,48 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/locations">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <SeekBarPreference
+            app:key="location_update_distance"
+            app:min = "50"
+            app:defaultValue="50"
+            app:title="Location min update distance"
+            app:showSeekBarValue="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/appointments">
 
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+        <EditTextPreference
+            app:key="snooze"
+            app:defaultValue="10"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/snooze_timer" />
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+        <SeekBarPreference
+            app:key="appointment_update_distance"
+            app:min = "50"
+            app:defaultValue="50"
+            app:title="Appointment alert min distance"
+            app:showSeekBarValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Coming Soon!">
+
+        <SeekBarPreference
+            app:min = "30"
+            app:defaultValue="30"
+            app:title="Delete appointments after %s days"
+            app:showSeekBarValue="true"/>
+
+        <SwitchPreference
+            app:entries="@array/system_of_units_entries"
+            app:entryValues="@array/system_of_units_values"
+            app:defaultValue="km"
+            app:title="System of units"
+            app:summary="%s"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

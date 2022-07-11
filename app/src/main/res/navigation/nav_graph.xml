@@ -36,6 +36,11 @@
         <action
             android:id="@+id/action_mainFragment_to_editLocationFragment"
             app:destination="@id/editLocationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/editAppointmentFragment"
@@ -61,7 +66,7 @@
     <fragment
         android:id="@+id/addLocationFragment"
         android:name="com.example.ceroxlol.remindme.fragments.AddLocationFragment"
-        android:label="Pick Location"
+        android:label="Add new location"
         tools:layout="@layout/fragment_add_location">
         <action
             android:id="@+id/action_addLocationFragment_to_MainFragment"
@@ -77,6 +82,14 @@
             app:argType="integer"/>
         <action
             android:id="@+id/action_editLocationFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

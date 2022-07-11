@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             // User chose the "Settings" item, show the app settings UI...
+            navController.navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
             true
         }
         else -> {

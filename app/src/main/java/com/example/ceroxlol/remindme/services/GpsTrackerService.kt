@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
@@ -47,7 +48,6 @@ class GpsTrackerService : LifecycleService() {
     private lateinit var database: AppDatabase
     private lateinit var appointmentsKT: LiveData<List<Appointment>>
     private lateinit var appointments: MutableList<Appointment>
-    private val appointmentNotificationDistance = 100
 
     private val localBinder = LocalBinder()
 
@@ -90,13 +90,13 @@ class GpsTrackerService : LifecycleService() {
 
     @SuppressLint("MissingPermission")
     private fun setupLocationUpdates() {
-
+        val locationUpdateDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("location_update_distance", 50).toFloat()
         locationRequest = LocationRequest.create().apply {
             this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             this.interval = MIN_TIME_BW_UPDATES
             this.fastestInterval = STANDARD_TIME_BW_UPDATES
             this.maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-            this.smallestDisplacement = MIN_DISTANCE_CHANGE_FOR_UPDATES
+            this.smallestDisplacement = locationUpdateDistance
         }
 
         locationCallback = object : LocationCallback() {
@@ -133,22 +133,21 @@ class GpsTrackerService : LifecycleService() {
 
     private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
         Log.i(TAG, "Filtering $appointments")
+        val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("appointment_update_distance", 50).toFloat()
         return appointments
-            //TODO: Remove once testing is done
-            /*.filter { appointmentKT ->
-                !appointmentKT.done && appointmentKT.snooze?.before(Calendar.getInstance().time) == true
-            }*/
-                //TODO: Check that notification is not shown already
             .filter { appointmentKT ->
-                val results = FloatArray(1)
+                !appointmentKT.done && appointmentKT.snooze?.before(Calendar.getInstance().time) == true
+            }
+            .filter { appointmentKT ->
+                val distance = FloatArray(1)
                 Location.distanceBetween(
                     currentLocation.latitude,
                     currentLocation.longitude,
                     appointmentKT.location.location.latitude,
                     appointmentKT.location.location.longitude,
-                    results
+                    distance
                 )
-                results[0] < appointmentNotificationDistance
+                distance[0] < preferenceDistance
             }
     }
 
@@ -227,12 +226,12 @@ class GpsTrackerService : LifecycleService() {
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
             .setContentText(mainNotificationText)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOnlyAlertOnce(true)
             .addAction(
-                R.drawable.amu_bubble_mask,
+                R.drawable.ic_notification,
                 "Ok",
                 appointmentDonePendingIntent
             )

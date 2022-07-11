@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import java.util.*
 
@@ -37,11 +38,13 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
                     Log.e(TAG, "No appointmentId passed")
                 } else {
                     Log.d(TAG, "Set snooze for appointmentId $appointmentId")
+                    val snoozeTimer =
+                        PreferenceManager.getDefaultSharedPreferences(context).getString("snooze", "10")!!.toInt()
                     val pendingResult = goAsync()
                     Thread {
                         database.appointmentDao().setAppointmentSnooze(
                             appointmentId,
-                            Calendar.getInstance().apply { this.add(Calendar.MINUTE, 10) }.time
+                            Calendar.getInstance().apply { this.add(Calendar.MINUTE, snoozeTimer) }.time
                         )
                     }.start()
                     notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId)
