@@ -26,11 +26,15 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.view.MenuItem
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.services.GpsTrackerService
@@ -66,12 +70,23 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Retrieve NavController from the NavHostFragment
+/*        // Retrieve NavController from the NavHostFragment
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
         // Set up the action bar for use with the NavController
-        setupActionBarWithNavController(this, navController)
+        findViewById<Toolbar>(R.id.toolbar)
+            .setupWithNavController(this, navController, appBarConfiguration)*/
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupWithNavController(
+            toolbar = findViewById(R.id.toolbar),
+            navController = navController,
+            configuration = appBarConfiguration)
 
         if (!checkPermissions()) {
             requestPermissions()
@@ -169,6 +184,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     }
                     .show()
             }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> {
+            // User chose the "Settings" item, show the app settings UI...
+            true
+        }
+        else -> {
+            // If we got here, the user's action was not recognized.
+            // Invoke the superclass to handle it.
+            super.onOptionsItemSelected(item)
         }
     }
 
