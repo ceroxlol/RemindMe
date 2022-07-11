@@ -70,21 +70,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-/*        // Retrieve NavController from the NavHostFragment
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        // Set up the action bar for use with the NavController
-        findViewById<Toolbar>(R.id.toolbar)
-            .setupWithNavController(this, navController, appBarConfiguration)*/
-
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupWithNavController(
-            toolbar = findViewById(R.id.toolbar),
+        setSupportActionBar(findViewById(R.id.toolbar))
+        setupActionBarWithNavController(
+            this,
             navController = navController,
             configuration = appBarConfiguration)
 
@@ -185,6 +177,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     .show()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_activity_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
