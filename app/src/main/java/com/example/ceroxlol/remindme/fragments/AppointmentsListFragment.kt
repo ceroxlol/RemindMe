@@ -16,6 +16,8 @@ import com.example.ceroxlol.remindme.databinding.AppointmentListFragmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
+import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -27,10 +29,17 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
+    private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
+        LocationMarkerViewModelFactory(
+            (activity?.application as RemindMeApplication).database.locationMarkerDao()
+        )
+    }
+
     private var _binding: AppointmentListFragmentBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var appointmentList: List<Appointment>
+    private var noLocations = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +51,7 @@ class AppointmentsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         val adapter = AppointmentListAdapter(
             {
@@ -62,6 +72,9 @@ class AppointmentsListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner){
+            noLocations = it.isEmpty()
+        }
         appointmentViewModel.allAppointmentsSortedByDone.observe(this.viewLifecycleOwner) { appointments ->
             appointments.let {
                 appointmentList = it
@@ -69,9 +82,13 @@ class AppointmentsListFragment : Fragment() {
             }
         }
 
-        binding.addNewLocationButton.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
-            this.findNavController().navigate(action)
+        binding.addNewAppointmentButton.setOnClickListener {
+            if(!noLocations) {
+                val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
+                this.findNavController().navigate(action)
+            } else{
+                Toast.makeText(requireContext(), "Please create locations before you start with appointments!", Toast.LENGTH_SHORT)
+            }
         }
 
         binding.checkBoxDone.setOnCheckedChangeListener { _, _ ->
