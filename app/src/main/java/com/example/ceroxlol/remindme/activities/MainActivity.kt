@@ -26,17 +26,18 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
 import com.example.ceroxlol.remindme.services.GpsTrackerService
 import com.google.android.material.snackbar.Snackbar
 
@@ -64,9 +65,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     //TODO: Create Introduction Screen
     //TODO: Setup Home
-    //TODO: Create Settings Page
-    // have a radius changeable
-    // have a snooze minute setup
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -91,6 +89,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    //TODO: Recheck permissions, on the phone I had to request in Pick Location
     private fun checkPermissions(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
             this, Manifest.permission_group.LOCATION

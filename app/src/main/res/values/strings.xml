@@ -11,7 +11,7 @@
     <string name="edit_location">Edit Location</string>
     <string name="my_locations">My Locations:</string>
     <string name="title_activity_edit_appointment">EditAppointmentActivity</string>
-    <string name="appointments">Appointments:</string>
+    <string name="appointments">Appointments</string>
     <string name="title_activity_edit_single_appointment">EditSingleAppointmentActivity</string>
     <string name="name">Name:</string>
     <string name="text_colon">Text:</string>
@@ -20,13 +20,13 @@
     <string name="no_date">No date</string>
     <string name="appointments_tab">Appointments</string>
     <string name="locations_tab">Locations</string>
-    <string name="appointment_detail_fragment_title">Appointment Details</string>
-    <string name="appointment_add_fragment_title">Add Appointment</string>
-    <string name="appointment_name_req">Appointment Name</string>
-    <string name="appointment_text_req">Appointment Text</string>
+    <string name="appointment_detail_fragment_title">Appointment details</string>
+    <string name="appointment_add_fragment_title">Add new appointment</string>
+    <string name="appointment_name_req">Appointment name</string>
+    <string name="appointment_text_req">Appointment text</string>
     <string name="appointment_location_req">Location</string>
     <string name="save_action">Save</string>
-    <string name="add_new_appointment">Add New Appointment</string>
+    <string name="add_new_appointment">Add new appointment</string>
     <string name="remove_appointment">Remove</string>
     <string name="delete">Delete</string>
     <string name="delete_question">Are you sure you want to delete?</string>
@@ -53,4 +53,6 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="locations">Locations</string>
+    <string name="snooze_timer">Snooze timer</string>
 </resources>

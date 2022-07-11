@@ -4,11 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.42481884057971014" />
+        <entry key="../../.gradle/caches/transforms-3/025c3bbe21564fccca7caa6dd4e763dc/transformed/appcompat-1.4.2/res/layout/support_simple_spinner_dropdown_item.xml" value="0.2947916666666667" />
         <entry key="../../.gradle/caches/transforms-3/f911d229a03837bc0edda8df1051702b/transformed/appcompat-1.4.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.28442028985507245" />
+        <entry key="../../Android/Sdk/platforms/android-32/data/res/drawable/btn_radio.xml" value="0.3235" />
         <entry key="../../Android/Sdk/platforms/android-32/data/res/layout/simple_dropdown_item_1line.xml" value="0.35625" />
+        <entry key="app/src/main/res/drawable/bg_black_red_round.xml" value="0.265" />
         <entry key="app/src/main/res/drawable/bg_round.xml" value="0.2085" />
+        <entry key="app/src/main/res/drawable/bg_spinner_item.xml" value="0.265" />
         <entry key="app/src/main/res/drawable/blue_outline.xml" value="0.2575" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.1905" />
+        <entry key="app/src/main/res/drawable/long_click_transition.xml" value="0.2795" />
         <entry key="app/src/main/res/layout/activity_add_new_appointment.xml" value="0.26443768996960487" />
         <entry key="app/src/main/res/layout/activity_add_new_location.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_edit_appointment.xml" value="0.3072916666666667" />
@@ -17,6 +22,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main_bak.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/activity_main_kt.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/address_adapter_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/appointment_list_fragment.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/appointment_list_item.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/layout/appointments_fragment.xml" value="0.19791666666666666" />
@@ -24,6 +30,7 @@
         <entry key="app/src/main/res/layout/content_edit_single_appointment.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/content_edit_single_location.xml" value="0.5067708333333333" />
         <entry key="app/src/main/res/layout/fragment_add_appointment.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_add_location.xml" value="0.29270833333333335" />
         <entry key="app/src/main/res/layout/fragment_add_new_appointment.xml" value="0.26443768996960487" />
         <entry key="app/src/main/res/layout/fragment_appointment_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_appointments.xml" value="0.3072916666666667" />
@@ -43,14 +50,16 @@
         <entry key="app/src/main/res/layout/location_list_fragment.xml" value="0.15555555555555556" />
         <entry key="app/src/main/res/layout/location_list_item.xml" value="0.5067708333333333" />
         <entry key="app/src/main/res/layout/locations_fragment.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/long_click_transition.xml" value="0.275" />
         <entry key="app/src/main/res/layout/recycler_view_appointment_list.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/recycler_view_location_list.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/spinner_item.xml" value="0.28442028985507245" />
         <entry key="app/src/main/res/layout/spinner_item_location.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/spinner_text_view_locations.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/switch_layout.xml" value="0.25" />
-        <entry key="app/src/main/res/menu/main_activity_menu.xml" value="0.3072916666666667" />
+        <entry key="app/src/main/res/menu/main_activity_menu.xml" value="0.5067708333333333" />
         <entry key="app/src/main/res/menu/menu_single_appointment_is_active.xml" value="0.29270833333333335" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.40398550724637683" />
       </map>
     </option>
   </component>

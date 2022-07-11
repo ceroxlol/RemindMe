@@ -276,6 +276,7 @@ class AddLocationFragment : Fragment() {
         }
     }
 
+    //TODO: Show better looking dialogue...
     private fun showSaveDialog() {
         if (locationMarker == null) {
             Log.e(TAG, "locationMaker is null. This should not happen!")
