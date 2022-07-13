@@ -64,17 +64,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
         android:background="@drawable/bg_black_blue_round"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appointment_text_label" />
 
+    <Button
+        android:id="@+id/appointment_add_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin"
+        android:text="New Location"
+        app:layout_constraintTop_toBottomOf="@+id/appointment_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/save_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:layout_marginBottom="@dimen/margin_between_elements"
         android:contentDescription="@string/save"
         android:src="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"

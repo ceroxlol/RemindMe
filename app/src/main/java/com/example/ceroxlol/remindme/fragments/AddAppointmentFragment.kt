@@ -41,6 +41,8 @@ class AddAppointmentFragment : Fragment() {
     private var _binding: FragmentAddAppointmentBinding? = null
     private val binding get() = _binding!!
 
+    private var locationsEmpty = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -94,7 +96,17 @@ class AddAppointmentFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-            saveAppointment()
+            if(locationsEmpty){
+                Toast.makeText(requireContext(), "Please add locations first!", Toast.LENGTH_SHORT).show()
+            } else {
+                saveAppointment()
+            }
+        }
+
+        binding.appointmentAddLocation.setOnClickListener {
+            val action =
+                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
+            findNavController().navigate(action)
         }
     }
 
