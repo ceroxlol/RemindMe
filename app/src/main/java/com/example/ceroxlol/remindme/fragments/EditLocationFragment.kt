@@ -1,8 +1,6 @@
 package com.example.ceroxlol.remindme.fragments
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -16,8 +14,6 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -146,6 +142,7 @@ class EditLocationFragment : Fragment() {
                             return false
                         }
                         val latLng = LatLng(address.latitude, address.longitude)
+                        map.clear()
                         map.addMarker(
                             MarkerOptions()
                                 .position(latLng)
@@ -209,8 +206,6 @@ class EditLocationFragment : Fragment() {
                             )
                         }
                     }
-                } else {
-                    getLocationPermission()
                 }
             }
     }
@@ -253,24 +248,8 @@ class EditLocationFragment : Fragment() {
                 } else {
                     map.isMyLocationEnabled = false
                     map.uiSettings.isMyLocationButtonEnabled = false
-                    getLocationPermission()
                 }
             }
-    }
-
-    //TODO: This should be handled in an introduction screen
-    private fun getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            )
-        }
     }
 
     private fun showSaveDialog() {

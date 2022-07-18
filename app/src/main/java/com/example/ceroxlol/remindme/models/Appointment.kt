@@ -11,7 +11,7 @@ data class Appointment(
     @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val text: String?,
-    @Embedded val location: LocationMarker,
+    @Embedded val location: LocationMarker?,
     val created: Date,
     val time: Date?,
     val done: Boolean = false,

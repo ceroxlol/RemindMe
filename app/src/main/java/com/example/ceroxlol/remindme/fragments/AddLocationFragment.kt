@@ -145,6 +145,7 @@ class AddLocationFragment : Fragment() {
                     }
 
                     val latLng = LatLng(address.latitude, address.longitude)
+                    map.clear()
                     map.addMarker(
                         MarkerOptions()
                             .position(latLng)
@@ -227,8 +228,6 @@ class AddLocationFragment : Fragment() {
                             map.uiSettings.isMyLocationButtonEnabled = false
                         }
                     }
-                } else {
-                    getLocationPermission()
                 }
             }
     }
@@ -257,23 +256,8 @@ class AddLocationFragment : Fragment() {
                 } else {
                     map.isMyLocationEnabled = false
                     map.uiSettings.isMyLocationButtonEnabled = false
-                    getLocationPermission()
                 }
             }
-    }
-
-    private fun getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            )
-        }
     }
 
     //TODO: Show better looking dialogue...

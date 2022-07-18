@@ -76,7 +76,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setupActionBarWithNavController(
             this,
             navController = navController,
-            configuration = appBarConfiguration)
+            configuration = appBarConfiguration
+        )
 
         if (!checkPermissions()) {
             requestPermissions()
@@ -92,13 +93,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     //TODO: Recheck permissions, on the phone I had to request in Pick Location
     private fun checkPermissions(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            this, Manifest.permission_group.LOCATION
+            this, arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ).toString()
         )
     }
 
+    //TODO: This should be handled in an introduction screen
     private fun requestPermissions() {
         val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
-            this, Manifest.permission_group.LOCATION
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ).toString()
         )
 
         if (shouldProvideRationale) {
