@@ -70,7 +70,7 @@ class EditAppointmentFragment : Fragment() {
                     adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                     binding.appointmentLocation.adapter = adapter
 
-                    val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location.id }}.first()
+                    val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location?.id }}.first().or(0)
                     binding.appointmentLocation.setSelection(selectionPosition)
                 }
             }

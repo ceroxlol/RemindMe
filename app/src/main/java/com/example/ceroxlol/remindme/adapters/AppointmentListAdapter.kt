@@ -61,7 +61,7 @@ class AppointmentListAdapter(
         fun bind(appointment: Appointment) {
             binding.appointmentName.text = appointment.name
             binding.appointmentText.text = appointment.text
-            binding.appointmentLocationName.text = appointment.location.name
+            binding.appointmentLocationName.text = appointment.location?.name
         }
     }
 

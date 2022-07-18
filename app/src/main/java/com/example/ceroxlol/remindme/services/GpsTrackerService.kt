@@ -133,19 +133,20 @@ class GpsTrackerService : LifecycleService() {
     }
 
     private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
-        Log.i(TAG, "Filtering $appointments")
+        Log.d(TAG, "Filtering on ${appointments.size} appointments")
         val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("appointment_update_distance", 50).toFloat()
         return appointments
-            .filter { appointmentKT ->
-                !appointmentKT.done && appointmentKT.snooze?.before(Calendar.getInstance().time) == true
+            .filter { appointment ->
+                !appointment.done && appointment.snooze?.before(Calendar.getInstance().time) == true && appointment.location?.isValid() == true
             }
-            .filter { appointmentKT ->
+            .filter { appointment ->
+                Log.d(TAG, "Appointment ${appointment.id} is met!")
                 val distance = FloatArray(1)
                 Location.distanceBetween(
                     currentLocation.latitude,
                     currentLocation.longitude,
-                    appointmentKT.location.location.latitude,
-                    appointmentKT.location.location.longitude,
+                    appointment.location!!.location.latitude,
+                    appointment.location.location.longitude,
                     distance
                 )
                 distance[0] < preferenceDistance
