@@ -89,7 +89,20 @@ class AddAppointmentFragment : Fragment() {
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
             locationMarkers.let {
                 //TODO: "Please add locations" instead of the empty spinner
-                if(it.isNotEmpty()) {
+                if (it.isEmpty()) {
+                    locationsEmpty = true
+
+                    Toast.makeText(
+                        requireContext(),
+                        "No locations, please add one.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val action =
+                        AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
+                    findNavController().navigate(action)
+                }
+                else{
                     locationsEmpty = false
                 }
                 val adapter = LocationsSpinnerAdapter(requireContext(), it)
@@ -100,8 +113,12 @@ class AddAppointmentFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-            if(locationsEmpty){
-                Toast.makeText(requireContext(), "Please add locations first!", Toast.LENGTH_SHORT).show()
+            if (locationsEmpty) {
+                Toast.makeText(
+                    requireContext(),
+                    "No locations, please add one.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 saveAppointment()
             }
