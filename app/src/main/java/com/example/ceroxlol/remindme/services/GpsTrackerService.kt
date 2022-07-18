@@ -111,7 +111,10 @@ class GpsTrackerService : LifecycleService() {
 
                 if (appointmentsToNotify.isNotEmpty()) {
 
-                    Log.i(TAG, "Creating notifcations for ${appointmentsToNotify.size} appointments...")
+                    Log.i(
+                        TAG,
+                        "Creating notifcations for ${appointmentsToNotify.size} appointments..."
+                    )
 
                     appointmentsToNotify.forEach {
                         notificationManager.notify(
@@ -134,10 +137,13 @@ class GpsTrackerService : LifecycleService() {
 
     private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
         Log.d(TAG, "Filtering on ${appointments.size} appointments")
-        val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("appointment_update_distance", 50).toFloat()
+        val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this)
+            .getInt("appointment_update_distance", 50).toFloat()
         return appointments
             .filter { appointment ->
-                !appointment.done && appointment.snooze?.before(Calendar.getInstance().time) == true && appointment.location?.isValid() == true
+                !appointment.done &&
+                        (appointment.snooze == null || appointment.snooze.before(Calendar.getInstance().time)) &&
+                        appointment.location?.isValid() == true
             }
             .filter { appointment ->
                 Log.d(TAG, "Appointment ${appointment.id} is met!")
@@ -149,6 +155,7 @@ class GpsTrackerService : LifecycleService() {
                     appointment.location.location.longitude,
                     distance
                 )
+                Log.d(TAG, "Distance is ${distance[0]}")
                 distance[0] < preferenceDistance
             }
     }
@@ -157,7 +164,7 @@ class GpsTrackerService : LifecycleService() {
      * Generates a BIG_TEXT_STYLE Notification that represent latest location.
      */
     private fun generateNotification(appointment: Appointment): Notification {
-        Log.d(TAG, "generateNotification()")
+        Log.d(TAG, "generateNotification")
 
         // Main steps for building a BIG_TEXT_STYLE notification:
         //      0. Get data
