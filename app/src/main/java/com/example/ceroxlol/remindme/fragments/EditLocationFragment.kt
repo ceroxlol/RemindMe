@@ -273,9 +273,7 @@ class EditLocationFragment : Fragment() {
             )
 
             //Navigate back
-            val action =
-                EditLocationFragmentDirections.actionEditLocationFragmentToMainFragment()
-            findNavController().navigate(action)
+            findNavController().popBackStack()
         }
 
         alertDialog.setNegativeButton("Cancel", null)
@@ -287,7 +285,6 @@ class EditLocationFragment : Fragment() {
         private val defaultLocation = LatLng(9.993682, 53.551086)
         private const val DEFAULT_ZOOM = 13F
         private const val CLOSE_ZOOM = 18F
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private const val TAG = "EditLocationFragment"
     }
 }
