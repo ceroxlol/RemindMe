@@ -16,7 +16,7 @@ interface LocationMarkerDao {
     fun entriesExist() : Boolean
 
     @Update
-    fun update(locationMarker: LocationMarker)
+    suspend fun update(locationMarker: LocationMarker)
 
     @Delete
     suspend fun delete(locationMarker: LocationMarker)

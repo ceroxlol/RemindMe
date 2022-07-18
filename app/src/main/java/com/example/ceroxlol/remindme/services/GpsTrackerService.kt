@@ -90,13 +90,14 @@ class GpsTrackerService : LifecycleService() {
 
     @SuppressLint("MissingPermission")
     private fun setupLocationUpdates() {
-        val locationUpdateDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("location_update_distance", 50).toFloat()
+        //TODO: Remove after debugging
+        //val locationUpdateDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("location_update_distance", 50).toFloat()
         locationRequest = LocationRequest.create().apply {
             this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             this.interval = MIN_TIME_BW_UPDATES
             this.fastestInterval = STANDARD_TIME_BW_UPDATES
-            this.maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-            this.smallestDisplacement = locationUpdateDistance
+            this.maxWaitTime = MAX_TIME_BW_UPDATES
+            //this.smallestDisplacement = locationUpdateDistance
         }
 
         locationCallback = object : LocationCallback() {
@@ -297,8 +298,9 @@ class GpsTrackerService : LifecycleService() {
 
         private const val TAG = "GpsTrackerService"
 
-        private const val MIN_TIME_BW_UPDATES = (1000 * 30).toLong() // 1 minute
-        private const val STANDARD_TIME_BW_UPDATES = (1000 * 60).toLong() // 30 secs
-        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES = 50.toFloat() // 50 metres
+        private val MIN_TIME_BW_UPDATES = TimeUnit.SECONDS.toMillis(5)
+        private val STANDARD_TIME_BW_UPDATES = TimeUnit.SECONDS.toMillis(10)
+        private val MAX_TIME_BW_UPDATES = TimeUnit.SECONDS.toMillis(30)
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES = 50f // 50 metres
     }
 }

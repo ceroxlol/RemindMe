@@ -286,14 +286,16 @@ class EditLocationFragment : Fragment() {
         alertDialog.setView(editText)
 
         alertDialog.setPositiveButton("Save") { _, _ ->
-            locationMarkerViewModel.addNewLocationMarker(
-                editText.text.toString(),
-                locationMarker!!.location
+            locationMarkerViewModel.updateLocationMarker(
+                id = locationMarker!!.id,
+                name = editText.text.toString(),
+                longitude = locationMarker!!.location.longitude,
+                latitude = locationMarker!!.location.latitude
             )
 
             //Navigate back
             val action =
-                EditAppointmentFragmentDirections.actionEditAppointmentFragmentToMainFragment()
+                EditLocationFragmentDirections.actionEditLocationFragmentToMainFragment()
             findNavController().navigate(action)
         }
 

@@ -88,6 +88,10 @@ class AddAppointmentFragment : Fragment() {
 
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
             locationMarkers.let {
+                //TODO: "Please add locations" instead of the empty spinner
+                if(it.isNotEmpty()) {
+                    locationsEmpty = false
+                }
                 val adapter = LocationsSpinnerAdapter(requireContext(), it)
 
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
