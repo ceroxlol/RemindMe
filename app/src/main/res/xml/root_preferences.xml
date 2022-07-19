@@ -4,8 +4,8 @@
 
         <SeekBarPreference
             app:key="location_update_distance"
-            app:min = "50"
-            app:defaultValue="50"
+            app:min = "0"
+            app:defaultValue="0"
             app:title="Location min update distance"
             app:showSeekBarValue="true" />
 
@@ -21,8 +21,8 @@
 
         <SeekBarPreference
             app:key="appointment_update_distance"
-            app:min = "50"
-            app:defaultValue="50"
+            app:min = "0"
+            app:defaultValue="500"
             app:title="Appointment alert min distance"
             app:showSeekBarValue="true" />
 
@@ -31,17 +31,18 @@
     <PreferenceCategory app:title="Coming Soon!">
 
         <SeekBarPreference
+            app:key="delete_appointments_after"
             app:min = "30"
             app:defaultValue="30"
             app:title="Delete appointments after %s days"
             app:showSeekBarValue="true"/>
 
         <SwitchPreference
+            app:key = "system_of_units"
             app:entries="@array/system_of_units_entries"
             app:entryValues="@array/system_of_units_values"
             app:defaultValue="km"
             app:title="System of units"
-            app:summary="%s"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

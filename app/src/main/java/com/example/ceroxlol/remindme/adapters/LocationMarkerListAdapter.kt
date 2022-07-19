@@ -37,7 +37,9 @@ class LocationMarkerListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationMarkerViewHolder {
         return LocationMarkerViewHolder(
             LocationListItemBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
     }

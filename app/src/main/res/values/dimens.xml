@@ -3,6 +3,9 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="margin">16dp</dimen>
+    <dimen name="element_padding">2dp</dimen>
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="button_round_radius">10dp</dimen>
+    <dimen name="location_list_item_height">64dp</dimen>
+    <dimen name="appointment_list_item_height">64dp</dimen>
 </resources>

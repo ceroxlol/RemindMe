@@ -39,7 +39,9 @@ class AppointmentListAdapter(
             AppointmentListItemBinding.inflate(
                 LayoutInflater.from(
                     parent.context
-                )
+                ),
+                parent,
+                false
             )
         )
     }
@@ -60,7 +62,6 @@ class AppointmentListAdapter(
 
         fun bind(appointment: Appointment) {
             binding.appointmentName.text = appointment.name
-            binding.appointmentText.text = appointment.text
             binding.appointmentLocationName.text = appointment.location?.name
         }
     }

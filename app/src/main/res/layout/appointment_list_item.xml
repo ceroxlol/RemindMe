@@ -1,54 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/long_click_transition">
+    android:layout_height="@dimen/appointment_list_item_height"
+    android:background="@drawable/long_click_transition"
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/appointment_name"
         style="@style/Widget.RemindMe.ListItemTextView"
-        android:layout_width="180dp"
         android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="@dimen/element_padding"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif"
-        android:paddingStart="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/appointment_location_name"
+        app:layout_constraintBottom_toTopOf="@+id/appointment_location_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Appointment Name"
-        tools:ignore="RtlSymmetry" />
+        tools:text="Appointment Name" />
 
     <TextView
         android:id="@+id/appointment_location_name"
-        style="@style/Widget.RemindMe.ListItemTextView"
-        android:layout_width="100dp"
-        android:layout_below="@+id/appointment_name"
-        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginBottom="@dimen/element_padding"
         android:fontFamily="sans-serif-medium"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/appointment_text"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/appointment_name"
-        app:layout_constraintTop_toTopOf="parent"
+        style="@style/Widget.RemindMe.ListItemTextViewLocationBelowAppointment"
+        app:layout_constraintTop_toBottomOf="@+id/appointment_name"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="Location" />
-
-    <TextView
-        android:id="@+id/appointment_text"
-        style="@style/Widget.RemindMe.ListItemTextView"
-        android:layout_width="80dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:fontFamily="sans-serif-medium"
-        android:textAlignment="center"
-        android:paddingEnd="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Time"
-        tools:ignore="RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

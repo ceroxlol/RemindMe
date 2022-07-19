@@ -8,6 +8,8 @@
         <entry key="../../.gradle/caches/transforms-3/f911d229a03837bc0edda8df1051702b/transformed/appcompat-1.4.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.28442028985507245" />
         <entry key="../../Android/Sdk/platforms/android-32/data/res/drawable/btn_radio.xml" value="0.3235" />
         <entry key="../../Android/Sdk/platforms/android-32/data/res/layout/simple_dropdown_item_1line.xml" value="0.35625" />
+        <entry key="app/src/main/res/drawable/bg_black_blue_round.xml" value="0.4585" />
+        <entry key="app/src/main/res/drawable/bg_black_blue_round_spinner.xml" value="0.4585" />
         <entry key="app/src/main/res/drawable/bg_black_red_round.xml" value="0.265" />
         <entry key="app/src/main/res/drawable/bg_round.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/bg_spinner_item.xml" value="0.265" />
@@ -29,7 +31,7 @@
         <entry key="app/src/main/res/layout/content_edit_appointment.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/content_edit_single_appointment.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/content_edit_single_location.xml" value="0.5067708333333333" />
-        <entry key="app/src/main/res/layout/fragment_add_appointment.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_add_appointment.xml" value="0.67" />
         <entry key="app/src/main/res/layout/fragment_add_location.xml" value="0.29270833333333335" />
         <entry key="app/src/main/res/layout/fragment_add_new_appointment.xml" value="0.26443768996960487" />
         <entry key="app/src/main/res/layout/fragment_appointment_detail.xml" value="0.33" />
