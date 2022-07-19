@@ -23,7 +23,7 @@
     <string name="appointment_detail_fragment_title">Appointment details</string>
     <string name="appointment_add_fragment_title">Add new appointment</string>
     <string name="appointment_name_req">Appointment name</string>
-    <string name="appointment_text_req">Appointment text</string>
+    <string name="appointment_text_req">Additional notes</string>
     <string name="appointment_location_req">Location</string>
     <string name="save_action">Save</string>
     <string name="add_new_appointment">Add new appointment</string>

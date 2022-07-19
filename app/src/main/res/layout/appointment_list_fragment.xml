@@ -19,7 +19,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin"
     tools:context=".fragments.AppointmentsListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -38,8 +37,8 @@
         android:id="@+id/addNewAppointmentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:layout_marginBottom="@dimen/margin_between_elements"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
         android:contentDescription="@string/add_new_appointment"
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
