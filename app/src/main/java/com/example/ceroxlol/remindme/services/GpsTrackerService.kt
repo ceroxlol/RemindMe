@@ -46,8 +46,7 @@ class GpsTrackerService : LifecycleService() {
     private var currentLocation: Location? = null
 
     private lateinit var database: AppDatabase
-    private lateinit var appointmentsKT: LiveData<List<Appointment>>
-    private lateinit var appointments: MutableList<Appointment>
+    private lateinit var appointments: List<Appointment>
 
     private val localBinder = LocalBinder()
 
@@ -64,12 +63,9 @@ class GpsTrackerService : LifecycleService() {
         getLastKnownLocation()
 
         database = AppDatabase.getDatabase(applicationContext)
-        appointmentsKT = database.appointmentDao().getAll().asLiveData()
-
-        appointments = mutableListOf()
-        appointmentsKT.observe(this) {
+        database.appointmentDao().getAllNotDone().asLiveData().observe(this) {
             Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
-            appointments = it.toMutableList()
+            appointments = it
         }
     }
 
@@ -141,7 +137,6 @@ class GpsTrackerService : LifecycleService() {
             .getInt("appointment_update_distance", 50).toFloat()
         return appointments
             .filter { appointment ->
-                !appointment.done &&
                         (appointment.snooze == null || appointment.snooze.before(Calendar.getInstance().time)) &&
                         appointment.location?.isValid() == true
             }
