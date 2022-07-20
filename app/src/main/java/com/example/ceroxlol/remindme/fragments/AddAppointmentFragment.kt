@@ -89,22 +89,7 @@ class AddAppointmentFragment : Fragment() {
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
             locationMarkers.let {
                 //TODO: "Please add locations" instead of the empty spinner
-                if (it.isEmpty()) {
-                    locationsEmpty = true
-
-                    Toast.makeText(
-                        requireContext(),
-                        "No locations, please add one.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    val action =
-                        AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
-                    findNavController().navigate(action)
-                }
-                else{
-                    locationsEmpty = false
-                }
+                locationsEmpty = it.isEmpty()
                 val adapter = LocationsSpinnerAdapter(requireContext(), it)
 
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -140,4 +125,21 @@ class AddAppointmentFragment : Fragment() {
         _binding = null
     }
 
+
+    override fun onResume() {
+        super.onResume()
+
+        if(locationsEmpty)
+        {
+            Toast.makeText(
+                requireContext(),
+                "No locations, please add one.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            val action =
+                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
+            findNavController().navigate(action)
+        }
+    }
 }
