@@ -19,7 +19,7 @@ class SearchResultAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val view: View = convertView ?: inflater.inflate(R.layout.address_adapter_item, parent, false)
+        val view: View = convertView ?: inflater.inflate(R.layout.adapter_address_display_item, parent, false)
 
         getItem(position)?.let {
             setLayout(view, it)
@@ -29,7 +29,7 @@ class SearchResultAdapter(
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View = convertView ?: inflater.inflate(R.layout.spinner_item_location, parent, false)
+        val view: View = convertView ?: inflater.inflate(R.layout.search_result_item_location_fragment, parent, false)
 
         getItem(position)?.let {
             setLayout(view, it)

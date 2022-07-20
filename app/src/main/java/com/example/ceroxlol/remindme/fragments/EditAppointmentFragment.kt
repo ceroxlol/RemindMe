@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationsSpinnerAdapter
-import com.example.ceroxlol.remindme.databinding.FragmentAppointmentDetailBinding
+import com.example.ceroxlol.remindme.databinding.FragmentEditAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
@@ -42,7 +42,7 @@ class EditAppointmentFragment : Fragment() {
 
     lateinit var appointment: Appointment
 
-    private var _binding: FragmentAppointmentDetailBinding? = null
+    private var _binding: FragmentEditAppointmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -50,7 +50,7 @@ class EditAppointmentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAppointmentDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentEditAppointmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 

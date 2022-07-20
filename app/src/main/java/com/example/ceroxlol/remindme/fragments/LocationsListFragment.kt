@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerListAdapter
-import com.example.ceroxlol.remindme.databinding.LocationListFragmentBinding
+import com.example.ceroxlol.remindme.databinding.FragmentListLocationBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
@@ -26,7 +26,7 @@ class LocationsListFragment : Fragment() {
         )
     }
 
-    private var _binding: LocationListFragmentBinding? = null
+    private var _binding: FragmentListLocationBinding? = null
     private val binding get() = _binding!!
 
 
@@ -34,7 +34,7 @@ class LocationsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = LocationListFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentListLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
 

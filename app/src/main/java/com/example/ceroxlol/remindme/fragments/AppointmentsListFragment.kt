@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.AppointmentListAdapter
-import com.example.ceroxlol.remindme.databinding.AppointmentListFragmentBinding
+import com.example.ceroxlol.remindme.databinding.FragmentListAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
@@ -27,7 +27,7 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
-    private var _binding: AppointmentListFragmentBinding? = null
+    private var _binding: FragmentListAppointmentBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var appointmentList: List<Appointment>
@@ -36,7 +36,7 @@ class AppointmentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = AppointmentListFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentListAppointmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -175,7 +175,11 @@ class GpsTrackerService : LifecycleService() {
 
         // 0. Get data
         val titleText = "Remember! " + appointment.name
-        val mainNotificationText = "Note: " + appointment.text
+        val mainNotificationText =
+            if (appointment.text != null)
+                "Note: " + appointment.text
+            else
+                null
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

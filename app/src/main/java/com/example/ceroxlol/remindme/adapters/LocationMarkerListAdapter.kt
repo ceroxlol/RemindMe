@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ceroxlol.remindme.databinding.LocationListItemBinding
+import com.example.ceroxlol.remindme.databinding.ListLocationItemFragmentLocationListBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
 
 /**
@@ -36,7 +36,7 @@ class LocationMarkerListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationMarkerViewHolder {
         return LocationMarkerViewHolder(
-            LocationListItemBinding.inflate(
+            ListLocationItemFragmentLocationListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -55,7 +55,7 @@ class LocationMarkerListAdapter(
         holder.bind(current)
     }
 
-    class LocationMarkerViewHolder(private var binding: LocationListItemBinding) :
+    class LocationMarkerViewHolder(private var binding: ListLocationItemFragmentLocationListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(locationMarker: LocationMarker) {

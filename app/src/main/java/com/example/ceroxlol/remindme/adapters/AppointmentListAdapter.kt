@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ceroxlol.remindme.databinding.AppointmentListItemBinding
+import com.example.ceroxlol.remindme.databinding.ListAppointmentItemFragmentAppointmentListBinding
 import com.example.ceroxlol.remindme.models.Appointment
 
 /**
@@ -36,7 +36,7 @@ class AppointmentListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
         return AppointmentViewHolder(
-            AppointmentListItemBinding.inflate(
+            ListAppointmentItemFragmentAppointmentListBinding.inflate(
                 LayoutInflater.from(
                     parent.context
                 ),
@@ -57,7 +57,7 @@ class AppointmentListAdapter(
         holder.bind(current)
     }
 
-    inner class AppointmentViewHolder(private var binding: AppointmentListItemBinding) :
+    inner class AppointmentViewHolder(private var binding: ListAppointmentItemFragmentAppointmentListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(appointment: Appointment) {
