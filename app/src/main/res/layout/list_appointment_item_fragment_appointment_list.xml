@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/appointment_list_item_height"
+    android:layout_marginBottom="@dimen/element_padding"
     android:background="@drawable/long_click_transition"
     android:descendantFocusability="blocksDescendants">
 

@@ -60,8 +60,6 @@ class LocationMarkerListAdapter(
 
         fun bind(locationMarker: LocationMarker) {
             binding.locationName.text = locationMarker.name
-            binding.locationAddress.text = "No Address"
-            binding.locationDistance.text = "0 KM"
         }
     }
 

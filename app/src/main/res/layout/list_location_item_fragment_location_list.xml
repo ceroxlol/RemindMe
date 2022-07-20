@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/location_list_item_height"
     android:background="@drawable/long_click_transition"
+    android:layout_marginBottom="@dimen/element_padding"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
@@ -13,39 +14,11 @@
         android:layout_marginStart="@dimen/margin_between_elements"
         android:fontFamily="sans-serif"
         style="@style/Widget.RemindMe.ListItemTextView"
-        app:layout_constraintEnd_toStartOf="@+id/location_distance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="RtlSymmetry"
         tools:text="Location Name" />
-
-    <TextView
-        android:id="@+id/location_distance"
-        style="@style/Widget.RemindMe.ListItemTextView"
-        android:layout_width="100dp"
-        android:layout_below="@+id/location_name"
-        android:layout_marginStart="@dimen/margin_between_elements"
-        android:fontFamily="sans-serif-medium"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/location_address"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/location_name"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Distance" />
-
-    <TextView
-        android:id="@+id/location_address"
-        style="@style/Widget.RemindMe.ListItemTextView"
-        android:layout_width="80dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:fontFamily="sans-serif-medium"
-        android:paddingEnd="2dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlSymmetry"
-        tools:text="Address" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
