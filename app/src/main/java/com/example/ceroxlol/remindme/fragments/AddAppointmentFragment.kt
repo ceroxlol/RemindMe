@@ -52,37 +52,6 @@ class AddAppointmentFragment : Fragment() {
         return binding.root
     }
 
-    private fun saveAppointment() {
-        if (isEntryValid()) {
-            appointmentViewModel.addNewAppointment(
-                binding.appointmentName.text.toString(),
-                binding.appointmentText.text.toString(),
-                binding.appointmentLocation.selectedItem as LocationMarker,
-                null,
-                false
-            )
-            val action =
-                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToMainFragment()
-            findNavController().navigate(action)
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Please recheck, something's not correct.", Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    /**
-     * Returns true if the EditTexts are not empty
-     */
-    private fun isEntryValid(): Boolean {
-        return appointmentViewModel.isEntryValid(
-            binding.appointmentName.text.toString(),
-            binding.appointmentText.text.toString(),
-            binding.appointmentLocation.selectedItem as LocationMarker
-        )
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -116,6 +85,32 @@ class AddAppointmentFragment : Fragment() {
         }
     }
 
+    private fun saveAppointment() {
+        if (isEntryValid()) {
+            appointmentViewModel.addNewAppointment(
+                binding.appointmentName.text.toString(),
+                binding.appointmentText.text.toString(),
+                binding.appointmentLocation.selectedItem as LocationMarker,
+                null,
+                false
+            )
+            findNavController().popBackStack()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Please recheck, something's not correct.", Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun isEntryValid(): Boolean {
+        return appointmentViewModel.isEntryValid(
+            binding.appointmentName.text.toString(),
+            binding.appointmentText.text.toString(),
+            binding.appointmentLocation.selectedItem as LocationMarker
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         // Hide keyboard.
@@ -124,7 +119,6 @@ class AddAppointmentFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
         _binding = null
     }
-
 
     override fun onResume() {
         super.onResume()

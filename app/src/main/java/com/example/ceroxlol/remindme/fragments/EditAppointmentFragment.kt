@@ -1,9 +1,11 @@
 package com.example.ceroxlol.remindme.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -20,7 +22,6 @@ import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EditAppointmentFragment : Fragment() {
 
@@ -45,6 +46,8 @@ class EditAppointmentFragment : Fragment() {
     private var _binding: FragmentEditAppointmentBinding? = null
     private val binding get() = _binding!!
 
+    private var locationsEmpty = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,6 +68,7 @@ class EditAppointmentFragment : Fragment() {
 
             locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
                 locationMarkers.let {
+                    locationsEmpty = it.isEmpty()
                     val adapter = LocationsSpinnerAdapter(requireContext(), it)
 
                     adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -79,7 +83,15 @@ class EditAppointmentFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-            saveAppointment()
+            if (locationsEmpty) {
+                Toast.makeText(
+                    requireContext(),
+                    "No locations, please add one.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                saveAppointment()
+            }
         }
     }
 
@@ -88,33 +100,7 @@ class EditAppointmentFragment : Fragment() {
             appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
             appointmentText.setText(appointment.text, TextView.BufferType.SPANNABLE)
             saveButton.setOnClickListener { saveAppointment() }
-            //removeAppointment.setOnClickListener { showDeletionDialog() }
         }
-    }
-
-    private fun showDeletionDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(android.R.string.dialog_alert_title))
-            .setMessage(getString(R.string.delete_question))
-            .setCancelable(false)
-            .setNegativeButton(getString(R.string.no)) { _, _ -> }
-            .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                deleteItem()
-            }
-            .show()
-    }
-
-    private fun deleteItem() {
-        appointmentViewModel.deleteAppointment(appointment)
-        findNavController().navigateUp()
-    }
-
-    /**
-     * Called when fragment is destroyed.
-     */
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun saveAppointment() {
@@ -125,9 +111,7 @@ class EditAppointmentFragment : Fragment() {
                 binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker
             )
-            val action =
-                EditAppointmentFragmentDirections.actionEditAppointmentFragmentToMainFragment()
-            findNavController().navigate(action)
+            findNavController().popBackStack()
         }
         else{
             Toast.makeText(
@@ -143,5 +127,31 @@ class EditAppointmentFragment : Fragment() {
             binding.appointmentText.text.toString(),
             binding.appointmentLocation.selectedItem as LocationMarker
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Hide keyboard.
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+        _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(locationsEmpty)
+        {
+            Toast.makeText(
+                requireContext(),
+                "No locations, please add one.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            val action =
+                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
+            findNavController().navigate(action)
+        }
     }
 }

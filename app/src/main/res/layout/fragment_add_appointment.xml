@@ -56,7 +56,6 @@
             android:inputType="textAutoComplete|textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <Spinner
         android:id="@+id/appointment_location"
         android:layout_width="match_parent"
