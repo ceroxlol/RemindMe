@@ -169,10 +169,10 @@ class GpsTrackerService : LifecycleService() {
         //      4. Build and issue the notification
 
         // 0. Get data
-        val titleText = "Remember! " + appointment.name
+        val titleText = "Remember! \"${appointment.name}\""
         val mainNotificationText =
-            if (appointment.text != null)
-                "Note: " + appointment.text
+            if (appointment.text != null && appointment.text != "")
+                appointment.text
             else
                 null
 
