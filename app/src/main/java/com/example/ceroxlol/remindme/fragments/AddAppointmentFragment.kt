@@ -119,21 +119,4 @@ class AddAppointmentFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
         _binding = null
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        if(locationsEmpty)
-        {
-            Toast.makeText(
-                requireContext(),
-                "No locations, please add one.",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            val action =
-                AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
-            findNavController().navigate(action)
-        }
-    }
 }
