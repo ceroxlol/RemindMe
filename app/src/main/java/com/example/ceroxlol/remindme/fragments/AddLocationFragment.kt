@@ -66,6 +66,7 @@ class AddLocationFragment : Fragment() {
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
 
+        //TODO: For debugging only
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isMapToolbarEnabled = true
 
@@ -215,7 +216,7 @@ class AddLocationFragment : Fragment() {
                         if (task.isSuccessful) {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.result
-
+                            updateLocationUI()
                             moveCameraToLastKnownLocation()
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.")
@@ -224,7 +225,7 @@ class AddLocationFragment : Fragment() {
                                 CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM)
                             )
-                            map.uiSettings.isMyLocationButtonEnabled = false
+                            updateLocationUI()
                         }
                     }
                 }
@@ -250,11 +251,9 @@ class AddLocationFragment : Fragment() {
             .rationale("Needs permission to access the location")
             .checkPermission { granted: Boolean ->
                 if (granted) {
-                    map.isMyLocationEnabled = true
-                    map.uiSettings.isMyLocationButtonEnabled = true
+                    map.setLocationEnabled(true)
                 } else {
-                    map.isMyLocationEnabled = false
-                    map.uiSettings.isMyLocationButtonEnabled = false
+                    map.setLocationEnabled(false)
                 }
             }
     }
@@ -298,4 +297,9 @@ class AddLocationFragment : Fragment() {
 //TODO: Set the correct address here
 fun Address.getHumanReadableAddress(): CharSequence {
     return this.featureName + ", " + this.adminArea + ", " + this.countryName
+}
+
+fun GoogleMap.setLocationEnabled(enabled: Boolean){
+    this.isMyLocationEnabled = enabled
+    this.uiSettings.isMyLocationButtonEnabled = enabled
 }

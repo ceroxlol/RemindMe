@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -59,10 +60,22 @@ class AddAppointmentFragment : Fragment() {
             locationMarkers.let {
                 //TODO: "Please add locations" instead of the empty spinner
                 locationsEmpty = it.isEmpty()
-                val adapter = LocationsSpinnerAdapter(requireContext(), it)
-
-                adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                binding.appointmentLocation.adapter = adapter
+                if (!locationsEmpty) {
+                    binding.appointmentLocation.adapter = LocationsSpinnerAdapter(
+                        requireContext(),
+                        it
+                    ).also { locationsSpinnerAdapter ->
+                        locationsSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                    }
+                    binding.appointmentLocation.isEnabled = true
+                } else {
+                    binding.appointmentLocation.adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        listOf("Please add a Location!")
+                    )
+                    binding.appointmentLocation.isEnabled = false
+                }
             }
         }
 
