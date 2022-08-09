@@ -39,6 +39,7 @@ import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
 import com.example.ceroxlol.remindme.services.GpsTrackerService
+import com.example.ceroxlol.remindme.services.LocationService
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var navController: NavController
 
     private var gpsTrackerService: GpsTrackerService? = null
+    private var locationService: LocationService = LocationService()
 
     // Monitors connection to the while-in-use service.
     private val gpsTrackerServiceConnection = object : ServiceConnection {
@@ -88,6 +90,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val intent = Intent(this, GpsTrackerService::class.java)
         startService(intent)
         bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)
+
+        val locationIntent = Intent(this, LocationService::class.java)
+        startService(locationIntent)
+
     }
 
     //TODO: Recheck permissions, on the phone I had to request in Pick Location
