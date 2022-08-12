@@ -16,10 +16,7 @@
 package com.example.ceroxlol.remindme.activities
 
 import android.Manifest
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -29,17 +26,21 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
 import com.example.ceroxlol.remindme.services.GpsTrackerService
 import com.example.ceroxlol.remindme.services.LocationService
+import com.example.ceroxlol.remindme.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -50,7 +51,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var navController: NavController
 
     private var gpsTrackerService: GpsTrackerService? = null
-    private var locationService: LocationService = LocationService()
+    private var locationService: LocationService? = null
+
+    // Tracks the bound state of the service.
+    private var isServiceBound = false
 
     // Monitors connection to the while-in-use service.
     private val gpsTrackerServiceConnection = object : ServiceConnection {
@@ -64,6 +68,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             gpsTrackerService = null
         }
     }
+
+    // Monitors the state of the connection to the service.
+    private val locationServiceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder: LocationService.LocalBinder =
+                service as LocationService.LocalBinder
+            locationService = binder.service
+            isServiceBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            locationService = null
+            isServiceBound = false
+        }
+    }
+
 
     //TODO: Create Introduction Screen
     //TODO: Setup Home
@@ -81,19 +101,77 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             configuration = appBarConfiguration
         )
 
-        if (!checkPermissions()) {
-            requestPermissions()
-        }
+        /*// Check that the user hasn't revoked permissions by going to Settings.
+        if (Utils.requestingLocationUpdates(this)) {
+            if (!checkPermissions()) {
+                requestPermissions();
+            }
+        }*/
 
-        gpsTrackerService = GpsTrackerService()
+        /*gpsTrackerService = GpsTrackerService()
 
         val intent = Intent(this, GpsTrackerService::class.java)
         startService(intent)
-        bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)
+        bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)*/
 
-        val locationIntent = Intent(this, LocationService::class.java)
-        startService(locationIntent)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        val context = this
+        PreferenceManager.getDefaultSharedPreferences(context)
+        //.registerOnSharedPreferenceChangeListener(context)
+
+
+
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    locationService!!.requestLocationUpdates()
+
+                    // Bind to the service. If the service is in foreground mode, this signals to the service
+                    // that since this activity is in the foreground, the service can exit foreground mode.
+                    bindService(
+                        Intent(this, LocationService::class.java), locationServiceConnection,
+                        BIND_AUTO_CREATE
+                    )
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                }
+            }
+
+        if (!checkPermissions()) {
+            requestPermissions()
+        } else {
+            locationService!!.requestLocationUpdates()
+        }
+
+        // Bind to the service. If the service is in foreground mode, this signals to the service
+        // that since this activity is in the foreground, the service can exit foreground mode.
+        bindService(
+            Intent(this, LocationService::class.java), locationServiceConnection,
+            BIND_AUTO_CREATE
+        )
+    }
+
+    override fun onStop() {
+        if (isServiceBound) {
+            // Unbind from the service. This signals to the service that this activity is no longer
+            // in the foreground, and the service can respond by promoting itself to a foreground
+            // service.
+            unbindService(locationServiceConnection)
+            isServiceBound = false
+        }
+        val context = this
+        PreferenceManager.getDefaultSharedPreferences(context)
+        //.unregisterOnSharedPreferenceChangeListener(context)
+        super.onStop()
     }
 
     //TODO: Recheck permissions, on the phone I had to request in Pick Location
@@ -107,14 +185,35 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         )
     }
 
-    //TODO: This should be handled in an introduction screen
+    private fun requestPermissions(){
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+            // In an educational UI, explain to the user why your app requires this
+            // permission for a specific feature to behave as expected. In this UI,
+            // include a "cancel" or "no thanks" button that allows the user to
+            // continue using your app without granting the permission.
+            showInContextUI(...)
+        }
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    Manifest.permission.REQUESTED_PERMISSION)
+            }
+        }
+    }
+
+    /*//TODO: This should be handled in an introduction screen
     private fun requestPermissions() {
         val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
             this,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ).toString()
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
 
         if (shouldProvideRationale) {
@@ -133,7 +232,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
                 .show()
         }
-    }
+    }*/
 
     /**
      * Handle navigation when the user chooses Up from the action bar.
@@ -161,18 +260,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 Log.i(TAG, "User interaction was cancelled.")
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission was granted.
+                locationService!!.requestLocationUpdates()
             } else {
                 // Permission denied.
-
-                // Notify the user via a SnackBar that they have rejected a core permission for the
-                // app, which makes the Activity useless. In a real app, core permissions would
-                // typically be best requested during a welcome-screen flow.
-
-                // Additionally, it is important to remember that a permission might have been
-                // rejected without asking the user for permission (device policy or "Never ask
-                // again" prompts). Therefore, a user interface affordance is typically implemented
-                // when permissions are denied. Otherwise, your app could appear unresponsive to
-                // touches or interactions which have required permissions.
                 Snackbar.make(
                     findViewById(R.id.mainFragment),
                     R.string.permission_denied_explanation,
@@ -193,6 +283,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
     }
+
+/*    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
+        // Update the buttons state depending on whether location updates are being requested.
+        if (s == Utils.KEY_REQUESTING_LOCATION_UPDATES) {
+            setButtonsState(
+                sharedPreferences.getBoolean(
+                    Utils.KEY_REQUESTING_LOCATION_UPDATES,
+                    false
+                )
+            )
+        }
+    }*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater

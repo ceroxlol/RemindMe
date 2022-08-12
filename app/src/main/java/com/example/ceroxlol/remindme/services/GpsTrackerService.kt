@@ -16,7 +16,6 @@ import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
@@ -89,7 +88,6 @@ class GpsTrackerService : LifecycleService() {
         //TODO: Remove after debugging
         //val locationUpdateDistance = PreferenceManager.getDefaultSharedPreferences(this).getInt("location_update_distance", 50).toFloat()
         locationRequest = LocationRequest.create().apply {
-            this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             this.interval = MIN_TIME_BW_UPDATES
             this.fastestInterval = STANDARD_TIME_BW_UPDATES
             this.maxWaitTime = MAX_TIME_BW_UPDATES
