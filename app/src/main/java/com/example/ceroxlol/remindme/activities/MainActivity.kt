@@ -19,14 +19,15 @@ import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,13 +36,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
-import com.example.ceroxlol.remindme.BuildConfig
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
 import com.example.ceroxlol.remindme.services.GpsTrackerService
 import com.example.ceroxlol.remindme.services.LocationService
-import com.example.ceroxlol.remindme.utils.Utils
-import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -52,6 +50,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private var gpsTrackerService: GpsTrackerService? = null
     private var locationService: LocationService? = null
+
+    private var serviceCanBeExecutedInBackground = false
 
     // Tracks the bound state of the service.
     private var isServiceBound = false
@@ -101,19 +101,80 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             configuration = appBarConfiguration
         )
 
-        /*// Check that the user hasn't revoked permissions by going to Settings.
-        if (Utils.requestingLocationUpdates(this)) {
-            if (!checkPermissions()) {
-                requestPermissions();
+        checkLocationPermission()
+    }
+
+    private fun checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                AlertDialog.Builder(this)
+                    .setTitle("Location Permission Needed")
+                    .setMessage("This app needs the Location permission, please accept to use geographically bound reminders")
+                    .setPositiveButton(
+                        "OK"
+                    ) { _, _ ->
+                        //Prompt the user once explanation has been shown
+                        requestLocationPermission()
+                    }
+                    .create()
+                    .show()
+            } else {
+                // No explanation needed, we can request the permission.
+                requestLocationPermission()
             }
-        }*/
+        } else {
+            checkBackgroundLocation()
+        }
+    }
 
-        /*gpsTrackerService = GpsTrackerService()
+    private fun checkBackgroundLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestBackgroundLocationPermission()
+        }
+    }
 
-        val intent = Intent(this, GpsTrackerService::class.java)
-        startService(intent)
-        bindService(intent, gpsTrackerServiceConnection, Context.BIND_AUTO_CREATE)*/
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            ),
+            MY_PERMISSIONS_REQUEST_LOCATION
+        )
+    }
 
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
+            )
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                MY_PERMISSIONS_REQUEST_LOCATION
+            )
+        }
     }
 
     override fun onStart() {
@@ -121,43 +182,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val context = this
         PreferenceManager.getDefaultSharedPreferences(context)
         //.registerOnSharedPreferenceChangeListener(context)
-
-
-
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                    locationService!!.requestLocationUpdates()
-
-                    // Bind to the service. If the service is in foreground mode, this signals to the service
-                    // that since this activity is in the foreground, the service can exit foreground mode.
-                    bindService(
-                        Intent(this, LocationService::class.java), locationServiceConnection,
-                        BIND_AUTO_CREATE
-                    )
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
-            }
-
-        if (!checkPermissions()) {
-            requestPermissions()
-        } else {
-            locationService!!.requestLocationUpdates()
-        }
-
-        // Bind to the service. If the service is in foreground mode, this signals to the service
-        // that since this activity is in the foreground, the service can exit foreground mode.
-        bindService(
-            Intent(this, LocationService::class.java), locationServiceConnection,
-            BIND_AUTO_CREATE
-        )
     }
 
     override fun onStop() {
@@ -174,66 +198,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onStop()
     }
 
-    //TODO: Recheck permissions, on the phone I had to request in Pick Location
-    private fun checkPermissions(): Boolean {
-        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ).toString()
-        )
-    }
-
-    private fun requestPermissions(){
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-            // In an educational UI, explain to the user why your app requires this
-            // permission for a specific feature to behave as expected. In this UI,
-            // include a "cancel" or "no thanks" button that allows the user to
-            // continue using your app without granting the permission.
-            showInContextUI(...)
-        }
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                requestPermissionLauncher.launch(
-                    Manifest.permission.REQUESTED_PERMISSION)
-            }
-        }
-    }
-
-    /*//TODO: This should be handled in an introduction screen
-    private fun requestPermissions() {
-        val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.")
-            Snackbar.make(
-                findViewById(R.id.mainFragment),
-                R.string.permission_denied_explanation,
-                Snackbar.LENGTH_INDEFINITE
-            )
-                .setAction(R.string.settings) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        REQUEST_PERMISSIONS_REQUEST_CODE
-                    )
-                }
-                .show()
-        }
-    }*/
-
     /**
      * Handle navigation when the user chooses Up from the action bar.
      */
@@ -248,53 +212,88 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.i(TAG, "onRequestPermissionResult")
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.isEmpty()) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.")
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted.
-                locationService!!.requestLocationUpdates()
-            } else {
-                // Permission denied.
-                Snackbar.make(
-                    findViewById(R.id.mainFragment),
-                    R.string.permission_denied_explanation,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.settings) { // Build intent that displays the App settings screen.
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        val uri: Uri = Uri.fromParts(
-                            "package",
-                            BuildConfig.APPLICATION_ID, null
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        locationService!!.requestLocationUpdates()
+
+                        // Bind to the service. If the service is in foreground mode, this signals to the service
+                        // that since this activity is in the foreground, the service can exit foreground mode.
+                        bindService(
+                            Intent(this, LocationService::class.java), locationServiceConnection,
+                            BIND_AUTO_CREATE
                         )
-                        intent.data = uri
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
+
+                        // Now check background location
+                        checkBackgroundLocation()
                     }
-                    .show()
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
+
+                    // Check if we are in a state where the user has denied the permission and
+                    // selected Don't ask again
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                    ) {
+                        startActivity(
+                            Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", this.packageName, null),
+                            ),
+                        )
+                    }
+                }
+                return
+            }
+            MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        serviceCanBeExecutedInBackground = true
+
+                        Toast.makeText(
+                            this,
+                            "Granted Background Location Permission",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
+                }
+                return
+
             }
         }
     }
-
-/*    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
-        // Update the buttons state depending on whether location updates are being requested.
-        if (s == Utils.KEY_REQUESTING_LOCATION_UPDATES) {
-            setButtonsState(
-                sharedPreferences.getBoolean(
-                    Utils.KEY_REQUESTING_LOCATION_UPDATES,
-                    false
-                )
-            )
-        }
-    }*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -316,6 +315,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     companion object {
-        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
+        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
     }
 }
