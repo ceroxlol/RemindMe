@@ -75,6 +75,7 @@ class LocationService : Service() {
      * The current location.
      */
     private var mLocation: Location? = null
+
     override fun onCreate() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mLocationCallback = object : LocationCallback() {
@@ -114,8 +115,8 @@ class LocationService : Service() {
             removeLocationUpdates()
             stopSelf()
         }
-        // Tells the system to not try to recreate the service after it has been killed.
-        return START_NOT_STICKY
+        // Tells the system to try to recreate the service after it has been killed.
+        return START_STICKY
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
