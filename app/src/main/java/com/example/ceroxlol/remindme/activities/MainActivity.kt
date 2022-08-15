@@ -182,6 +182,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val context = this
         PreferenceManager.getDefaultSharedPreferences(context)
         //.registerOnSharedPreferenceChangeListener(context)
+
+        //Start listening to location updates
+        bindService(
+            Intent(this, LocationService::class.java), locationServiceConnection,
+            BIND_AUTO_CREATE
+        )
     }
 
     override fun onStop() {
