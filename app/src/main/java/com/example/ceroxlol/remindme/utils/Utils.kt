@@ -10,7 +10,7 @@ import java.util.*
 
 object Utils {
 
-    const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates"
+    private const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates"
 
     /**
      * Returns true if requesting location updates, otherwise returns false.
@@ -37,12 +37,12 @@ object Utils {
      * Returns the `location` object as a human readable string.
      * @param location  The [Location].
      */
-    fun getLocationText(location: Location?): String? {
-        return if (location == null) "Unknown location" else "(" + location.getLatitude()
-            .toString() + ", " + location.getLongitude().toString() + ")"
+    fun getLocationText(location: Location?): String {
+        return if (location == null) "Unknown location"
+            else "(" + location.latitude.toString() + ", " + location.longitude.toString() + ")"
     }
 
-    fun getLocationTitle(context: Context): String? {
+    fun getLocationTitle(context: Context): String {
         return context.getString(
             R.string.location_updated,
             DateFormat.getDateTimeInstance().format(Date())
