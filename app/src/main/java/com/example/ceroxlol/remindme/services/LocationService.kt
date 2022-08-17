@@ -23,11 +23,16 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.asLiveData
+import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.activities.MainActivity
+import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
+import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.example.ceroxlol.remindme.utils.Utils
 import com.google.android.gms.location.*
+import java.util.*
 
 
 /**
@@ -44,7 +49,7 @@ import com.google.android.gms.location.*
  * continue. When the activity comes back to the foreground, the foreground service stops, and the
  * notification assocaited with that service is removed.
  */
-class LocationService : Service() {
+class LocationService : LifecycleService() {
     private val mBinder: IBinder = LocalBinder()
 
     /**
@@ -76,7 +81,11 @@ class LocationService : Service() {
      */
     private var mLocation: Location? = null
 
+    private lateinit var database: AppDatabase
+    private lateinit var appointments: List<Appointment>
+
     override fun onCreate() {
+        super.onCreate()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mLocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -92,26 +101,31 @@ class LocationService : Service() {
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Android O requires a Notification Channel.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence = getString(R.string.app_name)
-            // Create the channel for the notification
-            val mChannel =
-                NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
+        val name: CharSequence = getString(R.string.app_name)
+        // Create the channel for the notification
+        val mChannel =
+            NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
 
-            // Set the Notification Channel for the Notification Manager.
-            mNotificationManager!!.createNotificationChannel(mChannel)
+        // Set the Notification Channel for the Notification Manager.
+        mNotificationManager!!.createNotificationChannel(mChannel)
+
+        database = AppDatabase.getDatabase(applicationContext)
+        database.appointmentDao().getAllNotDone().asLiveData().observe(this) {
+            Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
+            appointments = it
         }
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         Log.i(TAG, "Service started")
-        val startedFromNotification = intent.getBooleanExtra(
+        val startedFromNotification = intent?.getBooleanExtra(
             EXTRA_STARTED_FROM_NOTIFICATION,
             false
         )
 
         // We got here because the user decided to remove location updates from the notification.
-        if (startedFromNotification) {
+        if (startedFromNotification != null && startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
         }
@@ -125,6 +139,7 @@ class LocationService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
         // Called when a client (MainActivity in case of this sample) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
@@ -152,22 +167,14 @@ class LocationService : Service() {
         // do nothing. Otherwise, we make this service a foreground service.
         if (!mChangingConfiguration && Utils.requestingLocationUpdates(this)) {
             Log.i(TAG, "Starting foreground service")
-            /*
-            // TODO(developer). If targeting O, use the following code.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                mNotificationManager.startServiceInForeground(new Intent(this,
-                        LocationUpdatesService.class), NOTIFICATION_ID, getNotification());
-            } else {
-                startForeground(NOTIFICATION_ID, getNotification());
-            }
-             */
-            startForeground(NOTIFICATION_ID, notification)
+            startForeground(NOTIFICATION_ID, serviceRunningNotification)
         }
         return true // Ensures onRebind() is called when a client re-binds.
     }
 
     override fun onDestroy() {
         mServiceHandler!!.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     /**
@@ -196,7 +203,7 @@ class LocationService : Service() {
      * Removes location updates. Note that in this sample we merely log the
      * [SecurityException].
      */
-    fun removeLocationUpdates() {
+    private fun removeLocationUpdates() {
         Log.i(TAG, "Removing location updates")
         try {
             mFusedLocationClient!!.removeLocationUpdates(mLocationCallback!!)
@@ -211,17 +218,18 @@ class LocationService : Service() {
         }
     }
 
-    // Channel ID// Extra to help us figure out if we arrived in onStartCommand via the notification or not.
+    // Channel ID
+    // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
     // The PendingIntent that leads to a call to onStartCommand() in this service.
     // The PendingIntent to launch activity.
     // Set the Channel ID for Android O.
     /**
      * Returns the [NotificationCompat] used as part of the foreground service.
      */
-    private val notification: Notification
+    private val serviceRunningNotification: Notification
         get() {
             val intent = Intent(this, LocationService::class.java)
-            val text: String? = Utils.getLocationText(mLocation)
+            val text: String = Utils.getLocationText(mLocation)
 
             // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
             intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true)
@@ -232,31 +240,20 @@ class LocationService : Service() {
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            // The PendingIntent to launch activity.
-            val activityPendingIntent = PendingIntent.getActivity(
-                this, 0,
-                Intent(this, MainActivity::class.java), 0
-            )
             val builder: NotificationCompat.Builder = NotificationCompat.Builder(this)
                 .addAction(
-                    R.drawable.ic_launch, getString(R.string.launch_activity),
-                    activityPendingIntent
-                )
-                .addAction(
-                    R.drawable.ic_cancel, getString(R.string.remove_location_updates),
+                    R.drawable.ic_cancel, getString(R.string.stop_locations),
                     servicePendingIntent
                 )
                 .setContentText(text)
                 .setContentTitle(Utils.getLocationTitle(this))
                 .setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis())
 
             // Set the Channel ID for Android O.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                builder.setChannelId(CHANNEL_ID) // Channel ID
-            }
+            builder.setChannelId(CHANNEL_ID) // Channel ID
             return builder.build()
         }
 
@@ -286,18 +283,140 @@ class LocationService : Service() {
         Log.i(TAG, "New location: $location")
         mLocation = location
 
-        // Notify anyone listening for broadcasts about the new location.
-        val intent = Intent(ACTION_BROADCAST)
-        intent.putExtra(EXTRA_LOCATION, location)
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+        val appointmentsToNotify =
+            checkIfAppointmentsShouldNotify(mLocation as Location)
+
+        if (appointmentsToNotify.isNotEmpty()) {
+
+            Log.i(
+                TAG,
+                "Creating notifications for ${appointmentsToNotify.size} appointments"
+            )
+
+            appointmentsToNotify.forEach {
+                mNotificationManager!!.notify(
+                    it.id,
+                    generateAppointmentNotification(it)
+                )
+            }
+        }
 
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {
             mNotificationManager!!.notify(
                 NOTIFICATION_ID,
-                notification
+                serviceRunningNotification
             )
         }
+    }
+
+    private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
+        Log.d(TAG, "Filtering on ${appointments.size} appointments")
+        val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this)
+            .getInt("appointment_update_distance", 50).toFloat()
+        return appointments
+            .filter { appointment ->
+                (appointment.snooze == null
+                        || appointment.snooze.before(Calendar.getInstance().time))
+                        && appointment.location?.isValid() == true
+                        && appointment.isInRange(currentLocation, preferenceDistance)
+            }
+    }
+
+    /*
+     * Generates a BIG_TEXT_STYLE Notification that represent latest location.
+     */
+    private fun generateAppointmentNotification(appointment: Appointment): Notification {
+        Log.d(TAG, "generateNotification")
+
+        // Main steps for building a BIG_TEXT_STYLE notification:
+        //      0. Get data
+        //      1. Create Notification Channel for O+
+        //      2. Build the BIG_TEXT_STYLE
+        //      3. Set up Intent / Pending Intent for notification
+        //      4. Build and issue the notification
+
+        // 0. Get data
+        val titleText = "Remember! \"${appointment.name}\""
+        val mainNotificationText =
+            if (appointment.text != null && appointment.text != "")
+                appointment.text
+            else
+                null
+
+        // 1. Create Notification Channel for O+ and beyond devices (26+).
+
+        val notificationChannel = NotificationChannel(
+            GpsTrackerService.NOTIFICATION_CHANNEL_ID,
+            titleText,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        // Adds NotificationChannel to system. Attempting to create an
+        // existing notification channel with its original values performs
+        // no operation, so it's safe to perform the below sequence.
+        mNotificationManager!!.createNotificationChannel(notificationChannel)
+
+        // 2. Build the BIG_TEXT_STYLE.
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+            .bigText(mainNotificationText)
+            .setBigContentTitle(titleText)
+
+        // 3. Set up main Intent/Pending Intents for notification.
+        val intentSetAppointmentKTDone = Intent(
+            this,
+            AppointmentBroadcastReceiver::class.java
+        ).apply {
+            action = "setDone"
+            putExtra("appointmentId", appointment.id)
+        }
+
+        val appointmentDonePendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            intentSetAppointmentKTDone,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val intentSnoozeUntilNextTime = Intent(
+            this,
+            AppointmentBroadcastReceiver::class.java
+        ).apply {
+            action = "setSnooze"
+            putExtra("appointmentId", appointment.id)
+        }
+
+        val appointmentSnoozePendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            intentSnoozeUntilNextTime,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // 4. Build and issue the notification.
+        // Notification Channel Id is ignored for Android pre O (26).
+        val notificationCompatBuilder =
+            NotificationCompat.Builder(this, GpsTrackerService.NOTIFICATION_CHANNEL_ID)
+
+        return notificationCompatBuilder
+            .setStyle(bigTextStyle)
+            .setContentTitle(titleText)
+            .setContentText(mainNotificationText)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setOnlyAlertOnce(true)
+            .addAction(
+                R.drawable.ic_notification,
+                "Ok",
+                appointmentDonePendingIntent
+            )
+            .addAction(
+                R.drawable.ic_cancel,
+                "Snooze",
+                appointmentSnoozePendingIntent
+            )
+            .build()
     }
 
     /**
@@ -324,7 +443,7 @@ class LocationService : Service() {
      *
      * @param context The [Context].
      */
-    fun serviceIsRunningInForeground(context: Context): Boolean {
+    private fun serviceIsRunningInForeground(context: Context): Boolean {
         val manager = context.getSystemService(
             ACTIVITY_SERVICE
         ) as ActivityManager
