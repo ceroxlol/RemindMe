@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 service as LocationService.LocalBinder
             locationService = binder.service
             isServiceBound = true
+            locationService!!.requestLocationUpdates()
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -160,21 +161,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun requestBackgroundLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ),
-                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
-            )
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                MY_PERMISSIONS_REQUEST_LOCATION
-            )
-        }
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ),
+            MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
+        )
     }
 
     override fun onStart() {
@@ -251,7 +244,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "accurate location permission denied", Toast.LENGTH_LONG).show()
 
                     // Check if we are in a state where the user has denied the permission and
                     // selected Don't ask again
@@ -293,7 +286,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "background location permission denied", Toast.LENGTH_LONG).show()
                 }
                 return
 
