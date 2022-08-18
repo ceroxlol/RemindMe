@@ -81,6 +81,8 @@ class EditLocationFragment : Fragment() {
             map.clear()
             map.addMarker(MarkerOptions().position(it))
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
+
+            locationMarker = locationMarker!!.copy(location = DbLocation(it))
         }
 
         updateLocationUI()
@@ -283,7 +285,7 @@ class EditLocationFragment : Fragment() {
 
     companion object {
         private val defaultLocation = LatLng(9.993682, 53.551086)
-        private const val DEFAULT_ZOOM = 13F
+        private const val DEFAULT_ZOOM = 15F
         private const val CLOSE_ZOOM = 18F
         private const val TAG = "EditLocationFragment"
     }

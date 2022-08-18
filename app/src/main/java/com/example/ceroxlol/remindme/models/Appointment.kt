@@ -28,6 +28,7 @@ data class Appointment(
             this.location.location.longitude,
             distance
         )
+        Log.d("Appointment", distance[0].toString())
         return distance[0] < preferenceDistance
     }
 }
