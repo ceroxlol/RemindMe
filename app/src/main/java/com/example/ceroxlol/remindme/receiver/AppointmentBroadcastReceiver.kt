@@ -28,7 +28,7 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
                     Thread {
                         database.appointmentDao().setAppointmentDoneById(appointmentId)
                     }.start()
-                    notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId)
+                    notificationManager.cancel(appointmentId)
                     pendingResult.finish()
                 }
             }
@@ -47,7 +47,7 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
                             Calendar.getInstance().apply { this.add(Calendar.MINUTE, snoozeTimer) }.time
                         )
                     }.start()
-                    notificationManager.cancel(GPS_TRACKER_SERVICE_TAG, appointmentId)
+                    notificationManager.cancel(appointmentId)
                     pendingResult.finish()
                 }
             }
@@ -60,7 +60,5 @@ class AppointmentBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_PROCESS_UPDATES =
             "com.google.android.gms.location.sample.locationupdatespendingintent.action" +
                     ".PROCESS_UPDATES"
-
-        const val GPS_TRACKER_SERVICE_TAG = "GpsTrackerService"
     }
 }
