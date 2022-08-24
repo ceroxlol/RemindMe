@@ -57,6 +57,7 @@ class EditLocationFragment : Fragment() {
 
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
+    private var currentLatLng : LatLng? = null
 
     private var _binding: FragmentAddLocationBinding? = null
     private val binding get() = _binding!!
@@ -81,8 +82,7 @@ class EditLocationFragment : Fragment() {
             map.clear()
             map.addMarker(MarkerOptions().position(it))
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
-
-            locationMarker = locationMarker!!.copy(location = DbLocation(it))
+            currentLatLng = it
         }
 
         updateLocationUI()
@@ -198,15 +198,11 @@ class EditLocationFragment : Fragment() {
                         if (task.isSuccessful) {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.result
-                            moveCameraToLastKnownLocation()
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.")
                             Log.e(TAG, "Exception: %s", task.exception)
-                            map.moveCamera(
-                                CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, CLOSE_ZOOM)
-                            )
                         }
+                        moveCameraToLocationMarker()
                     }
                 }
             }
@@ -220,19 +216,6 @@ class EditLocationFragment : Fragment() {
                         it.location.latitude,
                         it.location.longitude
                     ), CLOSE_ZOOM
-                )
-            )
-        }
-    }
-
-    private fun moveCameraToLastKnownLocation() {
-        lastKnownLocation?.let {
-            map.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(
-                        it.latitude,
-                        it.longitude
-                    ), DEFAULT_ZOOM
                 )
             )
         }
@@ -259,19 +242,25 @@ class EditLocationFragment : Fragment() {
             Log.e(TAG, "locationMaker is null. This should not happen!")
             return
         }
-        val editText = EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
+        if(currentLatLng == null){
+            currentLatLng = locationMarker!!.location.toLatLng()
+        }
+        val locationId = locationMarker!!.id
+        val editTextLocationName = EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle("Add Location")
         alertDialog.setMessage("Add a name for your location:")
 
-        alertDialog.setView(editText)
+        alertDialog.setView(editTextLocationName)
+        val locationName = editTextLocationName.text.toString()
 
         alertDialog.setPositiveButton("Save") { _, _ ->
+            if(locationMarkerViewModel.isEntryValid(locationName, currentLatLng))
             locationMarkerViewModel.updateLocationMarker(
-                id = locationMarker!!.id,
-                name = editText.text.toString(),
-                longitude = locationMarker!!.location.longitude,
-                latitude = locationMarker!!.location.latitude
+                id = locationId,
+                name = locationName,
+                longitude = currentLatLng!!.longitude,
+                latitude = currentLatLng!!.latitude
             )
 
             //Navigate back
