@@ -19,7 +19,6 @@ import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
@@ -38,7 +37,6 @@ import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
-import com.example.ceroxlol.remindme.services.GpsTrackerService
 import com.example.ceroxlol.remindme.services.LocationService
 
 
@@ -48,26 +46,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private lateinit var navController: NavController
 
-    private var gpsTrackerService: GpsTrackerService? = null
     private var locationService: LocationService? = null
 
     private var serviceCanBeExecutedInBackground = false
 
     // Tracks the bound state of the service.
     private var isServiceBound = false
-
-    // Monitors connection to the while-in-use service.
-    private val gpsTrackerServiceConnection = object : ServiceConnection {
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as GpsTrackerService.LocalBinder
-            gpsTrackerService = binder.service
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            gpsTrackerService = null
-        }
-    }
 
     // Monitors the state of the connection to the service.
     private val locationServiceConnection: ServiceConnection = object : ServiceConnection {
@@ -204,11 +188,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
      */
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(applicationContext, GpsTrackerService::class.java))
     }
 
     override fun onRequestPermissionsResult(
