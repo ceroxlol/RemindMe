@@ -34,7 +34,11 @@
             android:process=":remindeMeProcess"
             android:enabled="true"
             android:exported="false"/>
-        <receiver android:name=".receiver.AppointmentBroadcastReceiver" />
+        <!-- TODO evaluate if process here is necessary -->
+        <receiver
+            android:name=".receiver.AppointmentBroadcastReceiver"
+            android:process=":remindeMeProcess"
+            />
     </application>
 
 </manifest>
