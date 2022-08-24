@@ -347,7 +347,7 @@ class LocationService : LifecycleService() {
         // 1. Create Notification Channel for O+ and beyond devices (26+).
 
         val notificationChannel = NotificationChannel(
-            GpsTrackerService.NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_ID,
             titleText,
             NotificationManager.IMPORTANCE_DEFAULT
         )
@@ -396,7 +396,7 @@ class LocationService : LifecycleService() {
         // 4. Build and issue the notification.
         // Notification Channel Id is ignored for Android pre O (26).
         val notificationCompatBuilder =
-            NotificationCompat.Builder(this, GpsTrackerService.NOTIFICATION_CHANNEL_ID)
+            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 
         return notificationCompatBuilder
             .setStyle(bigTextStyle)
@@ -466,8 +466,6 @@ class LocationService : LifecycleService() {
          * The name of the channel for notifications.
          */
         private const val CHANNEL_ID = "channel_01"
-        const val ACTION_BROADCAST = PACKAGE_NAME + ".broadcast"
-        const val EXTRA_LOCATION = PACKAGE_NAME + ".location"
         private const val EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
                 ".started_from_notification"
 
@@ -487,5 +485,7 @@ class LocationService : LifecycleService() {
          * The identifier for the notification displayed for the foreground service.
          */
         private const val NOTIFICATION_ID = 12345678
+
+        const val NOTIFICATION_CHANNEL_ID = "LocationServiceAppointmentsChannel"
     }
 }
