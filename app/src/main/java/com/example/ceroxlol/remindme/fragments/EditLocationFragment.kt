@@ -133,9 +133,10 @@ class EditLocationFragment : Fragment() {
 
                     if (queryName != "") {
                         //TODO: show list of potential results
+                        //TODO: Update getFromLocationName
                         val address =
                             Geocoder(requireActivity()).getFromLocationName(queryName, 1)
-                                .firstOrNull()
+                                ?.firstOrNull()
                         if (address == null) {
                             Toast.makeText(
                                 requireContext(),

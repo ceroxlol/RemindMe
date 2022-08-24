@@ -133,9 +133,10 @@ class AddLocationFragment : Fragment() {
                     }
 
                     //TODO: show list of potential results in a dropdown view
+                    //TODO: Update getFromLocationName
                     val address =
                         Geocoder(requireActivity()).getFromLocationName(queryName, 1)
-                            .firstOrNull()
+                            ?.firstOrNull()
 
                     if (address == null) {
                         Toast.makeText(
@@ -181,7 +182,7 @@ class AddLocationFragment : Fragment() {
                     val results = Geocoder(requireActivity()).getFromLocationName(queryName, 10)
                     val adapter = SearchResultAdapter(
                         requireContext(),
-                        results
+                        results!!
                     )
                     Log.i(TAG, adapter.count.toString())
 

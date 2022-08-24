@@ -25,8 +25,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.asLiveData
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
+import com.example.ceroxlol.remindme.activities.MainActivity
+import com.example.ceroxlol.remindme.fragments.EditAppointmentFragment
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
@@ -240,6 +243,14 @@ class LocationService : LifecycleService() {
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
 
+            val mainActivityIntent = Intent(this, MainActivity::class.java)
+
+            val mainActivityPendingIntent = PendingIntent.getActivity(
+                this, 0, mainActivityIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            //TODO: Update BuilderMethod
             val builder: NotificationCompat.Builder = NotificationCompat.Builder(this)
                 .addAction(
                     R.drawable.ic_cancel, getString(R.string.stop_locations),
@@ -247,6 +258,7 @@ class LocationService : LifecycleService() {
                 )
                 .setContentText(text)
                 .setContentTitle(Utils.getLocationTitle(this))
+                .setContentIntent(mainActivityPendingIntent)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setTicker(text)
@@ -284,7 +296,7 @@ class LocationService : LifecycleService() {
         mLocation = location
 
         val appointmentsToNotify =
-            checkIfAppointmentsShouldNotify(mLocation as Location)
+            checkIfAppointmentsShouldCreateNotification(mLocation as Location)
 
         if (appointmentsToNotify.isNotEmpty()) {
 
@@ -310,7 +322,7 @@ class LocationService : LifecycleService() {
         }
     }
 
-    private fun checkIfAppointmentsShouldNotify(currentLocation: Location): List<Appointment> {
+    private fun checkIfAppointmentsShouldCreateNotification(currentLocation: Location): List<Appointment> {
         Log.d(TAG, "Filtering on ${appointments.size} appointments")
         val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this)
             .getInt("appointment_update_distance", 50).toFloat()
@@ -339,10 +351,12 @@ class LocationService : LifecycleService() {
         // 0. Get data
         val titleText = "Remember! \"${appointment.name}\""
         val mainNotificationText =
-            if (appointment.text != null && appointment.text != "")
+            if (appointment.text != null && appointment.text != "") {
                 appointment.text
-            else
+            }
+            else {
                 null
+            }
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
 
@@ -398,10 +412,17 @@ class LocationService : LifecycleService() {
         val notificationCompatBuilder =
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 
+        val editAppointmentIntentPendingIntent = NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.nav_graph)
+            .setDestination(R.id.editAppointmentFragment)
+            .setArguments(Bundle(appointment.id))
+            .createPendingIntent()
+
         return notificationCompatBuilder
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
             .setContentText(mainNotificationText)
+            .setContentIntent(editAppointmentIntentPendingIntent)
             .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
