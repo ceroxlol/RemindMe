@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.dao.LocationMarkerDao
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) : ViewModel() {
@@ -44,8 +45,8 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         return locationMarkerDao.getById(id).asLiveData()
     }
 
-    fun isEntryValid(name: String, longitude : Double?, latitude : Double?): Boolean {
-        if (name.isBlank() || longitude == null || latitude == null) {
+    fun isEntryValid(name: String, latLng: LatLng?): Boolean {
+        if (name.isBlank() || latLng == null) {
             return false
         }
         return true
@@ -57,7 +58,7 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         longitude: Double,
         latitude: Double
     ) {
-        val updatedLocationMarker = getUpdatedLocationMarkerEntry(id, name, longitude, latitude)
+        val updatedLocationMarker = createNewLocationMarkerFromId(id, name, longitude, latitude)
         updateLocationMarker(updatedLocationMarker)
     }
 
@@ -67,7 +68,7 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         }
     }
 
-    private fun getUpdatedLocationMarkerEntry(
+    private fun createNewLocationMarkerFromId(
         id : Int,
         name: String,
         longitude: Double,
