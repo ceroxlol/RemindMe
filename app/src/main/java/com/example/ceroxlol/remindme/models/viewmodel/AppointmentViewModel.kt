@@ -56,6 +56,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     }
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
+        //TODO: Doesn't catch empty
         if (appointmentName.isNotBlank() || appointmentText.isNotBlank() || appointmentLocation.isValid()) {
             return true
         }

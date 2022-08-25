@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import java.util.*
 
-class AppointmentBroadcastReceiver : BroadcastReceiver() {
+class NotificationBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 

@@ -29,9 +29,8 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.activities.MainActivity
-import com.example.ceroxlol.remindme.fragments.EditAppointmentFragment
 import com.example.ceroxlol.remindme.models.Appointment
-import com.example.ceroxlol.remindme.receiver.AppointmentBroadcastReceiver
+import com.example.ceroxlol.remindme.receiver.NotificationBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.example.ceroxlol.remindme.utils.Utils
 import com.google.android.gms.location.*
@@ -250,8 +249,7 @@ class LocationService : LifecycleService() {
                 PendingIntent.FLAG_IMMUTABLE
             )
 
-            //TODO: Update BuilderMethod
-            val builder: NotificationCompat.Builder = NotificationCompat.Builder(this)
+            return NotificationCompat.Builder(this, CHANNEL_ID)
                 .addAction(
                     R.drawable.ic_cancel, getString(R.string.stop_locations),
                     servicePendingIntent
@@ -263,10 +261,7 @@ class LocationService : LifecycleService() {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis())
-
-            // Set the Channel ID for Android O.
-            builder.setChannelId(CHANNEL_ID) // Channel ID
-            return builder.build()
+                .build()
         }
 
     private val lastLocation: Unit
@@ -353,8 +348,7 @@ class LocationService : LifecycleService() {
         val mainNotificationText =
             if (appointment.text != null && appointment.text != "") {
                 appointment.text
-            }
-            else {
+            } else {
                 null
             }
 
@@ -377,9 +371,9 @@ class LocationService : LifecycleService() {
             .setBigContentTitle(titleText)
 
         // 3. Set up main Intent/Pending Intents for notification.
-        val intentSetAppointmentKTDone = Intent(
+        val setAppointmentKTDoneIntent = Intent(
             this,
-            AppointmentBroadcastReceiver::class.java
+            NotificationBroadcastReceiver::class.java
         ).apply {
             action = "setDone"
             putExtra("appointmentId", appointment.id)
@@ -388,13 +382,13 @@ class LocationService : LifecycleService() {
         val appointmentDonePendingIntent = PendingIntent.getBroadcast(
             this,
             0,
-            intentSetAppointmentKTDone,
+            setAppointmentKTDoneIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val intentSnoozeUntilNextTime = Intent(
+        val snoozeUntilNextTimeIntent = Intent(
             this,
-            AppointmentBroadcastReceiver::class.java
+            NotificationBroadcastReceiver::class.java
         ).apply {
             action = "setSnooze"
             putExtra("appointmentId", appointment.id)
@@ -403,26 +397,25 @@ class LocationService : LifecycleService() {
         val appointmentSnoozePendingIntent = PendingIntent.getBroadcast(
             this,
             0,
-            intentSnoozeUntilNextTime,
+            snoozeUntilNextTimeIntent,
+            //TODO: What do these flags do?
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val editAppointmentDeepLink = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java).apply { putExtra("redirectEditLocation", appointment.id) },
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         // 4. Build and issue the notification.
         // Notification Channel Id is ignored for Android pre O (26).
-        val notificationCompatBuilder =
-            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-
-        val editAppointmentIntentPendingIntent = NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.editAppointmentFragment)
-            .setArguments(Bundle(appointment.id))
-            .createPendingIntent()
-
-        return notificationCompatBuilder
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
             .setContentText(mainNotificationText)
-            .setContentIntent(editAppointmentIntentPendingIntent)
+            .setContentIntent(editAppointmentDeepLink)
             .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

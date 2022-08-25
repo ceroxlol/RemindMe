@@ -87,6 +87,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         )
 
         checkLocationPermission()
+
+        //This feels clumsy, but deepLink isn't working
+        val appointmentId = intent.extras?.getInt("redirectEditLocation")
+        if(appointmentId != null){
+            navController.navigate(MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(appointmentId))
+        }
     }
 
     private fun checkLocationPermission() {

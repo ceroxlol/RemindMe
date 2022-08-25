@@ -28,7 +28,7 @@ data class Appointment(
             this.location.location.longitude,
             distance
         )
-        Log.d("Appointment", distance[0].toString())
+        Log.d("Appointment", "range in meters: ${distance[0]}")
         return distance[0] < preferenceDistance
     }
 }
