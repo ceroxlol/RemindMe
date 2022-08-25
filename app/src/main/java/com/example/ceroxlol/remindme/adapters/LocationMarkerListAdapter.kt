@@ -25,7 +25,7 @@ import com.example.ceroxlol.remindme.databinding.ListLocationItemFragmentLocatio
 import com.example.ceroxlol.remindme.models.LocationMarker
 
 /**
- * [ListAdapter] implementation for the recyclerview.
+ * [LocationMarkerListAdapter] implementation for the recyclerview.
  */
 
 class LocationMarkerListAdapter(

@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.models.LocationMarker
 
-class LocationsSpinnerAdapter(context: Context, data: List<LocationMarker>?) :
+/**
+ * [LocationMarkerSpinnerAdapter] implementation scrollable locations to be attached to an appointment.
+ */
+class LocationMarkerSpinnerAdapter(context: Context, data: List<LocationMarker>?) :
     ArrayAdapter<LocationMarker>(context, 0, data!!) {
 
     private val inflater: LayoutInflater =
@@ -21,7 +25,7 @@ class LocationsSpinnerAdapter(context: Context, data: List<LocationMarker>?) :
         val view: View = convertView ?: inflater.inflate(R.layout.spinner_location_display_item, parent, false)
 
         getItem(position)?.let {
-            val tv = view.findViewById<TextView>(R.id.textViewLocationName)
+            val tv = view.findViewById<TextView>(R.id.textViewSpinnerLocationMarkerSingleItem)
             tv.text = it.name
         }
 
@@ -32,7 +36,7 @@ class LocationsSpinnerAdapter(context: Context, data: List<LocationMarker>?) :
         val view: View = convertView ?: inflater.inflate(R.layout.spinner_dropdown_item_location, parent, false)
 
         getItem(position)?.let {
-            val tv = view.findViewById<TextView>(R.id.textViewLocationName)
+            val tv = view.findViewById<TextView>(R.id.textViewSpinnerLocationMarkerSingleItem)
             tv.text = it.name
         }
 

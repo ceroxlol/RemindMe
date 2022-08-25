@@ -48,8 +48,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private var locationService: LocationService? = null
 
-    private var serviceCanBeExecutedInBackground = false
-
     // Tracks the bound state of the service.
     private var isServiceBound = false
 
@@ -90,8 +88,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         //This feels clumsy, but deepLink isn't working
         val appointmentId = intent.extras?.getInt("redirectEditLocation")
-        if(appointmentId != null){
-            navController.navigate(MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(appointmentId))
+        if (appointmentId != null) {
+            navController.navigate(
+                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(
+                    appointmentId
+                )
+            )
         }
     }
 
@@ -136,7 +138,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestBackgroundLocationPermission()
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Background Permission advised")
+                .setMessage("This app runs gps in the background. If you don't locations all the time, your system might kill the service leading to no reminders. \nPlease select 'Allow all the time'.")
+                .setPositiveButton("Ok") { _, _ ->
+                    requestBackgroundLocationPermission()
+                }
+            builder.create().show()
         }
     }
 
@@ -231,7 +239,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "accurate location permission denied", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "How am I supposed to do something useful?", Toast.LENGTH_LONG)
+                        .show()
 
                     // Check if we are in a state where the user has denied the permission and
                     // selected Don't ask again
@@ -261,11 +270,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {
-                        serviceCanBeExecutedInBackground = true
-
                         Toast.makeText(
                             this,
-                            "Granted Background Location Permission",
+                            "All Location Permissions Granted.",
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -273,7 +280,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "background location permission denied", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Your loss...", Toast.LENGTH_LONG)
+                        .show()
                 }
                 return
 

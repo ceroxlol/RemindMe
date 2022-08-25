@@ -11,7 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
-import com.example.ceroxlol.remindme.adapters.LocationsSpinnerAdapter
+import com.example.ceroxlol.remindme.adapters.LocationMarkerSpinnerAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentAddAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
@@ -58,14 +58,13 @@ class AddAppointmentFragment : Fragment() {
 
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
             locationMarkers.let {
-                //TODO: "Please add locations" instead of the empty spinner
                 locationsEmpty = it.isEmpty()
                 if (!locationsEmpty) {
-                    binding.appointmentLocation.adapter = LocationsSpinnerAdapter(
+                    binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
                         requireContext(),
                         it
                     ).also { locationsSpinnerAdapter ->
-                        locationsSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                        locationsSpinnerAdapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
                     }
                     binding.appointmentLocation.isEnabled = true
                 } else {
