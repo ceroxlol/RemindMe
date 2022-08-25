@@ -65,9 +65,11 @@ class EditLocationFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
+        map.clear()
 
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
+        map.uiSettings.isMapToolbarEnabled = false
 
         val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
         val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))

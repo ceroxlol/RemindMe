@@ -67,8 +67,10 @@ class AddLocationFragment : Fragment() {
         map = googleMap
 
         //TODO: For debugging only
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.uiSettings.isMapToolbarEnabled = true
+        map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isMapToolbarEnabled = true
+        map.uiSettings.isMapToolbarEnabled = false
+
 
         val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
         val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))
