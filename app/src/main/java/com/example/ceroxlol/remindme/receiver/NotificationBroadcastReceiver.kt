@@ -5,8 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import java.util.*
@@ -42,14 +42,20 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                     val snoozeTimer =
                         PreferenceManager.getDefaultSharedPreferences(context).getString("snooze", "10")!!.toInt()
                     val pendingResult = goAsync()
+                    val snoozeTime = Calendar.getInstance().apply { this.add(Calendar.MINUTE, snoozeTimer) }.time
                     Thread {
                         database.appointmentDao().setAppointmentSnooze(
                             appointmentId,
-                            Calendar.getInstance().apply { this.add(Calendar.MINUTE, snoozeTimer) }.time
+                            snoozeTime
                         )
                     }.start()
                     notificationManager.cancel(appointmentId)
                     pendingResult.finish()
+                    Toast.makeText(
+                        context,
+                        "Snooze until $snoozeTime",
+                        Toast.LENGTH_SHORT
+                    )
                 }
             }
         }
@@ -57,9 +63,5 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
         const val TAG = "AppointmentBroadcastReceiver"
-
-        const val ACTION_PROCESS_UPDATES =
-            "com.google.android.gms.location.sample.locationupdatespendingintent.action" +
-                    ".PROCESS_UPDATES"
     }
 }

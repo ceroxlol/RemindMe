@@ -16,7 +16,7 @@
     <string name="save">Save</string>
     <string name="snooze_timer">Snooze timer</string>
 
-    <string name="stop_locations">Stop listening for locations</string>
+    <string name="stop_locations">Stop looking for appointments</string>
     <string name="location_unknown">Location unknown</string>
     <string name="location_updates_label">Location Updates</string>
 
@@ -29,4 +29,5 @@
     <string name="remove_location_updates">Remove location updates</string>
 
     <string name="location_updated">On the hunt! Last update: %1$s</string>
+    <string name="on_the_hunt">On the hunt for reminders!</string>
 </resources>

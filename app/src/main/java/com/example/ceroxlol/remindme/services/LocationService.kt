@@ -254,12 +254,11 @@ class LocationService : LifecycleService() {
                     R.drawable.ic_cancel, getString(R.string.stop_locations),
                     servicePendingIntent
                 )
-                .setContentText(text)
-                .setContentTitle(Utils.getLocationTitle(this))
+                .setContentTitle(this.getString(R.string.on_the_hunt))
                 .setContentIntent(mainActivityPendingIntent)
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setTicker(text)
                 .setWhen(System.currentTimeMillis())
                 .build()
         }
