@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         checkLocationPermission()
 
         //This feels clumsy, but deepLink isn't working
+        //TODO: This causes error behavior, when the app is stopped and then reloaded
         val appointmentId = intent.extras?.getInt("redirectEditLocation")
         if (appointmentId != null) {
             navController.navigate(

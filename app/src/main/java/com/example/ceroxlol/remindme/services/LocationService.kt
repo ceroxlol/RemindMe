@@ -130,6 +130,7 @@ class LocationService : LifecycleService() {
         if (startedFromNotification != null && startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
+            return START_NOT_STICKY
         }
         // Tells the system to try to recreate the service after it has been killed.
         return START_STICKY
@@ -140,13 +141,13 @@ class LocationService : LifecycleService() {
         mChangingConfiguration = true
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
         // Called when a client (MainActivity in case of this sample) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
         Log.i(TAG, "in onBind()")
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         mChangingConfiguration = false
         return mBinder
     }

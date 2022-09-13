@@ -64,22 +64,26 @@ class EditAppointmentFragment : Fragment() {
         // Attach an observer on the data (instead of polling for changes) and only update the
         // the UI when the data actually changes.
         appointmentViewModel.retrieveAppointment(id).observe(this.viewLifecycleOwner) { selectedItem ->
-            appointment = selectedItem
+            if(selectedItem != null) {
+                appointment = selectedItem
 
-            locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
-                locationMarkers.let {
-                    locationsEmpty = it.isEmpty()
-                    val adapter = LocationMarkerSpinnerAdapter(requireContext(), it)
+                locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
+                    locationMarkers.let {
+                        locationsEmpty = it.isEmpty()
+                        val adapter = LocationMarkerSpinnerAdapter(requireContext(), it)
 
-                    adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
-                    binding.appointmentLocation.adapter = adapter
+                        adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
+                        binding.appointmentLocation.adapter = adapter
 
-                    val selectionPosition = it.mapIndexedNotNull{index, locationMarker ->  index.takeIf { locationMarker.id == appointment.location?.id }}.first().or(0)
-                    binding.appointmentLocation.setSelection(selectionPosition)
+                        val selectionPosition =
+                            it.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointment.location?.id } }
+                                .first().or(0)
+                        binding.appointmentLocation.setSelection(selectionPosition)
+                    }
                 }
-            }
 
-            bind(appointment)
+                bind(appointment)
+            }
         }
 
         binding.saveButton.setOnClickListener {
