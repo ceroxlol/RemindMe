@@ -76,7 +76,7 @@ class LocationMarkerListAdapter(
                 oldItem: LocationMarker,
                 newItem: LocationMarker
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.locationMarkerId == newItem.locationMarkerId
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.databinding.ListAppointmentItemFragmentAppointmentListBinding
 import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.LocationMarker
 
 /**
  * [ListAdapter] implementation for the recyclerview.
@@ -60,9 +61,9 @@ class AppointmentListAdapter(
     inner class AppointmentViewHolder(private var binding: ListAppointmentItemFragmentAppointmentListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(appointment: Appointment) {
+        fun bind(appointment: Appointment, locationMarker: LocationMarker) {
             binding.appointmentName.text = appointment.name
-            binding.appointmentLocationName.text = appointment.location?.name
+            binding.appointmentLocationName.text = locationMarker.name
         }
     }
 
@@ -73,7 +74,7 @@ class AppointmentListAdapter(
             }
 
             override fun areContentsTheSame(oldItem: Appointment, newItem: Appointment): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.appointmentId == newItem.appointmentId
             }
         }
     }

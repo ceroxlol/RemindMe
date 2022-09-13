@@ -47,7 +47,7 @@ class AppointmentsListFragment : Fragment() {
         val adapter = AppointmentListAdapter(
             {
                 val action =
-                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.id)
+                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.appointmentId)
                 this.findNavController().navigate(action)
             },
             { appointment, itemView ->

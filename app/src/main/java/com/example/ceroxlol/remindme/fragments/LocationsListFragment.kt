@@ -43,7 +43,7 @@ class LocationsListFragment : Fragment() {
 
         //TODO: Beautify items
         val adapter = LocationMarkerListAdapter ({
-            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.id)
+            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.locationMarkerId)
             this.findNavController().navigate(action)
         },{ appointment, itemView ->
             val transition = itemView.background as TransitionDrawable

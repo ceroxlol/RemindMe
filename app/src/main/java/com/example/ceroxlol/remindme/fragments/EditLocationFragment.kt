@@ -248,7 +248,7 @@ class EditLocationFragment : Fragment() {
         if(currentLatLng == null){
             currentLatLng = locationMarker!!.location.toLatLng()
         }
-        val locationId = locationMarker!!.id
+        val locationId = locationMarker!!.locationMarkerId
         val editTextLocationName = EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle("Add Location")

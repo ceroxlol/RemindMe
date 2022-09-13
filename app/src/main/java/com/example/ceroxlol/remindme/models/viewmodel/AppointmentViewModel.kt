@@ -44,7 +44,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         return Appointment(
             name = name,
             text = text,
-            location = locationMarker,
+            locationMarkerId = locationMarker.locationMarkerId,
             created = Calendar.getInstance().time,
             time = time,
             done = done,
@@ -83,10 +83,10 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         appointmentLocation: LocationMarker
     ): Appointment {
         return Appointment(
-            id = appointmentId,
+            appointmentId = appointmentId,
             name = appointmentName,
             text = appointmentText,
-            location = appointmentLocation,
+            locationMarkerId = appointmentLocation.locationMarkerId,
             created = Calendar.getInstance().time,
             done = false,
             time = null,
