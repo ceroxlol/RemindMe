@@ -76,7 +76,7 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
     ): LocationMarker {
         val dbLocation = DbLocation(latitude, longitude)
         return LocationMarker(
-            id = id,
+            locationMarkerId = id,
             name = name,
             location = dbLocation
         )
