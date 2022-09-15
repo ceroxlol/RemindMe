@@ -73,8 +73,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -86,16 +85,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         checkLocationPermission()
 
-        //This feels clumsy, but deepLink isn't working
-        //TODO: This causes error behavior, when the app is stopped and then reloaded
-        val appointmentId = intent.extras?.getInt("redirectEditLocation")
-        if (appointmentId != null) {
-            navController.navigate(
-                MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(
-                    appointmentId
-                )
-            )
-        }
     }
 
     private fun checkLocationPermission() {
