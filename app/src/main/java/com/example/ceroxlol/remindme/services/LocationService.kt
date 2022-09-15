@@ -29,6 +29,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.activities.MainActivity
+import com.example.ceroxlol.remindme.fragments.EditAppointmentFragmentArgs
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.receiver.NotificationBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
@@ -402,12 +403,12 @@ class LocationService : LifecycleService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val editAppointmentDeepLink = PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, MainActivity::class.java).apply { putExtra("redirectEditLocation", appointment.id) },
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val editAppointmentNavDeepLink = NavDeepLinkBuilder(this)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(R.navigation.nav_graph)
+            .setDestination(R.id.editAppointmentFragment)
+            .setArguments(EditAppointmentFragmentArgs.Builder(appointment.id).build().toBundle())
+            .createPendingIntent()
 
         // 4. Build and issue the notification.
         // Notification Channel Id is ignored for Android pre O (26).
@@ -415,7 +416,7 @@ class LocationService : LifecycleService() {
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
             .setContentText(mainNotificationText)
-            .setContentIntent(editAppointmentDeepLink)
+            .setContentIntent(editAppointmentNavDeepLink)
             .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
