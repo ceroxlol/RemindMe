@@ -1,11 +1,10 @@
 package com.example.ceroxlol.remindme.models
 
-import android.location.Address
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import com.example.ceroxlol.remindme.utils.isValidForPersistence
 
 @Entity
 data class LocationMarker(
@@ -15,6 +14,6 @@ data class LocationMarker(
     @ColumnInfo(name = "location_address") val address: String? = null
 ) {
     fun isValid(): Boolean {
-        return name.isNotEmpty()
+        return name.isValidForPersistence()
     }
 }

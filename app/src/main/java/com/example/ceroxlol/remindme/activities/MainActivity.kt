@@ -67,9 +67,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-
-    //TODO: Create Introduction Screen
-    //TODO: Setup Home
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -49,3 +49,10 @@ object Utils {
         )
     }
 }
+
+fun String.isValidForPersistence() : Boolean{
+    if(this.isBlank() || this.isEmpty() || this == ""){
+        return false
+    }
+    return true
+}

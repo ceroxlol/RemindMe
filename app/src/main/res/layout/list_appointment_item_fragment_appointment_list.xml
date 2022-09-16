@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/appointment_list_item_height"
+    android:minHeight="@dimen/appointment_list_item_height"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/element_padding"
     android:background="@drawable/long_click_transition"
     android:descendantFocusability="blocksDescendants">
@@ -12,9 +13,7 @@
         android:id="@+id/appointment_name"
         style="@style/Widget.RemindMe.ListItemTextView"
         android:layout_marginStart="@dimen/margin_between_elements"
-        android:layout_marginTop="@dimen/element_padding"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="@dimen/margin_between_elements"
         android:fontFamily="sans-serif"
         app:layout_constraintBottom_toTopOf="@+id/appointment_location_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,12 +23,15 @@
 
     <TextView
         android:id="@+id/appointment_location_name"
-        android:layout_marginStart="@dimen/margin"
-        android:layout_marginBottom="@dimen/element_padding"
-        android:fontFamily="sans-serif-medium"
         style="@style/Widget.RemindMe.ListItemTextViewLocationBelowAppointment"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_name"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin_between_elements"
+        android:fontFamily="sans-serif-medium"
+        android:paddingBottom="@dimen/element_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appointment_name"
         tools:text="Location" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

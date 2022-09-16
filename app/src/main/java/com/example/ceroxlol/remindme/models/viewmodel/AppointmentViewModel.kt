@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.dao.AppointmentDao
+import com.example.ceroxlol.remindme.utils.isValidForPersistence
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -56,11 +57,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     }
 
     fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
-        //TODO: Doesn't catch empty
-        if (appointmentName.isNotBlank() || appointmentText.isNotBlank() || appointmentLocation.isValid()) {
-            return true
-        }
-        return false
+        return appointmentName.isValidForPersistence() && appointmentText.isValidForPersistence() && appointmentLocation.isValid()
     }
 
     fun updateAppointment(
