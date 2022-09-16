@@ -85,7 +85,8 @@ class LocationService : LifecycleService() {
     private var mLocation: Location? = null
 
     private lateinit var database: AppDatabase
-    private lateinit var appointments: List<Appointment>
+    private var appointments: List<Appointment> = emptyList()
+    private var formerlyNotifiedAppointments : List<Appointment> = emptyList()
 
     override fun onCreate() {
         super.onCreate()
@@ -131,6 +132,7 @@ class LocationService : LifecycleService() {
         if (startedFromNotification != null && startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
+            mNotificationManager!!.cancelAll()
             return START_NOT_STICKY
         }
         // Tells the system to try to recreate the service after it has been killed.
@@ -233,7 +235,6 @@ class LocationService : LifecycleService() {
     private val serviceRunningNotification: Notification
         get() {
             val intent = Intent(this, LocationService::class.java)
-            val text: String = Utils.getLocationText(mLocation)
 
             // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
             intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true)
@@ -291,10 +292,16 @@ class LocationService : LifecycleService() {
         Log.i(TAG, "New location: $location")
         mLocation = location
 
-        val appointmentsToNotify =
-            checkIfAppointmentsShouldCreateNotification(mLocation as Location)
+        val appointmentsToNotify = checkIfAppointmentsShouldCreateNotification(mLocation as Location)
+
+        //Remove notifications for appointments that are no longer in range.
+        formerlyNotifiedAppointments.minus(appointmentsToNotify.toSet()).forEach {
+            mNotificationManager!!.cancel(it.id)
+        }
 
         if (appointmentsToNotify.isNotEmpty()) {
+
+            formerlyNotifiedAppointments = appointmentsToNotify
 
             Log.i(
                 TAG,

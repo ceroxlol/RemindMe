@@ -56,8 +56,8 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         return appointmentDao.getById(id).asLiveData()
     }
 
-    fun isEntryValid(appointmentName: String, appointmentText: String, appointmentLocation: LocationMarker): Boolean {
-        return appointmentName.isValidForPersistence() && appointmentText.isValidForPersistence() && appointmentLocation.isValid()
+    fun isEntryValid(appointmentName: String, appointmentLocation: LocationMarker): Boolean {
+        return appointmentName.isValidForPersistence() && appointmentLocation.isValid()
     }
 
     fun updateAppointment(

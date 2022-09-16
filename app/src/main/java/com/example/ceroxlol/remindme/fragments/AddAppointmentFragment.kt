@@ -110,7 +110,7 @@ class AddAppointmentFragment : Fragment() {
         } else {
             Toast.makeText(
                 requireContext(),
-                "Please recheck, something's not correct.", Toast.LENGTH_SHORT
+                "Please check, something's not correct.", Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -118,7 +118,6 @@ class AddAppointmentFragment : Fragment() {
     private fun isEntryValid(): Boolean {
         return appointmentViewModel.isEntryValid(
             binding.appointmentName.text.toString(),
-            binding.appointmentText.text.toString(),
             binding.appointmentLocation.selectedItem as LocationMarker
         )
     }

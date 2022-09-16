@@ -134,7 +134,6 @@ class EditAppointmentFragment : Fragment() {
     private fun isEntryValid(): Boolean {
         return appointmentViewModel.isEntryValid(
             binding.appointmentName.text.toString(),
-            binding.appointmentText.text.toString(),
             binding.appointmentLocation.selectedItem as LocationMarker
         )
     }
