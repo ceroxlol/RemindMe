@@ -2,6 +2,7 @@ package com.example.ceroxlol.remindme.models.viewmodel
 
 import androidx.lifecycle.*
 import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.dao.AppointmentDao
 import com.example.ceroxlol.remindme.utils.isValidForPersistence
@@ -11,7 +12,10 @@ import java.util.*
 class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
 
     val allAppointments: LiveData<List<Appointment>> = appointmentDao.getAll().asLiveData()
-    val allAppointmentsSortedByDone: LiveData<List<Appointment>> = appointmentDao.getAllSortedByDone().asLiveData()
+    val allAppointmentsSortedByDone: LiveData<List<Appointment>> =
+        appointmentDao.getAllSortedByDone().asLiveData()
+
+    val appointmentAndLocationMarker: LiveData<AppointmentAndLocationMarker> = appointmentDao.getAppointmentAndLocationMarker().asLiveData()
 
     private fun insertAppointment(appointment: Appointment) {
         viewModelScope.launch {
@@ -19,7 +23,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         }
     }
 
-    fun addNewAppointment(appointment: Appointment){
+    fun addNewAppointment(appointment: Appointment) {
         insertAppointment(appointment)
     }
 
@@ -44,7 +48,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         return Appointment(
             name = name,
             text = text,
-            locationMarkerId = locationMarker.locationMarkerId,
+            locationMarkerId = locationMarker.id,
             created = Calendar.getInstance().time,
             time = time,
             done = done,
@@ -52,7 +56,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         )
     }
 
-    fun retrieveAppointment(id: Int): LiveData<Appointment> {
+    fun getAppointment(id: Int): LiveData<Appointment?> {
         return appointmentDao.getById(id).asLiveData()
     }
 
@@ -66,7 +70,12 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         appointmentText: String,
         appointmentLocation: LocationMarker
     ) {
-        val updatedItem = getUpdatedAppointmentEntry(appointmentId, appointmentName, appointmentText, appointmentLocation)
+        val updatedItem = getUpdatedAppointmentEntry(
+            appointmentId,
+            appointmentName,
+            appointmentText,
+            appointmentLocation
+        )
         updateAppointment(updatedItem)
     }
 
@@ -77,7 +86,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     }
 
     private fun getUpdatedAppointmentEntry(
-        appointmentId : Int,
+        appointmentId: Int,
         appointmentName: String,
         appointmentText: String,
         appointmentLocation: LocationMarker
@@ -86,7 +95,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
             appointmentId = appointmentId,
             name = appointmentName,
             text = appointmentText,
-            locationMarkerId = appointmentLocation.locationMarkerId,
+            locationMarkerId = appointmentLocation.id,
             created = Calendar.getInstance().time,
             done = false,
             time = null,

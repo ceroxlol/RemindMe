@@ -296,7 +296,7 @@ class LocationService : LifecycleService() {
 
         //Remove notifications for appointments that are no longer in range.
         formerlyNotifiedAppointments.minus(appointmentsToNotify.toSet()).forEach {
-            mNotificationManager!!.cancel(it.id)
+            mNotificationManager!!.cancel(it.appointmentId)
         }
 
         if (appointmentsToNotify.isNotEmpty()) {
@@ -310,7 +310,7 @@ class LocationService : LifecycleService() {
 
             appointmentsToNotify.forEach {
                 mNotificationManager!!.notify(
-                    it.id,
+                    it.appointmentId,
                     generateAppointmentNotification(it)
                 )
             }

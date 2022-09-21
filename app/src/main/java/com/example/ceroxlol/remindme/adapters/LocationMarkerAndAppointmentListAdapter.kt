@@ -22,18 +22,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ceroxlol.remindme.databinding.ListAppointmentItemFragmentAppointmentListBinding
-import com.example.ceroxlol.remindme.models.Appointment
-import com.example.ceroxlol.remindme.models.LocationMarker
+import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
 
 /**
  * [ListAdapter] implementation for the recyclerview.
  */
 
-class AppointmentListAdapter(
-    private val onItemClicked: (Appointment) -> Unit,
-    private val onItemLongClicked: (Appointment, View) -> Boolean
+class LocationMarkerAndAppointmentListAdapter(
+    private val onItemClicked: (AppointmentAndLocationMarker) -> Unit,
+    private val onItemLongClicked: (AppointmentAndLocationMarker, View) -> Boolean
 ) :
-    ListAdapter<Appointment, AppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
+    ListAdapter<AppointmentAndLocationMarker, LocationMarkerAndAppointmentListAdapter.AppointmentViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
         return AppointmentViewHolder(
@@ -61,20 +60,20 @@ class AppointmentListAdapter(
     inner class AppointmentViewHolder(private var binding: ListAppointmentItemFragmentAppointmentListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(appointment: Appointment, locationMarker: LocationMarker) {
-            binding.appointmentName.text = appointment.name
-            binding.appointmentLocationName.text = locationMarker.name
+        fun bind(appointmentAndLocationMarker: AppointmentAndLocationMarker) {
+            binding.appointmentName.text = appointmentAndLocationMarker.appointments[0].text
+            binding.appointmentLocationName.text = appointmentAndLocationMarker.locationMarker.name
         }
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<Appointment>() {
-            override fun areItemsTheSame(oldItem: Appointment, newItem: Appointment): Boolean {
+        private val DiffCallback = object : DiffUtil.ItemCallback<AppointmentAndLocationMarker>() {
+            override fun areItemsTheSame(oldItem: AppointmentAndLocationMarker, newItem: AppointmentAndLocationMarker): Boolean {
                 return oldItem === newItem
             }
 
-            override fun areContentsTheSame(oldItem: Appointment, newItem: Appointment): Boolean {
-                return oldItem.appointmentId == newItem.appointmentId
+            override fun areContentsTheSame(oldItem: AppointmentAndLocationMarker, newItem: AppointmentAndLocationMarker): Boolean {
+                return oldItem.locationMarker.id == newItem.locationMarker.id
             }
         }
     }
