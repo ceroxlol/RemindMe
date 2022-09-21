@@ -2,10 +2,12 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -17,11 +19,13 @@ import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerSpinnerAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentEditAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
+import com.google.android.gms.maps.model.LatLng
 
 class EditAppointmentFragment : Fragment() {
 
@@ -59,32 +63,55 @@ class EditAppointmentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val id = navigationArgs.appointmentId
+        val appointmentId = navigationArgs.appointmentId
+
+
+
+
         // Retrieve the appointment details using the id.
         // Attach an observer on the data (instead of polling for changes) and only update the
         // the UI when the data actually changes.
-        appointmentViewModel.retrieveAppointment(id).observe(this.viewLifecycleOwner) { selectedItem ->
-            if(selectedItem != null) {
-                appointment = selectedItem
+        locationMarkerViewModel.getLocationMarkerAndAppointmentsByAppointmentId(appointmentId)
+            //TODO: Maybe this block doesn't even trigger if there is no data nad locationmarkerAndApp == null makes no sense
+            .observe(this.viewLifecycleOwner) { locationMarkerAndAppointments ->
+                if (appointmentId < 0) {
+                    Log.e(
+                        EditLocationFragment::class.java.simpleName,
+                        "AppointmentId '$appointmentId' was invalid."
+                    )
+                } else {
+                    locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
+                        locationMarkers.let {
+                            locationsEmpty = it.isEmpty()
 
-                locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
-                    locationMarkers.let {
-                        locationsEmpty = it.isEmpty()
-                        val adapter = LocationMarkerSpinnerAdapter(requireContext(), it)
+                            val adapter = LocationMarkerSpinnerAdapter(requireContext(),
+                                if (locationMarkerAndAppointments == null) {
+                                    it.also {
+                                        (it as MutableList).add(
+                                            0,
+                                            LocationMarker(
+                                                id = -1,
+                                                name = "Please add new Location!",
+                                                location = DbLocation(LatLng(0.0, 0.0))
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    it
+                                }
+                            )
 
-                        adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
-                        binding.appointmentLocation.adapter = adapter
+                            adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
+                            binding.appointmentLocation.adapter = adapter
 
-                        val selectionPosition =
-                            it.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointment.location?.id } }
-                                .first().or(0)
-                        binding.appointmentLocation.setSelection(selectionPosition)
+                            val selectionPosition =
+                                it.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == locationMarkerAndAppointments?.locationMarker?.id } }
+                                    .first().or(0)
+                            binding.appointmentLocation.setSelection(selectionPosition)
+                        }
                     }
                 }
-
-                bind(appointment)
             }
-        }
 
         binding.saveButton.setOnClickListener {
             if (locationsEmpty) {
@@ -116,14 +143,13 @@ class EditAppointmentFragment : Fragment() {
     private fun saveAppointment() {
         if (isEntryValid()) {
             appointmentViewModel.updateAppointment(
-                appointment.id,
+                navigationArgs.appointmentId,
                 binding.appointmentName.text.toString(),
                 binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker
             )
             findNavController().popBackStack()
-        }
-        else{
+        } else {
             Toast.makeText(
                 requireContext(),
                 "Please recheck, something's not correct.", Toast.LENGTH_SHORT
