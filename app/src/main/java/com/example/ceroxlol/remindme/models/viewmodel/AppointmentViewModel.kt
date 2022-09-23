@@ -11,11 +11,11 @@ import java.util.*
 
 class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
 
-    val allAppointments: LiveData<List<Appointment>> = appointmentDao.getAll().asLiveData()
-    val allAppointmentsSortedByDone: LiveData<List<Appointment>> =
-        appointmentDao.getAllSortedByDone().asLiveData()
-
-    val appointmentAndLocationMarker: LiveData<AppointmentAndLocationMarker> = appointmentDao.getAppointmentAndLocationMarker().asLiveData()
+    val appointmentAndLocationMarker = appointmentDao.getAppointmentAndLocationMarker().asLiveData()
+    fun appointmentAndLocationMarkerByAppointmentId(appointmentId: Int): LiveData<AppointmentAndLocationMarker?> {
+        return appointmentDao.getAppointmentAndLocationMarkerByAppointmentId(appointmentId)
+            .asLiveData()
+    }
 
     private fun insertAppointment(appointment: Appointment) {
         viewModelScope.launch {
@@ -56,10 +56,6 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         )
     }
 
-    fun getAppointment(id: Int): LiveData<Appointment?> {
-        return appointmentDao.getById(id).asLiveData()
-    }
-
     fun isEntryValid(appointmentName: String, appointmentLocation: LocationMarker): Boolean {
         return appointmentName.isValidForPersistence() && appointmentLocation.isValid()
     }
@@ -92,7 +88,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         appointmentLocation: LocationMarker
     ): Appointment {
         return Appointment(
-            appointmentId = appointmentId,
+            id = appointmentId,
             name = appointmentName,
             text = appointmentText,
             locationMarkerId = appointmentLocation.id,

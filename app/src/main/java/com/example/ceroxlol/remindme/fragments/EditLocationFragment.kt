@@ -248,7 +248,7 @@ class EditLocationFragment : Fragment() {
         if(currentLatLng == null){
             currentLatLng = locationMarker!!.location.toLatLng()
         }
-        val locationId = locationMarker!!.locationMarkerId
+        val locationId = locationMarker!!.id
         val editTextLocationName = EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle("Add Location")
@@ -258,16 +258,17 @@ class EditLocationFragment : Fragment() {
         val locationName = editTextLocationName.text.toString()
 
         alertDialog.setPositiveButton("Save") { _, _ ->
-            if(locationMarkerViewModel.isEntryValid(locationName, currentLatLng))
-            locationMarkerViewModel.updateLocationMarker(
-                id = locationId,
-                name = locationName,
-                longitude = currentLatLng!!.longitude,
-                latitude = currentLatLng!!.latitude
-            )
+            if(locationMarkerViewModel.isEntryValid(locationName, currentLatLng)) {
+                locationMarkerViewModel.updateLocationMarker(
+                    id = locationId,
+                    name = locationName,
+                    longitude = currentLatLng!!.longitude,
+                    latitude = currentLatLng!!.latitude
+                )
 
-            //Navigate back
-            findNavController().popBackStack()
+                //Navigate back
+                findNavController().popBackStack()
+            }
         }
 
         alertDialog.setNegativeButton("Cancel", null)
@@ -276,8 +277,6 @@ class EditLocationFragment : Fragment() {
     }
 
     companion object {
-        private val defaultLocation = LatLng(9.993682, 53.551086)
-        private const val DEFAULT_ZOOM = 15F
         private const val CLOSE_ZOOM = 18F
         private const val TAG = "EditLocationFragment"
     }

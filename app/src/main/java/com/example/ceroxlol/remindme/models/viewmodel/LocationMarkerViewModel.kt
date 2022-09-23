@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) : ViewModel() {
 
     val allLocations: LiveData<List<LocationMarker>> = locationMarkerDao.getAll().asLiveData()
-    val locationMarkerAndAppointments = locationMarkerDao.getLocationMarkersAndAppointments().asLiveData()
 
     private fun insertLocationMarker(locationMarker: LocationMarker) {
         viewModelScope.launch {
@@ -70,7 +69,7 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
     }
 
     private fun createNewLocationMarkerFromId(
-        id : Int,
+        id: Int,
         name: String,
         longitude: Double,
         latitude: Double

@@ -8,5 +8,6 @@
     <dimen name="button_round_radius">10dp</dimen>
     <dimen name="location_list_item_height">64dp</dimen>
     <dimen name="appointment_list_item_height">64dp</dimen>
+    <dimen name="appointment_and_location_marker_list_item_height">128dp</dimen>
     <dimen name="spinner_arrow_to_right">12dp</dimen>
 </resources>

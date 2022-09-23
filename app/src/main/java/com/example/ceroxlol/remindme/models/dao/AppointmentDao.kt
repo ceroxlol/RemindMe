@@ -18,7 +18,7 @@ interface AppointmentDao {
     fun getAllSortedByDone(): Flow<List<Appointment>>
 
     @Query("SELECT * FROM Appointment WHERE appointment_id = :id")
-    fun getById(id: Int): Flow<Appointment>
+    fun getById(id: Int): Flow<Appointment?>
 
     @Query("UPDATE Appointment SET done = 1 WHERE appointment_id = :id")
     fun setAppointmentDoneById(id: Int)
@@ -40,9 +40,18 @@ interface AppointmentDao {
 
     @Transaction
     @Query("SELECT * FROM Appointment")
-    fun getAppointmentAndLocationMarker(): Flow<AppointmentAndLocationMarker>
+    fun getAppointmentAndLocationMarker(): Flow<List<AppointmentAndLocationMarker>>
 
     @Transaction
-    @Query("SELECT * FROM Appointment WHERE appointmentId = :appointmentId")
-    fun getAppointmentAndLocationMarkerByAppointmentId(appointmentId: Int): Flow<AppointmentAndLocationMarker>
+    @Query("SELECT * FROM Appointment ORDER BY location_marker_id ASC")
+    fun getAppointmentAndLocationMarkerSortedByLocationMarkerId(): Flow<List<AppointmentAndLocationMarker>>
+
+    @Transaction
+    @Query("SELECT * FROM Appointment WHERE appointment_id = :appointmentId")
+    fun getAppointmentAndLocationMarkerByAppointmentId(appointmentId: Int): Flow<AppointmentAndLocationMarker?>
+
+    @Transaction
+    @Query("SELECT * FROM Appointment WHERE done = false")
+    fun getAppointmentAndLocationMarkerNotDone(): Flow<List<AppointmentAndLocationMarker>>
+
 }

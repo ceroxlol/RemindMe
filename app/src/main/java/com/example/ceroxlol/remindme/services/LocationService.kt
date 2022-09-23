@@ -31,6 +31,7 @@ import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.activities.MainActivity
 import com.example.ceroxlol.remindme.fragments.EditAppointmentFragmentArgs
 import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
 import com.example.ceroxlol.remindme.receiver.NotificationBroadcastReceiver
 import com.example.ceroxlol.remindme.utils.AppDatabase
 import com.example.ceroxlol.remindme.utils.Utils
@@ -85,8 +86,8 @@ class LocationService : LifecycleService() {
     private var mLocation: Location? = null
 
     private lateinit var database: AppDatabase
-    private var appointments: List<Appointment> = emptyList()
-    private var formerlyNotifiedAppointments : List<Appointment> = emptyList()
+    private var appointments: List<AppointmentAndLocationMarker> = emptyList()
+    private var formerlyNotifiedAppointments : List<AppointmentAndLocationMarker> = emptyList()
 
     override fun onCreate() {
         super.onCreate()
@@ -114,7 +115,7 @@ class LocationService : LifecycleService() {
         mNotificationManager!!.createNotificationChannel(mChannel)
 
         database = AppDatabase.getDatabase(applicationContext)
-        database.appointmentDao().getAllNotDone().asLiveData().observe(this) {
+        database.appointmentDao().getAppointmentAndLocationMarkerNotDone().asLiveData().observe(this) {
             Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
             appointments = it
         }
@@ -296,7 +297,7 @@ class LocationService : LifecycleService() {
 
         //Remove notifications for appointments that are no longer in range.
         formerlyNotifiedAppointments.minus(appointmentsToNotify.toSet()).forEach {
-            mNotificationManager!!.cancel(it.appointmentId)
+            mNotificationManager!!.cancel(it.appointment.id)
         }
 
         if (appointmentsToNotify.isNotEmpty()) {
@@ -310,8 +311,8 @@ class LocationService : LifecycleService() {
 
             appointmentsToNotify.forEach {
                 mNotificationManager!!.notify(
-                    it.appointmentId,
-                    generateAppointmentNotification(it)
+                    it.appointment.id,
+                    generateAppointmentNotification(it.appointment)
                 )
             }
         }
@@ -325,16 +326,16 @@ class LocationService : LifecycleService() {
         }
     }
 
-    private fun checkIfAppointmentsShouldCreateNotification(currentLocation: Location): List<Appointment> {
+    private fun checkIfAppointmentsShouldCreateNotification(currentLocation: Location): List<AppointmentAndLocationMarker> {
         Log.d(TAG, "Filtering on ${appointments.size} appointments")
         val preferenceDistance = PreferenceManager.getDefaultSharedPreferences(this)
             .getInt("appointment_update_distance", 50).toFloat()
         return appointments
-            .filter { appointment ->
-                (appointment.snooze == null
-                        || appointment.snooze.before(Calendar.getInstance().time))
-                        && appointment.location?.isValid() == true
-                        && appointment.isInRange(currentLocation, preferenceDistance)
+            .filter { appointmentAndLocationMarker ->
+                (appointmentAndLocationMarker.appointment.snooze == null
+                        || appointmentAndLocationMarker.appointment.snooze.before(Calendar.getInstance().time))
+                        && appointmentAndLocationMarker.locationMarker.isValid() == true
+                        && appointmentAndLocationMarker.locationMarker.isInRange(currentLocation, preferenceDistance)
             }
     }
 
