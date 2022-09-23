@@ -2,9 +2,10 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,11 +15,13 @@ import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerSpinnerAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentAddAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
+import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
+import com.google.android.gms.maps.model.LatLng
 
 
 class AddAppointmentFragment : Fragment() {
@@ -68,10 +71,14 @@ class AddAppointmentFragment : Fragment() {
                     }
                     binding.appointmentLocation.isEnabled = true
                 } else {
-                    binding.appointmentLocation.adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        listOf("Please add a Location!")
+                    binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
+                        requireContext(), listOf(
+                            LocationMarker(
+                                id = -1,
+                                name = "Please add new Location!",
+                                location = DbLocation(LatLng(0.0, 0.0))
+                            )
+                        )
                     )
                     binding.appointmentLocation.isEnabled = false
                 }

@@ -77,6 +77,7 @@ class EditAppointmentFragment : Fragment() {
                                 locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointmentAndLocationMarker.locationMarker.id } }
                                     .first().or(0)
                             binding.appointmentLocation.setSelection(selectionPosition)
+                            binding.appointmentLocation.isEnabled = true
 
                             bind(appointmentAndLocationMarker.appointment)
                         } else {
@@ -88,6 +89,7 @@ class EditAppointmentFragment : Fragment() {
                                     location = DbLocation(LatLng(0.0, 0.0))
                                 )
                             )
+                            binding.appointmentLocation.isEnabled = false
                         }
                     }
             }
