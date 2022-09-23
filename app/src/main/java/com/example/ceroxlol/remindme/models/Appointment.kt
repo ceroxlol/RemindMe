@@ -9,7 +9,6 @@ import java.util.*
 data class Appointment(
     @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val text: String?,
     @ColumnInfo(name = "location_marker_id")
     val locationMarkerId: Int?,
     val created: Date,

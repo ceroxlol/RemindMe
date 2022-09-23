@@ -2,6 +2,7 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,8 @@ class AddAppointmentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.appointmentNameLabel.gravity = Gravity.TOP
+
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
             locationMarkers.let {
                 locationsEmpty = it.isEmpty()
@@ -108,7 +111,6 @@ class AddAppointmentFragment : Fragment() {
         if (isEntryValid()) {
             appointmentViewModel.addNewAppointment(
                 binding.appointmentName.text.toString(),
-                binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker,
                 null,
                 false

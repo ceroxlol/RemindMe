@@ -29,25 +29,22 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
 
     fun addNewAppointment(
         name: String,
-        text: String?,
         locationMarker: LocationMarker,
         time: Date?,
         done: Boolean
     ) {
-        val newAppointment = createAppointmentInstance(name, text, locationMarker, time, done)
+        val newAppointment = createAppointmentInstance(name, locationMarker, time, done)
         insertAppointment(newAppointment)
     }
 
     private fun createAppointmentInstance(
         name: String,
-        text: String?,
         locationMarker: LocationMarker,
         time: Date?,
         done: Boolean
     ): Appointment {
         return Appointment(
             name = name,
-            text = text,
             locationMarkerId = locationMarker.id,
             created = Calendar.getInstance().time,
             time = time,
@@ -63,13 +60,11 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     fun updateAppointment(
         appointmentId: Int,
         appointmentName: String,
-        appointmentText: String,
         appointmentLocation: LocationMarker
     ) {
         val updatedItem = getUpdatedAppointmentEntry(
             appointmentId,
             appointmentName,
-            appointmentText,
             appointmentLocation
         )
         updateAppointment(updatedItem)
@@ -84,13 +79,11 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
     private fun getUpdatedAppointmentEntry(
         appointmentId: Int,
         appointmentName: String,
-        appointmentText: String,
         appointmentLocation: LocationMarker
     ): Appointment {
         return Appointment(
             id = appointmentId,
             name = appointmentName,
-            text = appointmentText,
             locationMarkerId = appointmentLocation.id,
             created = Calendar.getInstance().time,
             done = false,

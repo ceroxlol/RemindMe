@@ -13,7 +13,7 @@ import com.example.ceroxlol.remindme.models.dao.LocationMarkerDao
 
 @Database(
     entities = [Appointment::class, LocationMarker::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

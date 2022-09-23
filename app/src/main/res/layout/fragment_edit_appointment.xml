@@ -27,36 +27,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
-        android:hint="@string/appointment_name_req"
+        android:minHeight="@dimen/app_bar_height"
+        android:hint="@string/appointment_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:expandedHintEnabled="false"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/appointment_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/app_bar_height"
             android:inputType="textAutoComplete|textCapWords|textMultiLine"
-            android:imeOptions="actionNone" />
+            android:imeOptions="actionNone"
+            android:gravity="top"
+            android:textSize="22sp"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/appointment_text_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin"
-        android:hint="@string/appointment_text_req"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_name_label">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/appointment_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="textAutoComplete|textCapWords|textMultiLine"
-            android:imeOptions="actionNone" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
         android:id="@+id/appointment_location"
@@ -67,7 +56,7 @@
         android:background="@drawable/bg_black_blue_round"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_text_label" />
+        app:layout_constraintTop_toBottomOf="@+id/appointment_name_label" />
 
     <!-- to make it look quadratic, we use location_list_item_height twice-->
     <Button
@@ -77,7 +66,7 @@
         android:layout_marginTop="@dimen/margin"
         android:background="@android:drawable/ic_input_add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_text_label" />
+        app:layout_constraintTop_toBottomOf="@+id/appointment_name_label" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/save_button"

@@ -107,7 +107,7 @@ class LocationService : LifecycleService() {
 
         // Create the channel for the notification
         val channel =
-            NotificationChannel(FOREGROUND_SERVICE_RUNNING_CHANNEL_ID, "RemindMe", NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationChannel(FOREGROUND_SERVICE_RUNNING_CHANNEL_ID, "RemindMe Service", NotificationManager.IMPORTANCE_DEFAULT)
 
         // Set the Notification Channel for the Notification Manager.
         mNotificationManager!!.createNotificationChannel(channel)
@@ -357,18 +357,12 @@ class LocationService : LifecycleService() {
 
         // 0. Get data
         val titleText = "Remember! \"${appointment.name}\""
-        val mainNotificationText =
-            if (appointment.text != null && appointment.text != "") {
-                appointment.text
-            } else {
-                null
-            }
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
 
         val notificationChannel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
-            titleText,
+            "RemindMe Appointments",
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
@@ -379,7 +373,7 @@ class LocationService : LifecycleService() {
 
         // 2. Build the BIG_TEXT_STYLE.
         val bigTextStyle = NotificationCompat.BigTextStyle()
-            .bigText(mainNotificationText)
+            .bigText(titleText)
             .setBigContentTitle(titleText)
 
         // 3. Set up main Intent/Pending Intents for notification.
@@ -425,7 +419,8 @@ class LocationService : LifecycleService() {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
-            .setContentText(mainNotificationText)
+                //TODO Insert everything after first linebreak?
+            .setContentText("")
             .setContentIntent(editAppointmentNavDeepLink)
             .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)

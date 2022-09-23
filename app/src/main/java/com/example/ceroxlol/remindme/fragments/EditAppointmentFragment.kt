@@ -118,7 +118,6 @@ class EditAppointmentFragment : Fragment() {
     private fun bind(appointment: Appointment) {
         binding.apply {
             appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
-            appointmentText.setText(appointment.text, TextView.BufferType.SPANNABLE)
             saveButton.setOnClickListener { saveAppointment() }
         }
     }
@@ -128,7 +127,6 @@ class EditAppointmentFragment : Fragment() {
             appointmentViewModel.updateAppointment(
                 navigationArgs.appointmentId,
                 binding.appointmentName.text.toString(),
-                binding.appointmentText.text.toString(),
                 binding.appointmentLocation.selectedItem as LocationMarker
             )
             findNavController().popBackStack()
