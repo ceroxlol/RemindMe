@@ -87,7 +87,7 @@ class LocationService : LifecycleService() {
 
     private lateinit var database: AppDatabase
     private var appointments: List<AppointmentAndLocationMarker> = emptyList()
-    private var formerlyNotifiedAppointments : List<AppointmentAndLocationMarker> = emptyList()
+    private var formerlyNotifiedAppointments: List<AppointmentAndLocationMarker> = emptyList()
 
     override fun onCreate() {
         super.onCreate()
@@ -105,20 +105,19 @@ class LocationService : LifecycleService() {
         mServiceHandler = Handler(handlerThread.looper)
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        // Android O requires a Notification Channel.
-        val name: CharSequence = getString(R.string.app_name)
         // Create the channel for the notification
-        val mChannel =
-            NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
+        val channel =
+            NotificationChannel(FOREGROUND_SERVICE_RUNNING_CHANNEL_ID, "RemindMe", NotificationManager.IMPORTANCE_DEFAULT)
 
         // Set the Notification Channel for the Notification Manager.
-        mNotificationManager!!.createNotificationChannel(mChannel)
+        mNotificationManager!!.createNotificationChannel(channel)
 
         database = AppDatabase.getDatabase(applicationContext)
-        database.appointmentDao().getAppointmentAndLocationMarkerNotDone().asLiveData().observe(this) {
-            Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
-            appointments = it
-        }
+        database.appointmentDao().getAppointmentAndLocationMarkerNotDone().asLiveData()
+            .observe(this) {
+                Log.i(TAG, "added ${it.size} appointments to ${this.javaClass.simpleName}")
+                appointments = it
+            }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -253,7 +252,7 @@ class LocationService : LifecycleService() {
                 PendingIntent.FLAG_IMMUTABLE
             )
 
-            return NotificationCompat.Builder(this, CHANNEL_ID)
+            return NotificationCompat.Builder(this, FOREGROUND_SERVICE_RUNNING_CHANNEL_ID)
                 .addAction(
                     R.drawable.ic_cancel, getString(R.string.stop_locations),
                     servicePendingIntent
@@ -293,7 +292,8 @@ class LocationService : LifecycleService() {
         Log.i(TAG, "New location: $location")
         mLocation = location
 
-        val appointmentsToNotify = checkIfAppointmentsShouldCreateNotification(mLocation as Location)
+        val appointmentsToNotify =
+            checkIfAppointmentsShouldCreateNotification(mLocation as Location)
 
         //Remove notifications for appointments that are no longer in range.
         formerlyNotifiedAppointments.minus(appointmentsToNotify.toSet()).forEach {
@@ -334,8 +334,11 @@ class LocationService : LifecycleService() {
             .filter { appointmentAndLocationMarker ->
                 (appointmentAndLocationMarker.appointment.snooze == null
                         || appointmentAndLocationMarker.appointment.snooze.before(Calendar.getInstance().time))
-                        && appointmentAndLocationMarker.locationMarker.isValid() == true
-                        && appointmentAndLocationMarker.locationMarker.isInRange(currentLocation, preferenceDistance)
+                        && appointmentAndLocationMarker.locationMarker.isValid()
+                        && appointmentAndLocationMarker.locationMarker.isInRange(
+                    currentLocation,
+                    preferenceDistance
+                )
             }
     }
 
@@ -407,7 +410,6 @@ class LocationService : LifecycleService() {
             this,
             0,
             snoozeUntilNextTimeIntent,
-            //TODO: What do these flags do?
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
@@ -488,7 +490,7 @@ class LocationService : LifecycleService() {
         /**
          * The name of the channel for notifications.
          */
-        private const val CHANNEL_ID = "channel_01"
+        private const val FOREGROUND_SERVICE_RUNNING_CHANNEL_ID = "location_service_channel_01"
         private const val EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
                 ".started_from_notification"
 
