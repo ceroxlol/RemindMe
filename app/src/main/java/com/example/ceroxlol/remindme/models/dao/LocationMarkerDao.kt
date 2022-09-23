@@ -2,6 +2,7 @@ package com.example.ceroxlol.remindme.models.dao
 
 import androidx.room.*
 import com.example.ceroxlol.remindme.models.LocationMarker
+import com.example.ceroxlol.remindme.models.LocationMarkerAndAppointments
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -26,4 +27,8 @@ interface LocationMarkerDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(locationMarker: LocationMarker)
+
+    @Transaction
+    @Query("SELECT * FROM LocationMarker")
+    fun getLocationMarkerAndAppointments(): Flow<List<LocationMarkerAndAppointments>>
 }

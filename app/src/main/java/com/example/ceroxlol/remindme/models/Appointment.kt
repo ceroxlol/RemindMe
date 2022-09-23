@@ -7,16 +7,13 @@ import java.util.*
 
 @Entity
 data class Appointment(
-    @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val appointmentId: Int = 0,
+    @ColumnInfo(name = "appointment_id") @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val text: String?,
+    @ColumnInfo(name = "location_marker_id")
     val locationMarkerId: Int?,
     val created: Date,
     val time: Date?,
     val done: Boolean = false,
     val snooze: Date?
-){
-    fun isValid(): Boolean{
-        return name.isNotEmpty() && name.isNotBlank()
-    }
-}
+)

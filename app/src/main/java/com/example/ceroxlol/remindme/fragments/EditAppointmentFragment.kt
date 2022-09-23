@@ -2,12 +2,10 @@ package com.example.ceroxlol.remindme.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -45,8 +43,6 @@ class EditAppointmentFragment : Fragment() {
 
     private val navigationArgs: EditAppointmentFragmentArgs by navArgs()
 
-    lateinit var appointment: Appointment
-
     private var _binding: FragmentEditAppointmentBinding? = null
     private val binding get() = _binding!!
 
@@ -65,53 +61,38 @@ class EditAppointmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val appointmentId = navigationArgs.appointmentId
 
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner){ locationMarkerList ->
+            locationsEmpty = locationMarkerList.isEmpty()
 
+            val adapter = LocationMarkerSpinnerAdapter(requireContext(), locationMarkerList)
+            adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
+            binding.appointmentLocation.adapter = adapter
 
-
-        // Retrieve the appointment details using the id.
-        // Attach an observer on the data (instead of polling for changes) and only update the
-        // the UI when the data actually changes.
-        locationMarkerViewModel.getLocationMarkerAndAppointmentsByAppointmentId(appointmentId)
-            //TODO: Maybe this block doesn't even trigger if there is no data nad locationmarkerAndApp == null makes no sense
-            .observe(this.viewLifecycleOwner) { locationMarkerAndAppointments ->
-                if (appointmentId < 0) {
-                    Log.e(
-                        EditLocationFragment::class.java.simpleName,
-                        "AppointmentId '$appointmentId' was invalid."
-                    )
-                } else {
-                    locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
-                        locationMarkers.let {
-                            locationsEmpty = it.isEmpty()
-
-                            val adapter = LocationMarkerSpinnerAdapter(requireContext(),
-                                if (locationMarkerAndAppointments == null) {
-                                    it.also {
-                                        (it as MutableList).add(
-                                            0,
-                                            LocationMarker(
-                                                id = -1,
-                                                name = "Please add new Location!",
-                                                location = DbLocation(LatLng(0.0, 0.0))
-                                            )
-                                        )
-                                    }
-                                } else {
-                                    it
-                                }
-                            )
-
-                            adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
-                            binding.appointmentLocation.adapter = adapter
-
+            if(appointmentId >= 0) {
+                appointmentViewModel.appointmentAndLocationMarkerByAppointmentId(appointmentId)
+                    .observe(this.viewLifecycleOwner) { appointmentAndLocationMarker ->
+                        if(appointmentAndLocationMarker != null){
+                            //TODO: is "or" correct here?!
                             val selectionPosition =
-                                it.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == locationMarkerAndAppointments?.locationMarker?.id } }
+                                locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointmentAndLocationMarker.locationMarker.id } }
                                     .first().or(0)
                             binding.appointmentLocation.setSelection(selectionPosition)
+
+                            bind(appointmentAndLocationMarker.appointment)
+                        } else {
+                            (locationMarkerList as MutableList).add(
+                                0,
+                                LocationMarker(
+                                    id = -1,
+                                    name = "Please add new Location!",
+                                    location = DbLocation(LatLng(0.0, 0.0))
+                                )
+                            )
                         }
                     }
-                }
             }
+
+        }
 
         binding.saveButton.setOnClickListener {
             if (locationsEmpty) {

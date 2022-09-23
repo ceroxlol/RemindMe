@@ -15,7 +15,10 @@ import com.example.ceroxlol.remindme.adapters.LocationMarkerAndAppointmentListAd
 import com.example.ceroxlol.remindme.databinding.FragmentListAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
-import com.example.ceroxlol.remindme.models.viewmodel.*
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentAndLocationMarkerViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentAndLocationMarkerViewModelFactory
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -27,10 +30,10 @@ class AppointmentsListFragment : Fragment() {
         )
     }
 
-    private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
-        LocationMarkerViewModelFactory(
+    private val appointmentAndLocationMarkerViewModel: AppointmentAndLocationMarkerViewModel by activityViewModels {
+        AppointmentAndLocationMarkerViewModelFactory(
             (activity?.application as RemindMeApplication).database
-                .locationMarkerDao()
+                .appointmentDao()
         )
     }
 
@@ -51,30 +54,26 @@ class AppointmentsListFragment : Fragment() {
         val adapter = LocationMarkerAndAppointmentListAdapter(
             {
                 val action =
-                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.appointments[0].appointmentId)
+                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.appointment.id)
                 this.findNavController().navigate(action)
             },
-            { locationMarkerAndAppointments, itemView ->
+            { appointmentAndLocationMarker, itemView ->
                 val transition = itemView.background as TransitionDrawable
                 transition.startTransition(200)
-                appointmentViewModel.deleteAppointment(locationMarkerAndAppointments.appointments[0])
-                createUndoSnackbar(itemView, locationMarkerAndAppointments.appointments[0])
+                appointmentViewModel.deleteAppointment(appointmentAndLocationMarker.appointment)
+                createUndoSnackbar(itemView, appointmentAndLocationMarker.appointment)
                 true
             }
         )
 
-        var appointmentAndAppointments: List<AppointmentAndLocationMarker> = emptyList()
+        var appointmentAndLocationMarkerList: List<AppointmentAndLocationMarker> = emptyList()
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
-        locationMarkerViewModel.locationMarkerAndAppointments.observe(this.viewLifecycleOwner) {
-            appointmentAndAppointments = it
+        appointmentAndLocationMarkerViewModel.getAllSortedByLocationMarkerId.observe(this.viewLifecycleOwner) {
+            appointmentAndLocationMarkerList = it
             submitFilteredLocationMarkersAndAppointments(adapter, it)
-            /*appointments.let {
-    locationMarkerAndAppointments = it
-    adapter.submitList(locationMarkerAndAppointments)
-}*/
         }
 
         binding.addNewAppointmentButton.setOnClickListener {
@@ -83,29 +82,20 @@ class AppointmentsListFragment : Fragment() {
         }
 
         binding.checkBoxDone.setOnCheckedChangeListener { _, _ ->
-            submitFilteredLocationMarkersAndAppointments(adapter, appointmentAndAppointments)
+            submitFilteredLocationMarkersAndAppointments(adapter, appointmentAndLocationMarkerList)
             adapter.notifyDataSetChanged()
         }
     }
 
     private fun submitFilteredLocationMarkersAndAppointments(
         adapter: LocationMarkerAndAppointmentListAdapter,
-        appointmentAndAppointments: List<AppointmentAndLocationMarker>
+        locationMarkerAndAppointments: List<AppointmentAndLocationMarker>
     ) {
         adapter.submitList(
-            appointmentAndAppointments.map {
-                it.copy(appointments = filterAppointments(it.appointments))
+            locationMarkerAndAppointments.filter {
+                !it.appointment.done
             }
         )
-    }
-
-    private fun filterAppointments(appointments: List<Appointment>): List<Appointment> {
-        if (!binding.checkBoxDone.isChecked) {
-            return appointments.filter {
-                !it.done
-            }
-        }
-        return appointments
     }
 
     private fun createUndoSnackbar(itemView: View, appointment: Appointment) {

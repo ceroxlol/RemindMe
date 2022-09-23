@@ -7,7 +7,7 @@ data class AppointmentAndLocationMarker(
     @Embedded val appointment: Appointment,
 
     @Relation(
-        parentColumn = "locationMarkerId",
+        parentColumn = "location_marker_id",
         entity = LocationMarker::class,
         entityColumn = "location_id")
     val locationMarker: LocationMarker
