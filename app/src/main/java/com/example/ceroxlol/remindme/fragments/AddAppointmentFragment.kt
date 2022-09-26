@@ -74,12 +74,11 @@ class AddAppointmentFragment : Fragment() {
                     }
                     binding.appointmentLocation.isEnabled = true
 
-                    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("key")
-                        ?.observe(viewLifecycleOwner) {
-                            val selectionPosition =
-                                locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == it } }
-                                    .first().or(0)
-                            binding.appointmentLocation.setSelection(selectionPosition)
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("locationMarkerAdded")
+                        ?.observe(viewLifecycleOwner) { locationMarkerAdded ->
+                            if(locationMarkerAdded){
+                                binding.appointmentLocation.setSelection(locationMarkerList.size-1)
+                            }
                         }
 
                 } else {

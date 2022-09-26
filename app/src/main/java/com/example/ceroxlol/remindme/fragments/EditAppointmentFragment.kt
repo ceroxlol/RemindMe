@@ -61,22 +61,35 @@ class EditAppointmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val appointmentId = navigationArgs.appointmentId
 
-        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner){ locationMarkerList ->
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkerList ->
             locationsEmpty = locationMarkerList.isEmpty()
 
             val adapter = LocationMarkerSpinnerAdapter(requireContext(), locationMarkerList)
             adapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
             binding.appointmentLocation.adapter = adapter
 
-            if(appointmentId >= 0) {
+            if (appointmentId >= 0) {
                 appointmentViewModel.appointmentAndLocationMarkerByAppointmentId(appointmentId)
                     .observe(this.viewLifecycleOwner) { appointmentAndLocationMarker ->
-                        if(appointmentAndLocationMarker != null){
-                            //TODO: is "or" correct here?!
-                            val selectionPosition =
-                                locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointmentAndLocationMarker.locationMarker.id } }
-                                    .first().or(0)
-                            binding.appointmentLocation.setSelection(selectionPosition)
+                        if (appointmentAndLocationMarker != null) {
+                            //In case we come here from the "AddLocation" we'll want to set the currently selected element in the spinner
+                            findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+                                "locationMarkerAdded"
+                            )
+                                ?.observe(viewLifecycleOwner) { locationMarkerAdded ->
+                                    if (locationMarkerAdded) {
+                                        binding.appointmentLocation.setSelection(locationMarkerList.size - 1)
+                                    } else {
+                                        val selectionPosition =
+                                            locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointmentAndLocationMarker.locationMarker.id } }
+                                                .firstOrNull()
+                                        selectionPosition?.let {
+                                            binding.appointmentLocation.setSelection(
+                                                it
+                                            )
+                                        }
+                                    }
+                                }
                             binding.appointmentLocation.isEnabled = true
 
                             bind(appointmentAndLocationMarker.appointment)
