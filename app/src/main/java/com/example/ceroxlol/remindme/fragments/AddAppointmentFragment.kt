@@ -63,16 +63,25 @@ class AddAppointmentFragment : Fragment() {
         binding.appointmentNameLabel.gravity = Gravity.TOP
 
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locationMarkers ->
-            locationMarkers.let {
-                locationsEmpty = it.isEmpty()
+            locationMarkers.let { locationMarkerList ->
+                locationsEmpty = locationMarkerList.isEmpty()
                 if (!locationsEmpty) {
                     binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
                         requireContext(),
-                        it
+                        locationMarkerList
                     ).also { locationsSpinnerAdapter ->
                         locationsSpinnerAdapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
                     }
                     binding.appointmentLocation.isEnabled = true
+
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("key")
+                        ?.observe(viewLifecycleOwner) {
+                            val selectionPosition =
+                                locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == it } }
+                                    .first().or(0)
+                            binding.appointmentLocation.setSelection(selectionPosition)
+                        }
+
                 } else {
                     binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
                         requireContext(), listOf(

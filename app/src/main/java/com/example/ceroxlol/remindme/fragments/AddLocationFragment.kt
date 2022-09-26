@@ -1,6 +1,7 @@
 package com.example.ceroxlol.remindme.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -134,7 +135,6 @@ class AddLocationFragment : Fragment() {
                         return false
                     }
 
-                    //TODO: show list of potential results in a dropdown view
                     //TODO: Update getFromLocationName
                     val address =
                         Geocoder(requireActivity()).getFromLocationName(queryName, 1)
@@ -169,7 +169,6 @@ class AddLocationFragment : Fragment() {
                     return true
                 }
 
-                //TODO: Copy this to EditLocationFragment
                 override fun onQueryTextChange(newText: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
                     if(addressResultWasSelected){
@@ -302,6 +301,7 @@ fun Address.getHumanReadableAddress(): CharSequence {
     return this.featureName + ", " + this.adminArea + ", " + this.countryName
 }
 
+@SuppressLint("MissingPermission")
 fun GoogleMap.setLocationEnabled(enabled: Boolean){
     this.isMyLocationEnabled = enabled
     this.uiSettings.isMyLocationButtonEnabled = enabled

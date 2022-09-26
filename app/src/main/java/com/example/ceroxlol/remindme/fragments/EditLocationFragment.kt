@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
+import com.example.ceroxlol.remindme.adapters.SearchResultAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentAddLocationBinding
 import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
@@ -58,6 +59,8 @@ class EditLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
     private var currentLatLng : LatLng? = null
+
+    private var addressResultWasSelected = false
 
     private var _binding: FragmentAddLocationBinding? = null
     private val binding get() = _binding!!
@@ -175,7 +178,36 @@ class EditLocationFragment : Fragment() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    return false
+                    val queryName = binding.svLocation.query.toString()
+                    if(addressResultWasSelected){
+                        addressResultWasSelected = false
+                        return false
+                    }
+                    if (queryName.isBlank() || queryName == "") {
+                        return false
+                    }
+                    //TODO: Improve results?
+                    //Maybe use this https://developer.here.com/documentation/android-sdk-explore/4.3.2.0/dev_guide/topics/search.html
+                    val results = Geocoder(requireActivity()).getFromLocationName(queryName, 10)
+                    val adapter = SearchResultAdapter(
+                        requireContext(),
+                        results!!
+                    )
+                    Log.i(TAG, adapter.count.toString())
+
+                    binding.svLocationResults.adapter = adapter
+
+                    binding.svLocationResults.setOnItemClickListener { _, _, position, _ ->
+                        addressResultWasSelected = true
+                        binding.svLocation.setQuery(
+                            results[position].getHumanReadableAddress(),
+                            true
+                        )
+                        adapter.clear()
+                        adapter.notifyDataSetChanged()
+                        Log.i(TAG, adapter.count.toString())
+                    }
+                    return true
                 }
 
             }
@@ -267,6 +299,11 @@ class EditLocationFragment : Fragment() {
                 )
 
                 //Navigate back
+                val navController = findNavController()
+                if(navController.previousBackStackEntry?.id?.toInt() == R.id.editAppointmentFragment)
+                {
+                    navController.previousBackStackEntry?.savedStateHandle?.set("locationMarker", locationId)
+                }
                 findNavController().popBackStack()
             }
         }
