@@ -61,6 +61,7 @@
         <entry key="app/src/main/res/layout/layout_locations_list.xml" value="0.41394927536231885" />
         <entry key="app/src/main/res/layout/layout_unfold_appointment.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/list_appointment_item_fragment_appointment_list.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/list_appointments_location_header.xml" value="0.54375" />
         <entry key="app/src/main/res/layout/list_location_item_fragment_location_list.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/location_list_fragment.xml" value="0.15555555555555556" />
         <entry key="app/src/main/res/layout/location_list_item.xml" value="0.5067708333333333" />
