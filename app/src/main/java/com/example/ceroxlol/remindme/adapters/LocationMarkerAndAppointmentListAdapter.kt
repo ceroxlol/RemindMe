@@ -38,14 +38,6 @@ class LocationMarkerAndAppointmentListAdapter(
         DiffCallback
     ) {
 
-    // List<LocationMarkerAndAppointments>
-    // LocationMarker : 0   -> appointment 0
-    //                      -> appointment 2
-    //                      -> appointment 4
-    // LocationMarker : 1   -> appointment 0
-    //                      -> appointment 1
-    //                      -> appointment 8
-
     private val TYPE_LOCATION_MARKER_AND_APPOINTMENT = 0
     private val TYPE_APPOINTMENT = 1
     private var locationMarkerHeaderIndices: List<Int> = emptyList()

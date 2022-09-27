@@ -6,14 +6,17 @@
     android:minHeight="@dimen/appointment_list_item_height"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/element_padding"
-    android:background="@drawable/long_click_transition"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/appointment_name"
         style="@style/Widget.RemindMe.ListItemTextView"
+        android:minHeight="@dimen/appointment_list_item_height"
+        android:background="@drawable/long_click_transition"
+        android:gravity="center_vertical"
         android:layout_marginStart="@dimen/margin_between_elements"
         android:layout_marginEnd="@dimen/margin_between_elements"
+        android:paddingStart="@dimen/margin_between_elements"
         android:fontFamily="sans-serif"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerAndAppointmentListAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentListAppointmentBinding
@@ -58,7 +59,7 @@ class AppointmentsListFragment : Fragment() {
                 this.findNavController().navigate(action)
             },
             { appointmentAndLocationMarker, itemView ->
-                val transition = itemView.background as TransitionDrawable
+                val transition = itemView.findViewById<View>(R.id.appointment_name).background as TransitionDrawable
                 transition.startTransition(200)
                 appointmentViewModel.deleteAppointment(appointmentAndLocationMarker.appointment)
                 createUndoSnackbar(itemView, appointmentAndLocationMarker.appointment)
