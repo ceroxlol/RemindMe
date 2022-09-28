@@ -10,5 +10,5 @@ data class AppointmentAndLocationMarker(
         parentColumn = "location_marker_id",
         entity = LocationMarker::class,
         entityColumn = "location_id")
-    val locationMarker: LocationMarker
+    val locationMarker: LocationMarker?
 )
