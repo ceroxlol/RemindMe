@@ -26,6 +26,9 @@ interface AppointmentDao {
     @Query("UPDATE Appointment SET snooze = :snooze WHERE appointment_id = :id")
     fun setAppointmentSnooze(id: Int, snooze: Date)
 
+    @Query("UPDATE Appointment SET location_marker_id = NULL WHERE location_marker_id = :locationMarkerId")
+    suspend fun setLocationMarkerDeleted(locationMarkerId : Int)
+
     @Update
     suspend fun update(appointment: Appointment)
 
@@ -37,6 +40,8 @@ interface AppointmentDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(vararg appointments: Appointment)
+
+    // AppointmentAndLocationMarker
 
     @Transaction
     @Query("SELECT * FROM Appointment")
@@ -53,5 +58,4 @@ interface AppointmentDao {
     @Transaction
     @Query("SELECT * FROM Appointment WHERE done = false")
     fun getAppointmentAndLocationMarkerNotDone(): Flow<List<AppointmentAndLocationMarker>>
-
 }
