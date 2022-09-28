@@ -82,7 +82,7 @@ class LocationMarkerAndAppointmentListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position in locationMarkerHeaderIndices){
+        return if (position in locationMarkerHeaderIndices) {
             TYPE_LOCATION_MARKER_AND_APPOINTMENT
         } else {
             TYPE_APPOINTMENT
@@ -126,7 +126,7 @@ class LocationMarkerAndAppointmentListAdapter(
         }
 
         fun setOnClickListener(current: AppointmentAndLocationMarker) {
-            binding.appointmentName.setOnClickListener{onItemClicked(current)}
+            binding.appointmentName.setOnClickListener { onItemClicked(current) }
         }
 
         fun setOnLongClickListener(current: AppointmentAndLocationMarker) {

@@ -14,6 +14,8 @@ import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerListAdapter
 import com.example.ceroxlol.remindme.databinding.FragmentListLocationBinding
 import com.example.ceroxlol.remindme.models.LocationMarker
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentAndLocationMarkerViewModel
+import com.example.ceroxlol.remindme.models.viewmodel.AppointmentAndLocationMarkerViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +25,13 @@ class LocationsListFragment : Fragment() {
     private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
             (activity?.application as RemindMeApplication).database.locationMarkerDao()
+        )
+    }
+
+    private val appointmentAndLocationMarkerViewModel: AppointmentAndLocationMarkerViewModel by activityViewModels {
+        AppointmentAndLocationMarkerViewModelFactory(
+            (activity?.application as RemindMeApplication).database
+                .appointmentDao()
         )
     }
 
@@ -42,14 +51,11 @@ class LocationsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //TODO: Beautify items
-        val adapter = LocationMarkerListAdapter ({
+        val adapter = LocationMarkerListAdapter({
             val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.id)
             this.findNavController().navigate(action)
-        },{ appointment, itemView ->
-            val transition = itemView.background as TransitionDrawable
-            transition.startTransition(200)
-            locationMarkerViewModel.deleteLocationMarker(appointment)
-            createUndoSnackbar(itemView, appointment)
+        }, { locationMarker, itemView ->
+            handleLocationMarkerLongClick(itemView, locationMarker)
             true
         }
         )
@@ -57,10 +63,9 @@ class LocationsListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
-        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) { locations ->
-            locations.let {
-                adapter.submitList(it)
-            }
+
+        appointmentAndLocationMarkerViewModel.getAllSortedByLocationMarkerId.observe(this.viewLifecycleOwner) {
+            adapter.submitList(it.map { appointmentAndLocationMarker -> appointmentAndLocationMarker.locationMarker })
         }
 
         binding.addNewLocationButton.setOnClickListener {
@@ -69,7 +74,18 @@ class LocationsListFragment : Fragment() {
         }
     }
 
-    private fun createUndoSnackbar(itemView: View, locationMarker: LocationMarker){
+    private fun handleLocationMarkerLongClick(
+        itemView: View,
+        locationMarker: LocationMarker
+    ) {
+        val transition = itemView.background as TransitionDrawable
+        transition.startTransition(200)
+        appointmentAndLocationMarkerViewModel.deleteLocationMarkerForAppointments(locationMarker.id)
+        locationMarkerViewModel.deleteLocationMarker(locationMarker)
+        createUndoSnackbar(itemView, locationMarker)
+    }
+
+    private fun createUndoSnackbar(itemView: View, locationMarker: LocationMarker) {
         Snackbar.make(
             binding.recyclerView as View,
             "Undo deleting ${locationMarker.name}",
@@ -78,10 +94,15 @@ class LocationsListFragment : Fragment() {
             .setAction(
                 "UNDO"
             ) {
+                //TODO: Set appointments to be location marker again
                 locationMarkerViewModel.addNewLocationMarker(locationMarker)
                 val transition = itemView.background as TransitionDrawable
                 transition.resetTransition()
-                Toast.makeText(requireContext(), "${locationMarker.name} restored", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    "${locationMarker.name} restored",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
             .show()

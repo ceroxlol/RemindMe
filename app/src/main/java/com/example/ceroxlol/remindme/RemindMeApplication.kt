@@ -1,7 +1,6 @@
 package com.example.ceroxlol.remindme
 
 import android.app.Application
-import com.example.ceroxlol.remindme.activities.MainActivity
 import com.example.ceroxlol.remindme.utils.AppDatabase
 
 class RemindMeApplication : Application() {
