@@ -79,6 +79,8 @@ class EditAppointmentFragment : Fragment() {
                                 ?.observe(viewLifecycleOwner) { locationMarkerAdded ->
                                     if (locationMarkerAdded) {
                                         binding.appointmentLocation.setSelection(locationMarkerList.size - 1)
+                                    } else if (appointmentAndLocationMarker.locationMarker == null) {
+                                        //set
                                     } else {
                                         val selectionPosition =
                                             locationMarkerList.mapIndexedNotNull { index, locationMarker -> index.takeIf { locationMarker.id == appointmentAndLocationMarker.locationMarker.id } }
@@ -90,80 +92,83 @@ class EditAppointmentFragment : Fragment() {
                                         }
                                     }
                                 }
-                            binding.appointmentLocation.isEnabled = true
-
-                            bind(appointmentAndLocationMarker.appointment)
-                        } else {
-                            (locationMarkerList as MutableList).add(
-                                0,
-                                LocationMarker(
-                                    id = -1,
-                                    name = "Please add new Location!",
-                                    location = DbLocation(LatLng(0.0, 0.0))
-                                )
-                            )
-                            binding.appointmentLocation.isEnabled = false
                         }
-                    }
+                        binding.appointmentLocation.isEnabled = true
+
+                        bind(appointmentAndLocationMarker.appointment)
+                    } else {
+                    (locationMarkerList as MutableList).add(
+                        0,
+                        LocationMarker(
+                            id = -1,
+                            name = "Please add new Location!",
+                            location = DbLocation(LatLng(0.0, 0.0))
+                        )
+                    )
+                    binding.appointmentLocation.isEnabled = false
+                }
             }
-
         }
 
-        binding.saveButton.setOnClickListener {
-            if (locationsEmpty) {
-                Toast.makeText(
-                    requireContext(),
-                    "No locations, please add one.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                saveAppointment()
-            }
-        }
-
-        binding.appointmentAddLocation.setOnClickListener {
-            val action =
-                EditAppointmentFragmentDirections.actionEditAppointmentFragmentToAddLocationFragment()
-            findNavController().navigate(action)
-        }
     }
 
-    private fun bind(appointment: Appointment) {
-        binding.apply {
-            appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
-            saveButton.setOnClickListener { saveAppointment() }
-        }
-    }
-
-    private fun saveAppointment() {
-        if (isEntryValid()) {
-            appointmentViewModel.updateAppointment(
-                navigationArgs.appointmentId,
-                binding.appointmentName.text.toString(),
-                binding.appointmentLocation.selectedItem as LocationMarker
-            )
-            findNavController().popBackStack()
-        } else {
+    binding.saveButton.setOnClickListener
+    {
+        if (locationsEmpty) {
             Toast.makeText(
                 requireContext(),
-                "Please recheck, something's not correct.", Toast.LENGTH_SHORT
+                "No locations, please add one.",
+                Toast.LENGTH_SHORT
             ).show()
+        } else {
+            saveAppointment()
         }
     }
 
-    private fun isEntryValid(): Boolean {
-        return appointmentViewModel.isEntryValid(
+    binding.appointmentAddLocation.setOnClickListener
+    {
+        val action =
+            EditAppointmentFragmentDirections.actionEditAppointmentFragmentToAddLocationFragment()
+        findNavController().navigate(action)
+    }
+}
+
+private fun bind(appointment: Appointment) {
+    binding.apply {
+        appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
+        saveButton.setOnClickListener { saveAppointment() }
+    }
+}
+
+private fun saveAppointment() {
+    if (isEntryValid()) {
+        appointmentViewModel.updateAppointment(
+            navigationArgs.appointmentId,
             binding.appointmentName.text.toString(),
             binding.appointmentLocation.selectedItem as LocationMarker
         )
+        findNavController().popBackStack()
+    } else {
+        Toast.makeText(
+            requireContext(),
+            "Please recheck, something's not correct.", Toast.LENGTH_SHORT
+        ).show()
     }
+}
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Hide keyboard.
-        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as
-                InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-        _binding = null
-    }
+private fun isEntryValid(): Boolean {
+    return appointmentViewModel.isEntryValid(
+        binding.appointmentName.text.toString(),
+        binding.appointmentLocation.selectedItem as LocationMarker
+    )
+}
+
+override fun onDestroyView() {
+    super.onDestroyView()
+    // Hide keyboard.
+    val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as
+            InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+    _binding = null
+}
 }
