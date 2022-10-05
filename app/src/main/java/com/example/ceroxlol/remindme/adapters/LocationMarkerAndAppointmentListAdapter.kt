@@ -49,7 +49,7 @@ class LocationMarkerAndAppointmentListAdapter(
         super.onCurrentListChanged(previousList, currentList)
         locationMarkerHeaderIndices =
             currentList.mapIndexed { index, appointmentAndLocationMarker ->
-                index to appointmentAndLocationMarker.locationMarker.id
+                index to appointmentAndLocationMarker.locationMarker?.id
             }.distinctBy {
                 it.second
             }.map { it.first }
@@ -121,7 +121,7 @@ class LocationMarkerAndAppointmentListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(locationMarkerAndAppointments: AppointmentAndLocationMarker) {
-            binding.locationName.text = locationMarkerAndAppointments.locationMarker.name
+            binding.locationName.text = locationMarkerAndAppointments.locationMarker?.name ?: "UNSET"
             binding.appointmentName.text = locationMarkerAndAppointments.appointment.name
         }
 
@@ -148,7 +148,7 @@ class LocationMarkerAndAppointmentListAdapter(
                 oldItem: AppointmentAndLocationMarker,
                 newItem: AppointmentAndLocationMarker
             ): Boolean {
-                return oldItem.locationMarker.id == newItem.locationMarker.id
+                return oldItem.locationMarker?.id == newItem.locationMarker?.id
                         && oldItem.appointment.id == newItem.appointment.id
             }
         }

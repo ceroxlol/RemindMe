@@ -1,9 +1,6 @@
 package com.example.ceroxlol.remindme.models.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.ceroxlol.remindme.models.dao.AppointmentDao
 import kotlinx.coroutines.launch
 
@@ -12,6 +9,23 @@ class AppointmentAndLocationMarkerViewModel(private val appointmentDao: Appointm
 
     val getAllSortedByLocationMarkerId =
         appointmentDao.getAppointmentAndLocationMarkerSortedByLocationMarkerId().asLiveData()
+
+    fun getAppointmentIdsByLocationMarkerId(locationMarkerId: Int): LiveData<List<Int>> {
+        val result: MutableLiveData<List<Int>> = MutableLiveData()
+        viewModelScope.launch {
+            result.postValue(appointmentDao.getAppointmentIdsByLocationMarkerId(locationMarkerId))
+        }
+        return result
+    }
+
+    fun setLocationMarkerForAppointmentIds(locationMarkerId: Int, appointmentIds: List<Int>) {
+        viewModelScope.launch {
+            appointmentDao.setLocationMarkerForAppointmentIds(
+                locationMarkerId,
+                appointmentIds
+            )
+        }
+    }
 
     fun deleteLocationMarkerForAppointments(locationMarkerId: Int) {
         viewModelScope.launch {

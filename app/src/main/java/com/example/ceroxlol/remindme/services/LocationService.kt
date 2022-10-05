@@ -334,7 +334,7 @@ class LocationService : LifecycleService() {
             .filter { appointmentAndLocationMarker ->
                 (appointmentAndLocationMarker.appointment.snooze == null
                         || appointmentAndLocationMarker.appointment.snooze.before(Calendar.getInstance().time))
-                        && appointmentAndLocationMarker.locationMarker.isValid()
+                        && appointmentAndLocationMarker.locationMarker?.isValid() == true
                         && appointmentAndLocationMarker.locationMarker.isInRange(
                     currentLocation,
                     preferenceDistance

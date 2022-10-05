@@ -38,6 +38,7 @@ class LocationsListFragment : Fragment() {
     private var _binding: FragmentListLocationBinding? = null
     private val binding get() = _binding!!
 
+    private var appointmentIdsUndoCache: HashMap<Int, List<Int>> = HashMap()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,8 +65,8 @@ class LocationsListFragment : Fragment() {
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
 
-        appointmentAndLocationMarkerViewModel.getAllSortedByLocationMarkerId.observe(this.viewLifecycleOwner) {
-            adapter.submitList(it.map { appointmentAndLocationMarker -> appointmentAndLocationMarker.locationMarker })
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) {
+            adapter.submitList(it)
         }
 
         binding.addNewLocationButton.setOnClickListener {
@@ -80,22 +81,36 @@ class LocationsListFragment : Fragment() {
     ) {
         val transition = itemView.background as TransitionDrawable
         transition.startTransition(200)
+
+        updateDeletionCache(locationMarker)
+
+        deleteLocationMarker(locationMarker)
+
+        createUndoSnackbar(itemView, locationMarker)
+    }
+
+    private fun updateDeletionCache(locationMarker: LocationMarker) {
+        appointmentAndLocationMarkerViewModel.getAppointmentIdsByLocationMarkerId(locationMarker.id)
+            .observe(this.viewLifecycleOwner) {
+                appointmentIdsUndoCache[locationMarker.id] = it
+            }
+    }
+
+    private fun deleteLocationMarker(locationMarker: LocationMarker) {
         appointmentAndLocationMarkerViewModel.deleteLocationMarkerForAppointments(locationMarker.id)
         locationMarkerViewModel.deleteLocationMarker(locationMarker)
-        createUndoSnackbar(itemView, locationMarker)
     }
 
     private fun createUndoSnackbar(itemView: View, locationMarker: LocationMarker) {
         Snackbar.make(
             binding.recyclerView as View,
-            "Undo deleting ${locationMarker.name}",
+            "Undo delete ${locationMarker.name}",
             Snackbar.LENGTH_LONG
         )
             .setAction(
                 "UNDO"
             ) {
-                //TODO: Set appointments to be location marker again
-                locationMarkerViewModel.addNewLocationMarker(locationMarker)
+                reconstructLocationMarkerForAppointment(locationMarker)
                 val transition = itemView.background as TransitionDrawable
                 transition.resetTransition()
                 Toast.makeText(
@@ -106,5 +121,14 @@ class LocationsListFragment : Fragment() {
                     .show()
             }
             .show()
+    }
+
+    private fun reconstructLocationMarkerForAppointment(locationMarker: LocationMarker) {
+        locationMarkerViewModel.addNewLocationMarker(locationMarker)
+        appointmentIdsUndoCache[locationMarker.id]?.let {
+            appointmentAndLocationMarkerViewModel.setLocationMarkerForAppointmentIds(locationMarker.id,
+                it
+            )
+        }
     }
 }

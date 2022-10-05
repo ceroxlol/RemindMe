@@ -29,6 +29,12 @@ interface AppointmentDao {
     @Query("UPDATE Appointment SET location_marker_id = NULL WHERE location_marker_id = :locationMarkerId")
     suspend fun setLocationMarkerDeleted(locationMarkerId : Int)
 
+    @Query("SELECT appointment_id FROM Appointment where location_marker_id = :locationMarkerId")
+    suspend fun getAppointmentIdsByLocationMarkerId(locationMarkerId: Int) : List<Int>
+
+    @Query("UPDATE Appointment SET location_marker_id = :locationMarkerId WHERE appointment_id IN (:appointmentIds)")
+    suspend fun setLocationMarkerForAppointmentIds(locationMarkerId: Int, appointmentIds: List<Int>)
+
     @Update
     suspend fun update(appointment: Appointment)
 
