@@ -12,6 +12,7 @@ import java.util.*
 class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewModel() {
 
     val appointmentAndLocationMarker = appointmentDao.getAppointmentAndLocationMarker().asLiveData()
+
     fun appointmentAndLocationMarkerByAppointmentId(appointmentId: Int): LiveData<AppointmentAndLocationMarker?> {
         return appointmentDao.getAppointmentAndLocationMarkerByAppointmentId(appointmentId)
             .asLiveData()
