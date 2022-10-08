@@ -41,6 +41,9 @@ class AppointmentsListFragment : Fragment() {
     private var _binding: FragmentListAppointmentBinding? = null
     private val binding get() = _binding!!
 
+    var appointmentAndLocationMarkerList: List<AppointmentAndLocationMarker> = emptyList()
+    private var showDone = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +62,8 @@ class AppointmentsListFragment : Fragment() {
                 this.findNavController().navigate(action)
             },
             { appointmentAndLocationMarker, itemView ->
-                val transition = itemView.findViewById<View>(R.id.appointment_name).background as TransitionDrawable
+                val transition =
+                    itemView.findViewById<View>(R.id.appointment_name).background as TransitionDrawable
                 transition.startTransition(200)
                 appointmentViewModel.deleteAppointment(appointmentAndLocationMarker.appointment)
                 createUndoSnackbar(itemView, appointmentAndLocationMarker.appointment)
@@ -67,14 +71,14 @@ class AppointmentsListFragment : Fragment() {
             }
         )
 
-        var appointmentAndLocationMarkerList: List<AppointmentAndLocationMarker> = emptyList()
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
         binding.recyclerView.adapter = adapter
         // Attach an observer on the allItems list to update the UI automatically when the data
         // changes.
         appointmentAndLocationMarkerViewModel.getAllSortedByLocationMarkerId.observe(this.viewLifecycleOwner) {
             appointmentAndLocationMarkerList = it
-            submitFilteredLocationMarkersAndAppointments(adapter, it)
+
+            updateAdapter(adapter)
         }
 
         binding.addNewAppointmentButton.setOnClickListener {
@@ -82,21 +86,21 @@ class AppointmentsListFragment : Fragment() {
             this.findNavController().navigate(action)
         }
 
-        binding.checkBoxDone.setOnCheckedChangeListener { _, _ ->
-            submitFilteredLocationMarkersAndAppointments(adapter, appointmentAndLocationMarkerList)
-            adapter.notifyDataSetChanged()
+        binding.checkBoxDone.setOnCheckedChangeListener { _, checked ->
+            showDone = checked
+
+            updateAdapter(adapter)
         }
     }
 
-    private fun submitFilteredLocationMarkersAndAppointments(
-        adapter: LocationMarkerAndAppointmentListAdapter,
-        locationMarkerAndAppointments: List<AppointmentAndLocationMarker>
+    private fun updateAdapter(
+        adapter: LocationMarkerAndAppointmentListAdapter
     ) {
-        adapter.submitList(
-            locationMarkerAndAppointments.filter {
-                !it.appointment.done
-            }
-        )
+        val resultList = if (!showDone) appointmentAndLocationMarkerList.filter {
+            !it.appointment.done
+        } else appointmentAndLocationMarkerList
+
+        adapter.submitList(resultList)
     }
 
     private fun createUndoSnackbar(itemView: View, appointment: Appointment) {

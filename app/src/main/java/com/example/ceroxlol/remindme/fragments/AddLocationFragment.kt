@@ -26,6 +26,7 @@ import com.example.ceroxlol.remindme.models.DbLocation
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
+import com.example.ceroxlol.remindme.utils.isValidForPersistence
 import com.example.ceroxlol.remindme.utils.permissions.Permission
 import com.example.ceroxlol.remindme.utils.permissions.PermissionManager
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -270,6 +271,10 @@ class AddLocationFragment : Fragment() {
         alertDialog.setView(editText)
 
         alertDialog.setPositiveButton("Save") { _, _ ->
+            if(!editText.text.toString().isValidForPersistence()){
+                Toast.makeText(requireContext(), "Please add a name", Toast.LENGTH_SHORT).show()
+                return@setPositiveButton
+            }
             locationMarkerViewModel.addNewLocationMarker(
                 editText.text.toString(),
                 locationMarker!!.location
