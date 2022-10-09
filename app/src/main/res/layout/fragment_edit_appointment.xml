@@ -29,6 +29,7 @@
         android:layout_marginTop="@dimen/margin"
         android:minHeight="@dimen/app_bar_height"
         android:hint="@string/appointment_hint"
+        android:textColorHint="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,6 +38,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/appointment_name"
+            android:background="@color/secondaryColor"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
             android:inputType="textAutoComplete|textCapWords|textMultiLine"
@@ -53,18 +55,19 @@
         android:layout_height="@dimen/location_list_item_height"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginEnd="80dp"
-        android:background="@drawable/bg_black_blue_round"
+        android:background="@drawable/background_round_bubble"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appointment_name_label" />
 
     <!-- to make it look quadratic, we use location_list_item_height twice-->
-    <Button
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/appointment_add_location"
         android:layout_width="@dimen/location_list_item_height"
         android:layout_height="@dimen/location_list_item_height"
         android:layout_marginTop="@dimen/margin"
-        android:background="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_baseline_add_24"
+        android:background="@color/secondaryDarkColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appointment_name_label" />
 
@@ -76,6 +79,6 @@
         android:src="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
+        app:tint="@color/primaryColor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

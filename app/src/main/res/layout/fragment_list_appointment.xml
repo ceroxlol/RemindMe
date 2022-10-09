@@ -45,7 +45,7 @@
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
+        app:tint="@color/primaryColor" />
 
     <CheckBox
         android:id="@+id/checkBoxDone"
@@ -54,6 +54,7 @@
         android:layout_marginStart="@dimen/margin_between_elements"
         android:layout_marginBottom="@dimen/margin_between_elements"
         android:text="Show done"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

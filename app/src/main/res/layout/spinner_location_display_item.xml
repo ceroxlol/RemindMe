@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spinner_arrow_to_right"
-        android:backgroundTint="@color/colorPrimaryDark"
+        android:backgroundTint="@color/secondaryColor"
         android:contentDescription="DropdownArrow"
         android:src="@android:drawable/arrow_down_float"
         app:layout_constraintBottom_toBottomOf="parent"

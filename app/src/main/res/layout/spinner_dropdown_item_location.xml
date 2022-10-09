@@ -5,7 +5,7 @@
     android:layout_height="@dimen/location_list_item_height"
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
-    android:background="@drawable/bg_black_blue_round">
+    android:background="@drawable/background_round_bubble">
 
     <include
         layout="@layout/textview_spinner_locationmarker_singleitem"

@@ -33,6 +33,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
+        app:tint="@color/primaryColor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

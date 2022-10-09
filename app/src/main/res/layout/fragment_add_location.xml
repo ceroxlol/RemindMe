@@ -23,7 +23,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:elevation="5dp"
-            android:background="@drawable/bg_black_blue_round"
+            android:background="@drawable/background_round_bubble"
             app:iconifiedByDefault="false">
 
             <requestFocus />
@@ -38,7 +38,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/bg_black_blue_round"
+            android:background="@drawable/background_round_bubble"
             />
 
     </RelativeLayout>
@@ -52,6 +52,6 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="64dp"
         android:src="@android:drawable/ic_menu_save"
-        app:tint="@android:color/white" />
+        app:tint="@color/primaryColor" />
 
 </FrameLayout>
