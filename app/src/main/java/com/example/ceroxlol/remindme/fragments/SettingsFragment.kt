@@ -1,7 +1,6 @@
 package com.example.ceroxlol.remindme.fragments
 
 import android.os.Bundle
-import android.text.TextUtils
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
@@ -14,12 +13,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
         val locationUpdatePreference: SeekBarPreference? = findPreference("location_update_distance")
-        locationUpdatePreference?.max = 5000
+        locationUpdatePreference?.max = 1000
         locationUpdatePreference?.seekBarIncrement = 200
 
         val appointmentUpdatePreference: SeekBarPreference? = findPreference("appointment_update_distance")
-        appointmentUpdatePreference?.max = 5000
-        appointmentUpdatePreference?.seekBarIncrement = 200
+        appointmentUpdatePreference?.max = 20000
+        appointmentUpdatePreference?.seekBarIncrement = 500
 
         val deleteAppointmentsAfter: SeekBarPreference? = findPreference("delete_appointments_after")
         deleteAppointmentsAfter?.title = "Delete appointments after ${deleteAppointmentsAfter?.value} days"

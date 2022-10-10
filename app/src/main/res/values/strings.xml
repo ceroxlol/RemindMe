@@ -14,7 +14,7 @@
     <string name="locations">Locations</string>
     <string name="save_action">Save</string>
     <string name="save">Save</string>
-    <string name="snooze_timer">Snooze timer</string>
+    <string name="snooze_timer">Snooze timer duration in minutes</string>
 
     <string name="stop_locations">Stop looking for appointments</string>
     <string name="location_unknown">Location unknown</string>

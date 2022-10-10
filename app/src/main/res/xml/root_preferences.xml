@@ -3,45 +3,45 @@
     <PreferenceCategory app:title="@string/locations">
 
         <SeekBarPreference
-            app:key="location_update_distance"
-            app:min = "0"
             app:defaultValue="0"
-            app:title="Location min update distance"
-            app:showSeekBarValue="true" />
+            app:key="location_update_distance"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="Min movement in meters to trigger updates" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/appointments">
 
         <EditTextPreference
-            app:key="snooze"
             app:defaultValue="10"
-            app:useSimpleSummaryProvider="true"
-            app:title="@string/snooze_timer" />
+            app:key="snooze"
+            app:title="@string/snooze_timer"
+            app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
-            app:key="appointment_update_distance"
-            app:min = "0"
             app:defaultValue="500"
-            app:title="Appointment alert min distance"
-            app:showSeekBarValue="true" />
+            app:key="appointment_update_distance"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="Trigger distance to an appointment in meters" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Coming Soon!">
 
         <SeekBarPreference
-            app:key="delete_appointments_after"
-            app:min = "30"
             app:defaultValue="30"
-            app:title="Delete appointments after %s days"
-            app:showSeekBarValue="true"/>
+            app:key="delete_appointments_after"
+            app:min="30"
+            app:showSeekBarValue="true"
+            app:title="Delete appointments after %s days" />
 
         <SwitchPreference
-            app:key = "system_of_units"
+            app:defaultValue="km"
             app:entries="@array/system_of_units_entries"
             app:entryValues="@array/system_of_units_values"
-            app:defaultValue="km"
+            app:key="system_of_units"
             app:title="System of units"
             app:useSimpleSummaryProvider="true" />
 

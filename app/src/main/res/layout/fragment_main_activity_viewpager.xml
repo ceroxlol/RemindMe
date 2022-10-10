@@ -7,11 +7,11 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        app:tabBackground="@color/primaryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        app:tabBackground="@drawable/tab_color_selector"
         app:tabTextColor="@color/primaryTextColor"
-        app:tabSelectedTextColor="@color/secondaryColor"
         />
 
     <androidx.viewpager2.widget.ViewPager2
