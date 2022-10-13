@@ -138,12 +138,14 @@ class EditLocationFragment : Fragment() {
             }
 
         addresses.observe(this.viewLifecycleOwner) { addressList ->
+            Log.d(AddLocationFragment::class.java.simpleName, "Received results. Amount: ${addressList.size}")
             val adapter = SearchResultAdapter(
                 requireContext(),
                 addressList
             ) {
                 currentAddress = it.getHumanReadableAddress()
                 navigateTowardsSelectedAddress(it)
+                clearAdapterData()
             }
             binding.svLocationResults.adapter = adapter
             adapter.notifyDataSetChanged()
@@ -193,6 +195,10 @@ class EditLocationFragment : Fragment() {
         )
 
         bind()
+    }
+
+    private fun clearAdapterData() {
+        binding.svLocationResults.adapter = null
     }
 
     private fun navigateTowardsSelectedAddress(address: Address) {

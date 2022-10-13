@@ -131,12 +131,14 @@ class AddLocationFragment : Fragment() {
         }
 
         addresses.observe(this.viewLifecycleOwner) { addressList ->
+            Log.d(AddLocationFragment::class.java.simpleName, "Received results. Amount: ${addressList.size}")
             val adapter = SearchResultAdapter(
                 requireContext(),
                 addressList
             ) {
                 currentAddress = it.getHumanReadableAddress()
                 navigateTowardsSelectedAddress(it)
+                clearAdapterData()
             }
             binding.svLocationResults.adapter = adapter
             adapter.notifyDataSetChanged()
@@ -170,7 +172,7 @@ class AddLocationFragment : Fragment() {
                     if (Build.VERSION.SDK_INT >= 33) {
                         // declare here the geocodeListener, as it requires Android API 33
                         geocoder.getFromLocationName(queryName, maxResults) {
-                            _addresses.value = it
+                            _addresses.postValue(it)
                         }
                     } else {
                         @Suppress("DEPRECATION")
@@ -180,6 +182,10 @@ class AddLocationFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun clearAdapterData() {
+        binding.svLocationResults.adapter = null
     }
 
     private fun navigateTowardsSelectedAddress(address: Address) {

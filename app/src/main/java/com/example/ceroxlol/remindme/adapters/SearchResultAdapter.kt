@@ -45,7 +45,13 @@ class SearchResultAdapter(
     private fun setLayout(view: View, address: Address){
         val tvStreet = view.findViewById<TextView>(R.id.textViewAddressStreet)
         val tvCountryAndArea = view.findViewById<TextView>(R.id.textViewAddressCountryAndArea)
-        tvStreet.text = address.featureName
-        tvCountryAndArea.text = "${address.adminArea}, ${address.countryName}"
+        val street = if(address.thoroughfare != null && address.subThoroughfare != null) {
+            "${address.thoroughfare} ${address.subThoroughfare}, ${address.locality}"
+        } else {
+            address.locality
+        }
+        tvStreet.text = street
+        val countryAndArea = "${address.adminArea}, ${address.countryName}"
+        tvCountryAndArea.text = countryAndArea
     }
 }
