@@ -11,7 +11,8 @@ import com.example.ceroxlol.remindme.R
 
 class SearchResultAdapter(
     context: Context,
-    addresses: List<Address>
+    addresses: List<Address>,
+    private val onItemClicked: (Address) -> Unit,
 ) : ArrayAdapter<Address>(context, 0, addresses) {
 
     private val inflater: LayoutInflater =
@@ -21,8 +22,11 @@ class SearchResultAdapter(
 
         val view: View = convertView ?: inflater.inflate(R.layout.adapter_address_display_item, parent, false)
 
-        getItem(position)?.let {
-            setLayout(view, it)
+        getItem(position)!!.also { address ->
+            setLayout(view, address)
+            view.setOnClickListener {
+                onItemClicked(address)
+            }
         }
 
         return view
@@ -31,8 +35,8 @@ class SearchResultAdapter(
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View = convertView ?: inflater.inflate(R.layout.search_result_item_location_fragment, parent, false)
 
-        getItem(position)?.let {
-            setLayout(view, it)
+        getItem(position)!!.also { address ->
+            setLayout(view, address)
         }
 
         return view

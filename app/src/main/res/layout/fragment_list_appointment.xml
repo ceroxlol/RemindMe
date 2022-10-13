@@ -42,10 +42,10 @@
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginBottom="@dimen/margin"
         android:contentDescription="@string/add_new_appointment"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_baseline_add_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/primaryColor" />
+        app:tint="@color/secondaryDarkColor" />
 
     <CheckBox
         android:id="@+id/checkBoxDone"

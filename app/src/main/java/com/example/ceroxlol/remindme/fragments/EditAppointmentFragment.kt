@@ -117,6 +117,7 @@ class EditAppointmentFragment : Fragment() {
     private fun setupLocationSpinner() {
         //2. Setup Location Spinner and its content --> LocationMarker
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) {
+            //TODO Set adapter once, only update the data here in the observer
             locationMarkers = it
             // If there are no locations, we add a dummy
             if (locationMarkers.isEmpty()) {

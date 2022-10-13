@@ -242,7 +242,7 @@ class LocationService : LifecycleService() {
             // The PendingIntent that leads to a call to onStartCommand() in this service.
             val servicePendingIntent = PendingIntent.getService(
                 this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             val mainActivityIntent = Intent(this, MainActivity::class.java)
@@ -257,8 +257,9 @@ class LocationService : LifecycleService() {
                     R.drawable.ic_cancel, getString(R.string.stop_locations),
                     servicePendingIntent
                 )
-                .setContentTitle(this.getString(R.string.on_the_hunt))
+                .setContentTitle(this.getString(R.string.running_in_background))
                 .setContentIntent(mainActivityPendingIntent)
+                .setGroup(locationServiceNotificationGroup)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -389,7 +390,7 @@ class LocationService : LifecycleService() {
             this,
             0,
             setAppointmentKTDoneIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val snoozeUntilNextTimeIntent = Intent(
@@ -404,7 +405,7 @@ class LocationService : LifecycleService() {
             this,
             0,
             snoozeUntilNextTimeIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val editAppointmentNavDeepLink = NavDeepLinkBuilder(this)
@@ -419,9 +420,8 @@ class LocationService : LifecycleService() {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setStyle(bigTextStyle)
             .setContentTitle(titleText)
-                //TODO Insert everything after first linebreak?
-            .setContentText("")
             .setContentIntent(editAppointmentNavDeepLink)
+            .setGroup(appointmentNotificationGroup)
             .setSmallIcon(R.drawable.ic_notification)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -507,5 +507,8 @@ class LocationService : LifecycleService() {
         private const val NOTIFICATION_ID = 12345678
 
         const val NOTIFICATION_CHANNEL_ID = "LocationServiceAppointmentsChannel"
+
+        private const val appointmentNotificationGroup = "AppointmentGroup"
+        private const val locationServiceNotificationGroup = "LocationServiceGroup"
     }
 }

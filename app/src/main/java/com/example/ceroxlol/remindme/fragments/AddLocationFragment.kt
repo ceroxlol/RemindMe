@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +18,8 @@ import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
@@ -38,6 +41,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
+import java.util.*
 
 class AddLocationFragment : Fragment() {
 
@@ -49,7 +53,11 @@ class AddLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
 
-    private var addressResultWasSelected = false
+    private val _addresses = MutableLiveData<List<Address>>()
+    private val addresses: LiveData<List<Address>> = _addresses
+    private var currentAddress: String = ""
+
+    private val maxResults = 10
 
     private val locationMarkerViewModel: LocationMarkerViewModel by activityViewModels {
         LocationMarkerViewModelFactory(
@@ -122,83 +130,79 @@ class AddLocationFragment : Fragment() {
             showSaveDialog()
         }
 
+        addresses.observe(this.viewLifecycleOwner) { addressList ->
+            val adapter = SearchResultAdapter(
+                requireContext(),
+                addressList
+            ) {
+                currentAddress = it.getHumanReadableAddress()
+                navigateTowardsSelectedAddress(it)
+            }
+            binding.svLocationResults.adapter = adapter
+            adapter.notifyDataSetChanged()
+        }
+
+        val geocoder = Geocoder(requireActivity(), Locale.GERMANY)
+
         binding.svLocation.queryHint = "Search for a location..."
         binding.svLocation.setOnQueryTextListener(
             object : OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
 
-                    if (queryName.isBlank() || queryName == "") {
-                        return false
+                    if (queryName != "") {
+                        attemptInvokeGeocodeAddresses(queryName)
+                        return true
                     }
-
-                    //TODO: Update getFromLocationName
-                    val address =
-                        Geocoder(requireActivity()).getFromLocationName(queryName, 1)
-                            ?.firstOrNull()
-
-                    if (address == null) {
-                        Toast.makeText(
-                            requireContext(),
-                            "No place found with this name", Toast.LENGTH_SHORT
-                        ).show()
-                        return false
-                    }
-
-                    val latLng = LatLng(address.latitude, address.longitude)
-                    map.clear()
-                    map.addMarker(
-                        MarkerOptions()
-                            .position(latLng)
-                            .title(queryName)
-                    )
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, CLOSE_ZOOM))
-
-                    locationMarker = LocationMarker(
-                        location = DbLocation(
-                            latitude = latLng.latitude,
-                            longitude = latLng.longitude
-                        ),
-                        name = queryName,
-                        address = address.toString()
-                    )
-
-                    return true
+                    return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
-                    if(addressResultWasSelected){
-                        addressResultWasSelected = false
-                        return false
-                    }
                     if (queryName.isBlank() || queryName == "") {
                         return false
                     }
-                    //TODO: Improve results?
-                    //Maybe use this https://developer.here.com/documentation/android-sdk-explore/4.3.2.0/dev_guide/topics/search.html
-                    val results = Geocoder(requireActivity()).getFromLocationName(queryName, 10)
-                    val adapter = SearchResultAdapter(
-                        requireContext(),
-                        results!!
-                    )
-                    Log.i(TAG, adapter.count.toString())
-
-                    binding.svLocationResults.adapter = adapter
-
-                    binding.svLocationResults.setOnItemClickListener { _, _, position, _ ->
-                        addressResultWasSelected = true
-                        binding.svLocation.setQuery(
-                            results[position].getHumanReadableAddress(),
-                            true
-                        )
-                        adapter.clear()
-                        adapter.notifyDataSetChanged()
-                        Log.i(TAG, adapter.count.toString())
-                    }
+                    attemptInvokeGeocodeAddresses(queryName)
                     return true
                 }
+
+                private fun attemptInvokeGeocodeAddresses(queryName: String) {
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        // declare here the geocodeListener, as it requires Android API 33
+                        geocoder.getFromLocationName(queryName, maxResults) {
+                            _addresses.value = it
+                        }
+                    } else {
+                        @Suppress("DEPRECATION")
+                        _addresses.value =
+                            geocoder.getFromLocationName(queryName, maxResults) as List<Address>
+                    }
+                }
             }
+        )
+    }
+
+    private fun navigateTowardsSelectedAddress(address: Address) {
+        val latLng = LatLng(address.latitude, address.longitude)
+        map.clear()
+        map.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(address.getHumanReadableAddress())
+        )
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                latLng,
+                CLOSE_ZOOM
+            )
+        )
+
+        locationMarker = LocationMarker(
+            location = DbLocation(
+                latitude = latLng.latitude,
+                longitude = latLng.longitude
+            ),
+            name = address.getHumanReadableAddress()
         )
     }
 
@@ -300,7 +304,7 @@ class AddLocationFragment : Fragment() {
 }
 
 //TODO: Set the correct address here
-fun Address.getHumanReadableAddress(): CharSequence {
+fun Address.getHumanReadableAddress(): String {
     return this.featureName + ", " + this.adminArea + ", " + this.countryName
 }
 

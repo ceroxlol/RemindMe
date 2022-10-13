@@ -27,12 +27,12 @@ android {
         viewBinding true
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
     buildToolsVersion '31.0.0'
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "11"
     }
     namespace 'com.example.ceroxlol.remindme'
 }
@@ -70,8 +70,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    // Lifecycle libraries
 }
 repositories {
     mavenCentral()

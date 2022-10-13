@@ -16,7 +16,9 @@
 package com.example.ceroxlol.remindme.activities
 
 import android.Manifest
-import android.content.*
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -31,18 +33,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
-import com.example.ceroxlol.remindme.fragments.MainFragmentDirections
 import com.example.ceroxlol.remindme.services.LocationService
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
-
-    private val TAG = this.javaClass.simpleName
 
     private lateinit var navController: NavController
 
@@ -285,7 +285,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             // User chose the "Settings" item, show the app settings UI...
-            navController.navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
+            val options = NavOptions.Builder()
+                .setEnterAnim(android.R.anim.fade_in)
+                .setEnterAnim(android.R.anim.fade_out)
+                .setPopEnterAnim(android.R.anim.slide_in_left)
+                .setPopExitAnim(android.R.anim.slide_out_right)
+                .build()
+            navController.navigate(R.id.settingsFragment, null, options)
             true
         }
         else -> {

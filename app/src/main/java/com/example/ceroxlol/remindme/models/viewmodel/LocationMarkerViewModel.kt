@@ -41,7 +41,7 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         )
     }
 
-    fun retrieveLocationMarker(id: Int): LiveData<LocationMarker> {
+    fun getLocationMarker(id: Int): LiveData<LocationMarker> {
         return locationMarkerDao.getById(id).asLiveData()
     }
 
