@@ -1,6 +1,5 @@
 package com.example.ceroxlol.remindme.fragments
 
-import android.annotation.SuppressLint
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -73,13 +72,11 @@ class EditLocationFragment : Fragment() {
     private var _binding: FragmentAddLocationBinding? = null
     private val binding get() = _binding!!
 
-    @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
         map.clear()
 
         map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isMapToolbarEnabled = false
 
         val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view

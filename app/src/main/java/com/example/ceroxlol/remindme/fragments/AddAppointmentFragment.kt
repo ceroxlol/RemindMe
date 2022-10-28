@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,7 +24,13 @@ import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.AppointmentViewModelFactory
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModel
 import com.example.ceroxlol.remindme.models.viewmodel.LocationMarkerViewModelFactory
+import com.example.ceroxlol.remindme.utils.toLatLng
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 class AddAppointmentFragment : Fragment() {
@@ -41,6 +49,8 @@ class AddAppointmentFragment : Fragment() {
         )
     }
 
+    private lateinit var map: GoogleMap
+
     lateinit var appointment: Appointment
 
     private var _binding: FragmentAddAppointmentBinding? = null
@@ -48,12 +58,29 @@ class AddAppointmentFragment : Fragment() {
 
     private var locationsEmpty = true
 
+    private val callback = OnMapReadyCallback {
+        map = it
+        if(locationsEmpty) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(9.993682, 53.551086), 15F))
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddAppointmentBinding.inflate(inflater, container, false)
+
+        with(binding.appointmentMap){
+            onCreate(savedInstanceState)
+            onResume()
+        }
+
+        MapsInitializer.initialize(requireContext())
+
+        binding.appointmentMap.getMapAsync(callback)
+
         return binding.root
     }
 
@@ -74,12 +101,7 @@ class AddAppointmentFragment : Fragment() {
                     }
                     binding.appointmentLocation.isEnabled = true
 
-                    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("locationMarkerAdded")
-                        ?.observe(viewLifecycleOwner) { locationMarkerAdded ->
-                            if(locationMarkerAdded){
-                                binding.appointmentLocation.setSelection(locationMarkerList.size-1)
-                            }
-                        }
+                    setSelectedLocationIfReturnedFromAddLocation(locationMarkerList)
 
                 } else {
                     binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
@@ -87,7 +109,7 @@ class AddAppointmentFragment : Fragment() {
                             LocationMarker(
                                 id = -1,
                                 name = "Please add new Location!",
-                                location = DbLocation(LatLng(0.0, 0.0))
+                                location = DbLocation(LatLng(9.993682, 53.551086))
                             )
                         )
                     )
@@ -113,6 +135,37 @@ class AddAppointmentFragment : Fragment() {
                 AddAppointmentFragmentDirections.actionAddAppointmentFragmentToAddLocationFragment()
             findNavController().navigate(action)
         }
+
+        binding.appointmentLocation.onItemSelectedListener = object : OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>, p1: View?, p2: Int, p3: Long) {
+                val location : LocationMarker = p0.getItemAtPosition(p2) as LocationMarker
+                if(!locationsEmpty) {
+                    moveToLocationOnMap(location)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
+    }
+
+    private fun moveToLocationOnMap(location: LocationMarker) {
+        val latLng = location.location.toLatLng()
+        map.addMarker(MarkerOptions().position(latLng))
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+    }
+
+    private fun setSelectedLocationIfReturnedFromAddLocation(locationMarkerList: List<LocationMarker>) {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            "locationMarkerAdded"
+        )
+            ?.observe(viewLifecycleOwner) { locationMarkerAdded ->
+                if (locationMarkerAdded) {
+                    binding.appointmentLocation.setSelection(locationMarkerList.size - 1)
+                }
+            }
     }
 
     private fun saveAppointment() {
@@ -146,5 +199,15 @@ class AddAppointmentFragment : Fragment() {
                 InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.appointmentMap.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.appointmentMap.onDestroy()
     }
 }

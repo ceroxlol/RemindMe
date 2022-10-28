@@ -74,14 +74,12 @@ class AddLocationFragment : Fragment() {
 
         //TODO: For debugging only
         map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isMapToolbarEnabled = false
 
 
         val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
         val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))
         val layoutParams = locationButton?.layoutParams as RelativeLayout.LayoutParams
-        // position on right bottom
         // position on right bottom
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
@@ -123,15 +121,15 @@ class AddLocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(callback)
 
         binding.saveButton.setOnClickListener {
             showSaveDialog()
         }
 
         addresses.observe(this.viewLifecycleOwner) { addressList ->
-            Log.d(AddLocationFragment::class.java.simpleName, "Received results. Amount: ${addressList.size}")
+            Log.d(AddLocationFragment::class.java.simpleName, "Received search results. Amount: ${addressList.size}")
             val adapter = SearchResultAdapter(
                 requireContext(),
                 addressList
@@ -161,6 +159,7 @@ class AddLocationFragment : Fragment() {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     val queryName = binding.svLocation.query.toString()
+
                     if (queryName.isBlank() || queryName == "") {
                         return false
                     }
