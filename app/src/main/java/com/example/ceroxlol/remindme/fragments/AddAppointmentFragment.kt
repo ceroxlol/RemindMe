@@ -61,7 +61,8 @@ class AddAppointmentFragment : Fragment() {
     private val callback = OnMapReadyCallback {
         map = it
         if(locationsEmpty) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(9.993682, 53.551086), 15F))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoom))
+            map.addMarker(MarkerOptions().position(defaultLatLng))
         }
     }
 
@@ -145,7 +146,7 @@ class AddAppointmentFragment : Fragment() {
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-
+                //Do nothing
             }
         }
 
@@ -209,5 +210,10 @@ class AddAppointmentFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         binding.appointmentMap.onDestroy()
+    }
+
+    companion object{
+        private const val defaultZoom = 15F
+        private val defaultLatLng = LatLng(9.993682, 53.551086)
     }
 }
