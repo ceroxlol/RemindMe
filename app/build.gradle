@@ -1,14 +1,14 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
-apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
+
     defaultConfig {
         applicationId "com.example.ceroxlol.remindme"
         minSdkVersion 29
@@ -27,12 +27,12 @@ android {
         viewBinding true
     }
     compileOptions {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildToolsVersion '31.0.0'
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = '1.8'
     }
     namespace 'com.example.ceroxlol.remindme'
 }
@@ -70,7 +70,4 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
 }

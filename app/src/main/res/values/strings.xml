@@ -26,8 +26,8 @@
     <string name="settings">Settings</string>
     <string name="ok">OK</string>
     <string name="request_location_updates">Request location updates</string>
-    <string name="remove_location_updates">Stop checking location updates</string>
+    <string name="remove_location_updates">Stop</string>
 
     <string name="location_updated">On the hunt! Last update: %1$s</string>
-    <string name="running_in_background">Checking location in the background</string>
+    <string name="running_in_background">Getting device location in the background</string>
 </resources>

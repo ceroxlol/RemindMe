@@ -135,7 +135,10 @@ class EditLocationFragment : Fragment() {
             }
 
         addresses.observe(this.viewLifecycleOwner) { addressList ->
-            Log.d(AddLocationFragment::class.java.simpleName, "Received results. Amount: ${addressList.size}")
+            Log.d(
+                AddLocationFragment::class.java.simpleName,
+                "Received results. Amount: ${addressList.size}"
+            )
             val adapter = SearchResultAdapter(
                 requireContext(),
                 addressList

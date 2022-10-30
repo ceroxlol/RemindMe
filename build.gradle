@@ -36,7 +36,15 @@ buildscript {
     }
 }
 
+plugins{
+    id "nebula.lint" version "17.7.0"
+}
+gradleLint {
+    rules = ['unused-dependency']
+}
+
 allprojects {
+    apply plugin: 'nebula.lint'
     repositories {
         mavenCentral()
         google()
