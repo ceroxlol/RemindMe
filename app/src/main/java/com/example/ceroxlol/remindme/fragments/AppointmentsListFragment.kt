@@ -42,7 +42,6 @@ class AppointmentsListFragment : Fragment() {
     private val binding get() = _binding!!
 
     var appointmentAndLocationMarkerList: List<AppointmentAndLocationMarker> = emptyList()
-    private var showDone = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +57,7 @@ class AppointmentsListFragment : Fragment() {
         val adapter = LocationMarkerAndAppointmentListAdapter(
             {
                 val action =
-                    MainFragmentDirections.actionMainFragmentToEditAppointmentFragment(it.appointment.id)
+                    MainFragmentDirections.actionMainFragmentToAppointmentFragment(it.appointment.id)
                 this.findNavController().navigate(action)
             },
             { appointmentAndLocationMarker, itemView ->
@@ -77,18 +76,15 @@ class AppointmentsListFragment : Fragment() {
         // changes.
         appointmentAndLocationMarkerViewModel.getAllSortedByLocationMarkerId.observe(this.viewLifecycleOwner) {
             appointmentAndLocationMarkerList = it
-
             updateAdapter(adapter)
         }
 
         binding.addNewAppointmentButton.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToAddAppointmentFragment()
+            val action = MainFragmentDirections.actionMainFragmentToAppointmentFragment(-10)
             this.findNavController().navigate(action)
         }
 
-        binding.checkBoxDone.setOnCheckedChangeListener { _, checked ->
-            showDone = checked
-
+        binding.checkBoxDone.setOnCheckedChangeListener { _, _ ->
             updateAdapter(adapter)
         }
     }
@@ -96,7 +92,7 @@ class AppointmentsListFragment : Fragment() {
     private fun updateAdapter(
         adapter: LocationMarkerAndAppointmentListAdapter
     ) {
-        val resultList = if (!showDone) appointmentAndLocationMarkerList.filter {
+        val resultList = if (!binding.checkBoxDone.isChecked) appointmentAndLocationMarkerList.filter {
             !it.appointment.done
         } else appointmentAndLocationMarkerList
 

@@ -3,21 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/location_list_item_height"
-    android:background="@drawable/long_click_transition"
+    android:minHeight="@dimen/appointment_list_item_height"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/element_padding"
+    android:background="@drawable/long_click_transition"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/location_name"
-        android:layout_width="180dp"
-        android:layout_marginStart="@dimen/margin_between_elements"
-        android:fontFamily="sans-serif"
         style="@style/Widget.RemindMe.ListItemTextView"
+        android:minHeight="@dimen/appointment_list_item_height"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginEnd="@dimen/margin_between_elements"
+        android:paddingStart="@dimen/margin_between_elements"
+        android:paddingEnd="@dimen/margin_between_elements"
+        android:fontFamily="sans-serif"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="RtlSymmetry"
         tools:text="Location Name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

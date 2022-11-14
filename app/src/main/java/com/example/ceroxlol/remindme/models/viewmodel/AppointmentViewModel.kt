@@ -20,8 +20,18 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
 
     private fun insertAppointment(appointment: Appointment) {
         viewModelScope.launch {
-            appointmentDao.insert(appointment)
+            appointmentDao.upsert(appointment)
         }
+    }
+
+    private fun upsertAppointment(appointment: Appointment){
+        viewModelScope.launch {
+            appointmentDao.upsert(appointment)
+        }
+    }
+
+    fun saveAppointment(appointment: Appointment){
+        upsertAppointment(appointment)
     }
 
     fun addNewAppointment(appointment: Appointment) {
@@ -54,6 +64,7 @@ class AppointmentViewModel(private val appointmentDao: AppointmentDao) : ViewMod
         )
     }
 
+    //TODO Delete
     fun isEntryValid(appointmentName: String, appointmentLocation: LocationMarker): Boolean {
         return appointmentName.isValidForPersistence() && appointmentLocation.isValid()
     }

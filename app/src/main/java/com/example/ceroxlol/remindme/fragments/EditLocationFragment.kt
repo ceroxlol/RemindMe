@@ -37,9 +37,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
+import com.google.maps.android.ui.IconGenerator
 import java.util.*
 
 
@@ -62,6 +64,7 @@ class EditLocationFragment : Fragment() {
     private var locationMarker: LocationMarker? = null
     private var lastKnownLocation: Location? = null
     private var currentLatLng: LatLng? = null
+    private lateinit var iconFactory : IconGenerator
 
     private val _addresses = MutableLiveData<List<Address>>()
     private val addresses: LiveData<List<Address>> = _addresses
@@ -90,7 +93,7 @@ class EditLocationFragment : Fragment() {
 
         map.setOnMapClickListener {
             map.clear()
-            map.addMarker(MarkerOptions().position(it))
+            map.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(""))).position(it))
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
             currentLatLng = it
         }
@@ -120,6 +123,8 @@ class EditLocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        iconFactory = IconGenerator(requireContext())
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(callback)
 
@@ -130,7 +135,7 @@ class EditLocationFragment : Fragment() {
                 if (locationMarker != null) {
                     //bind()
                     moveCameraToLocationMarker()
-                    map.addMarker(MarkerOptions().position(this.locationMarker?.location!!.toLatLng()))
+                    map.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(locationMarker.name))).position(this.locationMarker?.location!!.toLatLng()))
                 }
             }
 

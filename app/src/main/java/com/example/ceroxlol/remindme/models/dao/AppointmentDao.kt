@@ -41,11 +41,11 @@ interface AppointmentDao {
     @Delete
     suspend fun delete(appointment: Appointment)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(appointment: Appointment)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(appointment: Appointment)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(vararg appointments: Appointment)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(vararg appointments: Appointment)
 
     // AppointmentAndLocationMarker
 

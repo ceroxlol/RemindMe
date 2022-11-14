@@ -4,6 +4,7 @@
     <string name="add_new_appointment">Add new appointment</string>
     <string name="add_new_location">Add new Location</string>
     <string name="appointments">Appointments</string>
+    <string name="appointment_title">Appointment</string>
     <string name="appointment_detail_fragment_title">Appointment details</string>
     <string name="appointment_add_fragment_title">Add new appointment</string>
     <string name="appointment_hint">Remind me of…</string>
