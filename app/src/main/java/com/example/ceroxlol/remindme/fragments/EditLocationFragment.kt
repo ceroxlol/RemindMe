@@ -317,7 +317,7 @@ class EditLocationFragment : Fragment() {
 
                 //Navigate back
                 val navController = findNavController()
-                if (navController.previousBackStackEntry?.id?.toInt() == R.id.editAppointmentFragment) {
+                if (navController.previousBackStackEntry?.id?.toInt() == R.id.appointmentFragment) {
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         "locationMarker",
                         locationId
