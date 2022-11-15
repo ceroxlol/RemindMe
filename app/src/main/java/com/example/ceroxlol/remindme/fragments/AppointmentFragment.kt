@@ -124,37 +124,8 @@ class AppointmentFragment : Fragment() {
         // Move label to upper left corner
         binding.appointmentNameLabel.gravity = Gravity.TOP
 
-        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) {
-            binding.appointmentLocation.isEnabled = it.isNotEmpty()
-
-            binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
-                requireContext(),
-                it.ifEmpty { listOf(pleaseAddNewLocationMarkerDummy) }
-            ).also { locationMarkerSpinnerAdapter ->
-                locationMarkerSpinnerAdapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
-            }
-
-            locations = it
-
-            locationsIsReady = true
-            updateReadiness()
-        }
-
         if (navigationArgs.appointmentId != -10) {
-            appointmentViewModel.appointmentAndLocationMarkerByAppointmentId(navigationArgs.appointmentId)
-                .observe(this.viewLifecycleOwner) {
-                    if (it == null) {
-                        //No entry for the appointment could be found. Signal this and return to main
-                        navigateBackOnNonexistentAppointmentId()
-                    } else {
-                        appointmentAndLocationMarker = it
-                        //Bind appointment to UI
-                        bind(it.appointment)
-
-                        appointmentIsReady = true
-                        updateReadiness()
-                    }
-                }
+            createAppointmentAndLocationMarkerObserver()
             // If we came from the MainFragment and there is no appointment to load, it's ready
         } else {
             appointmentIsReady = true
@@ -194,8 +165,47 @@ class AppointmentFragment : Fragment() {
 
     }
 
+    private fun createAppointmentAndLocationMarkerObserver() {
+        appointmentViewModel.appointmentAndLocationMarkerByAppointmentId(navigationArgs.appointmentId)
+            .observe(this.viewLifecycleOwner) {
+                if (it == null) {
+                    //No entry for the appointment could be found. Signal this and return to main
+                    navigateBackOnNonexistentAppointmentId()
+                } else {
+                    appointmentAndLocationMarker = it
+                    //Bind appointment to UI
+                    bind(it.appointment)
+
+                    appointmentIsReady = true
+                    updateReadiness()
+                }
+            }
+    }
+
+    private fun createLocationMarkerObserver() {
+
+        locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) {
+            binding.appointmentLocation.isEnabled = it.isNotEmpty()
+
+            binding.appointmentLocation.adapter = LocationMarkerSpinnerAdapter(
+                requireContext(),
+                it.ifEmpty { listOf(pleaseAddNewLocationMarkerDummy) }
+            ).also { locationMarkerSpinnerAdapter ->
+                locationMarkerSpinnerAdapter.setDropDownViewResource(R.layout.textview_spinner_locationmarker_singleitem)
+            }
+
+            locations = it
+
+            locationsIsReady = true
+            updateReadiness()
+        }
+    }
+
     private fun createObservers() {
-        observeLocationMarkerWasAdded()
+
+        observeLocationMarkerWasAddedBackstackPopped()
+
+        createLocationMarkerObserver()
 
         crateAllReadyObserver()
 
@@ -207,22 +217,27 @@ class AppointmentFragment : Fragment() {
     }
 
     private fun navigateBackOnNonexistentAppointmentId() {
+
         Toast.makeText(
             requireContext(),
             "This appointment doesn't exist anymore",
             Toast.LENGTH_SHORT
         ).show()
         findNavController().popBackStack(R.id.mainFragment, true)
+
     }
 
     private fun bind(appointment: Appointment) {
+
         binding.apply {
             appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
             saveButton.setOnClickListener { saveAppointment() }
         }
+
     }
 
     private fun crateAllReadyObserver() {
+
         allReady.observe(this.viewLifecycleOwner) { allIsPresent ->
             if (allIsPresent) {
                 locations
@@ -242,20 +257,25 @@ class AppointmentFragment : Fragment() {
                 updateLocationSpinnerSelectedPosition()
             }
         }
+
     }
 
     private fun populateMarkersOnMap() {
+
         val iconFactory = IconGenerator(requireContext())
         locations.forEach {
             val marker = map.addMarker(
                 MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(it.name)))
-                    .position(it.location.toLatLng()))
+                    .position(it.location.toLatLng())
+            )
             marker!!.tag = locations.indexOf(it)
         }
+
     }
 
-    private fun observeLocationMarkerWasAdded() {
+    private fun observeLocationMarkerWasAddedBackstackPopped() {
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
             "locationMarkerAdded"
         )
@@ -267,9 +287,11 @@ class AppointmentFragment : Fragment() {
                 navigationCameFromLocationMarkerAdded = it
                 updateLocationSpinnerSelectedPosition()
             }
+
     }
 
     private fun updateLocationSpinnerSelectedPosition() {
+
         val selectedPosition = if (navigationCameFromLocationMarkerAdded) {
             locations.size - 1
         } else {
@@ -277,6 +299,7 @@ class AppointmentFragment : Fragment() {
         }
         Log.d(this::class.java.simpleName, "selectedPosition = $selectedPosition")
         binding.appointmentLocation.setSelection(selectedPosition)
+
     }
 
 
@@ -287,7 +310,8 @@ class AppointmentFragment : Fragment() {
 
 
     private fun saveAppointment() {
-        if (isEntryValid()) {
+
+        if (isAppointmentValid()) {
             val locationMarkerId = (binding.appointmentLocation.selectedItem as LocationMarker).id
             appointmentViewModel.saveAppointment(
                 appointmentAndLocationMarker?.appointment?.copy(locationMarkerId = locationMarkerId)
@@ -312,9 +336,10 @@ class AppointmentFragment : Fragment() {
                 "Please recheck, something's wrong.", Toast.LENGTH_SHORT
             ).show()
         }
+
     }
 
-    private fun isEntryValid(): Boolean {
+    private fun isAppointmentValid(): Boolean {
         return binding.appointmentName.text.toString().isValidForPersistence() &&
                 (binding.appointmentLocation.selectedItem as LocationMarker).isValid()
     }
