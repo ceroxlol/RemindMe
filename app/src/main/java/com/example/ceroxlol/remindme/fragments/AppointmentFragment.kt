@@ -19,7 +19,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.RemindMeApplication
 import com.example.ceroxlol.remindme.adapters.LocationMarkerSpinnerAdapter
-import com.example.ceroxlol.remindme.databinding.FragmentAddAppointmentBinding
+import com.example.ceroxlol.remindme.databinding.FragmentAppointmentBinding
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
 import com.example.ceroxlol.remindme.models.DbLocation
@@ -62,7 +62,7 @@ class AppointmentFragment : Fragment() {
     private var navigationCameFromLocationMarkerAdded: Boolean = false
 
     //TODO
-    private var _binding: FragmentAddAppointmentBinding? = null
+    private var _binding: FragmentAppointmentBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var map: GoogleMap
@@ -102,7 +102,7 @@ class AppointmentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddAppointmentBinding.inflate(inflater, container, false)
+        _binding = FragmentAppointmentBinding.inflate(inflater, container, false)
 
         //Init map
         with(binding.appointmentMap) {

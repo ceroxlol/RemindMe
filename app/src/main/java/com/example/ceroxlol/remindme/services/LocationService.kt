@@ -29,7 +29,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.activities.MainActivity
-import com.example.ceroxlol.remindme.fragments.EditAppointmentFragmentArgs
+import com.example.ceroxlol.remindme.fragments.AppointmentFragmentArgs
 import com.example.ceroxlol.remindme.models.Appointment
 import com.example.ceroxlol.remindme.models.AppointmentAndLocationMarker
 import com.example.ceroxlol.remindme.receiver.NotificationBroadcastReceiver
@@ -411,8 +411,8 @@ class LocationService : LifecycleService() {
         val editAppointmentNavDeepLink = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.editAppointmentFragment)
-            .setArguments(EditAppointmentFragmentArgs.Builder(appointment.id).build().toBundle())
+            .setDestination(R.id.appointmentFragment)
+            .setArguments(AppointmentFragmentArgs.Builder(appointment.id).build().toBundle())
             .createPendingIntent()
 
         // 4. Build and issue the notification.
