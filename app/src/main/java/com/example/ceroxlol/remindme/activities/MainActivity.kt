@@ -32,6 +32,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -78,6 +79,34 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             this,
             navController = navController,
             configuration = appBarConfiguration
+        )
+
+        addMenuProvider(object : MenuProvider{
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                val inflater: MenuInflater = menuInflater
+                inflater.inflate(R.menu.main_activity_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                when (menuItem.itemId) {
+                    R.id.action_settings -> {
+                        // User chose the "Settings" item, show the app settings UI...
+                        val options = NavOptions.Builder()
+                            .setEnterAnim(android.R.anim.fade_in)
+                            .setEnterAnim(android.R.anim.fade_out)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                        navController.navigate(R.id.settingsFragment, null, options)
+                        return true
+                    }
+                }
+                return false
+            }
+
+        }
         )
 
         checkLocationPermission()
@@ -273,31 +302,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 return
 
             }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_activity_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_settings -> {
-            // User chose the "Settings" item, show the app settings UI...
-            val options = NavOptions.Builder()
-                .setEnterAnim(android.R.anim.fade_in)
-                .setEnterAnim(android.R.anim.fade_out)
-                .setPopEnterAnim(android.R.anim.slide_in_left)
-                .setPopExitAnim(android.R.anim.slide_out_right)
-                .build()
-            navController.navigate(R.id.settingsFragment, null, options)
-            true
-        }
-        else -> {
-            // If we got here, the user's action was not recognized.
-            // Invoke the superclass to handle it.
-            super.onOptionsItemSelected(item)
         }
     }
 

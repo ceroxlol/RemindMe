@@ -3,15 +3,15 @@ package com.example.ceroxlol.remindme.fragments
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -86,6 +86,7 @@ class AppointmentFragment : Fragment() {
     @SuppressLint("PotentialBehaviorOverride")
     private val callback = OnMapReadyCallback {
         map = it
+        map.uiSettings.isMapToolbarEnabled = false
 
         map.setOnMarkerClickListener { marker ->
             val position = marker.tag as Int
@@ -119,6 +120,25 @@ class AppointmentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
+                menuInflater.inflate(R.menu.appointment_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                when(menuItem.itemId){
+                    R.id.action_appointment_save ->{
+                        saveAppointment()
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         createObservers()
 
         // Move label to upper left corner
@@ -130,10 +150,6 @@ class AppointmentFragment : Fragment() {
         } else {
             appointmentIsReady = true
             updateReadiness()
-        }
-
-        binding.saveButton.setOnClickListener {
-            saveAppointment()
         }
 
         binding.appointmentAddLocation.setOnClickListener {
@@ -231,7 +247,6 @@ class AppointmentFragment : Fragment() {
 
         binding.apply {
             appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
-            saveButton.setOnClickListener { saveAppointment() }
         }
 
     }
