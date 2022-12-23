@@ -33,4 +33,5 @@
     <string name="running_in_background">Getting device location in the background</string>
     <string name="add_a_new_location">Add a new location</string>
     <string name="select_a_location_for_this_appointment">Select a location for this appointment</string>
+    <string name="location_title">Location</string>
 </resources>

@@ -175,7 +175,7 @@ class AppointmentFragment : Fragment() {
 
         binding.appointmentAddLocation.setOnClickListener {
             val action =
-                AppointmentFragmentDirections.actionAppointmentFragmentToAddLocationFragment()
+                AppointmentFragmentDirections.actionAppointmentFragmentToAddLocationFragment(NO_LOCATION_TO_EDIT)
             findNavController().navigate(action)
         }
 

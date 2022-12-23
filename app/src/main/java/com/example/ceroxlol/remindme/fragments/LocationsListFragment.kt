@@ -53,7 +53,7 @@ class LocationsListFragment : Fragment() {
 
         //TODO: Beautify items
         val adapter = LocationMarkerListAdapter({
-            val action = MainFragmentDirections.actionMainFragmentToEditLocationFragment(it.id)
+            val action = MainFragmentDirections.actionMainFragmentToLocationFragment(it.id)
             this.findNavController().navigate(action)
         }, { locationMarker, itemView ->
             handleLocationMarkerLongClick(itemView, locationMarker)
@@ -70,7 +70,9 @@ class LocationsListFragment : Fragment() {
         }
 
         binding.addNewLocationButton.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToAddLocationFragment()
+            val action = MainFragmentDirections.actionMainFragmentToLocationFragment(
+                NO_LOCATION_TO_EDIT
+            )
             this.findNavController().navigate(action)
         }
     }
@@ -126,7 +128,8 @@ class LocationsListFragment : Fragment() {
     private fun reconstructLocationMarkerForAppointment(locationMarker: LocationMarker) {
         locationMarkerViewModel.addNewLocationMarker(locationMarker)
         appointmentIdsUndoCache[locationMarker.id]?.let {
-            appointmentAndLocationMarkerViewModel.setLocationMarkerForAppointmentIds(locationMarker.id,
+            appointmentAndLocationMarkerViewModel.setLocationMarkerForAppointmentIds(
+                locationMarker.id,
                 it
             )
         }

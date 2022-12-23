@@ -1,9 +1,12 @@
 package com.example.ceroxlol.remindme.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Address
 import android.location.Location
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
+import com.google.android.gms.maps.GoogleMap
 import java.text.DateFormat
 import java.util.*
 
@@ -55,4 +58,15 @@ fun String.isValidForPersistence() : Boolean{
         return false
     }
     return true
+}
+
+//TODO: Set the correct address here
+fun Address.getHumanReadableAddress(): String {
+    return this.featureName + ", " + this.adminArea + ", " + this.countryName
+}
+
+@SuppressLint("MissingPermission")
+fun GoogleMap.setLocationEnabled(enabled: Boolean){
+    this.isMyLocationEnabled = enabled
+    this.uiSettings.isMyLocationButtonEnabled = enabled
 }

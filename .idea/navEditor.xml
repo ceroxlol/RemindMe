@@ -8,18 +8,6 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="addLocationFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="appointmentFragment">
                     <value>
                       <LayoutPositions>
@@ -46,13 +34,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="editLocationFragment">
+                  <entry key="locationFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="368" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -69,22 +57,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_MainFragment_to_AddAppointmentFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_MainFragment_to_AddLocationFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_MainFragment_to_AppointmentFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_MainFragment_to_EditAppointmentFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

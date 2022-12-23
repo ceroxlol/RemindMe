@@ -17,15 +17,8 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
-            android:id="@+id/action_MainFragment_to_AddLocationFragment"
-            app:destination="@id/addLocationFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
-        <action
-            android:id="@+id/action_mainFragment_to_editLocationFragment"
-            app:destination="@id/editLocationFragment"
+            android:id="@+id/action_mainFragment_to_locationFragment"
+            app:destination="@id/locationFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -55,23 +48,17 @@
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_appointmentFragment_to_addLocationFragment"
-            app:destination="@id/addLocationFragment"
+            app:destination="@id/locationFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/addLocationFragment"
-        android:name="com.example.ceroxlol.remindme.fragments.AddLocationFragment"
-        android:label="Add new location"
-        tools:layout="@layout/fragment_add_location">
-    </fragment>
-    <fragment
-        android:id="@+id/editLocationFragment"
-        android:name="com.example.ceroxlol.remindme.fragments.EditLocationFragment"
-        android:label="Edit location"
-        tools:layout="@layout/fragment_add_location">
+        android:id="@+id/locationFragment"
+        android:name="com.example.ceroxlol.remindme.fragments.LocationFragment"
+        android:label="@string/location_title"
+        tools:layout="@layout/fragment_location">
         <argument
             android:name="locationMarker_id"
             app:argType="integer" />
