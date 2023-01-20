@@ -38,6 +38,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.navigateUp
 import androidx.preference.PreferenceManager
 import com.example.ceroxlol.remindme.R
 import com.example.ceroxlol.remindme.services.LocationService
@@ -110,7 +111,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         )
 
         checkLocationPermission()
-
     }
 
     private fun checkLocationPermission() {

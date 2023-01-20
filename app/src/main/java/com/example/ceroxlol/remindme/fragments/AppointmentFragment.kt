@@ -61,7 +61,6 @@ class AppointmentFragment : Fragment() {
     private val navigationArgs: AppointmentFragmentArgs by navArgs()
     private var navigationCameFromLocationMarkerAdded: Boolean = false
 
-    //TODO
     private var _binding: FragmentAppointmentBinding? = null
     private val binding get() = _binding!!
 
@@ -84,14 +83,16 @@ class AppointmentFragment : Fragment() {
     )
 
     @SuppressLint("PotentialBehaviorOverride")
-    private val callback = OnMapReadyCallback {
-        map = it
-        map.uiSettings.isMapToolbarEnabled = false
+    private val callback = OnMapReadyCallback { googleMap ->
+        with(googleMap){
+            map = this
+            this.uiSettings.isMapToolbarEnabled = false
 
-        map.setOnMarkerClickListener { marker ->
-            val position = marker.tag as Int
-            binding.appointmentLocation.setSelection(position)
-            false
+            this.setOnMarkerClickListener { marker ->
+                val position = marker.tag as Int
+                binding.appointmentLocation.setSelection(position)
+                false
+            }
         }
 
         mapIsReady = true
@@ -120,24 +121,7 @@ class AppointmentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menu.clear()
-                menuInflater.inflate(R.menu.appointment_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                when(menuItem.itemId){
-                    R.id.action_appointment_save ->{
-                        saveAppointment()
-                    }
-                }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        modifyMenuBar()
 
         createObservers()
 
@@ -175,10 +159,33 @@ class AppointmentFragment : Fragment() {
 
         binding.appointmentAddLocation.setOnClickListener {
             val action =
-                AppointmentFragmentDirections.actionAppointmentFragmentToAddLocationFragment(NO_LOCATION_TO_EDIT)
+                AppointmentFragmentDirections.actionAppointmentFragmentToAddLocationFragment(
+                    NO_LOCATION_TO_EDIT
+                )
             findNavController().navigate(action)
         }
+    }
 
+    private fun modifyMenuBar() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
+                menuInflater.inflate(R.menu.save_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.action_save_element -> {
+                        saveAppointment()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun createAppointmentAndLocationMarkerObserver() {
@@ -199,7 +206,6 @@ class AppointmentFragment : Fragment() {
     }
 
     private fun createLocationMarkerObserver() {
-
         locationMarkerViewModel.allLocations.observe(this.viewLifecycleOwner) {
             binding.appointmentLocation.isEnabled = it.isNotEmpty()
 
@@ -218,13 +224,11 @@ class AppointmentFragment : Fragment() {
     }
 
     private fun createObservers() {
-
         observeLocationMarkerWasAddedBackstackPopped()
 
         createLocationMarkerObserver()
 
         crateAllReadyObserver()
-
     }
 
     private fun updateReadiness() {
@@ -233,26 +237,21 @@ class AppointmentFragment : Fragment() {
     }
 
     private fun navigateBackOnNonexistentAppointmentId() {
-
         Toast.makeText(
             requireContext(),
             "This appointment doesn't exist anymore",
             Toast.LENGTH_SHORT
         ).show()
         findNavController().popBackStack(R.id.mainFragment, true)
-
     }
 
     private fun bind(appointment: Appointment) {
-
         binding.apply {
             appointmentName.setText(appointment.name, TextView.BufferType.SPANNABLE)
         }
-
     }
 
     private fun crateAllReadyObserver() {
-
         allReady.observe(this.viewLifecycleOwner) { allIsPresent ->
             if (allIsPresent) {
                 locations
@@ -272,11 +271,9 @@ class AppointmentFragment : Fragment() {
                 updateLocationSpinnerSelectedPosition()
             }
         }
-
     }
 
     private fun populateMarkersOnMap() {
-
         val iconFactory = IconGenerator(requireContext())
         locations.forEach {
             val marker = map.addMarker(
@@ -286,11 +283,9 @@ class AppointmentFragment : Fragment() {
             )
             marker!!.tag = locations.indexOf(it)
         }
-
     }
 
     private fun observeLocationMarkerWasAddedBackstackPopped() {
-
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
             "locationMarkerAdded"
         )
@@ -302,11 +297,9 @@ class AppointmentFragment : Fragment() {
                 navigationCameFromLocationMarkerAdded = it
                 updateLocationSpinnerSelectedPosition()
             }
-
     }
 
     private fun updateLocationSpinnerSelectedPosition() {
-
         val selectedPosition = if (navigationCameFromLocationMarkerAdded) {
             locations.size - 1
         } else {
@@ -314,7 +307,6 @@ class AppointmentFragment : Fragment() {
         }
         Log.d(this::class.java.simpleName, "selectedPosition = $selectedPosition")
         binding.appointmentLocation.setSelection(selectedPosition)
-
     }
 
 
@@ -325,7 +317,6 @@ class AppointmentFragment : Fragment() {
 
 
     private fun saveAppointment() {
-
         if (isAppointmentValid()) {
             val locationMarkerId = (binding.appointmentLocation.selectedItem as LocationMarker).id
             appointmentViewModel.saveAppointment(
@@ -351,7 +342,6 @@ class AppointmentFragment : Fragment() {
                 "Please recheck, something's wrong.", Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 
     private fun isAppointmentValid(): Boolean {

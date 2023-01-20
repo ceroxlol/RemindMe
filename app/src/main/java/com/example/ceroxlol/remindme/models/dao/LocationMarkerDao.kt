@@ -1,5 +1,6 @@
 package com.example.ceroxlol.remindme.models.dao
 
+import android.location.Location
 import androidx.room.*
 import com.example.ceroxlol.remindme.models.LocationMarker
 import com.example.ceroxlol.remindme.models.LocationMarkerAndAppointments
@@ -25,7 +26,7 @@ interface LocationMarkerDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(vararg locationMarker: LocationMarker)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(locationMarker: LocationMarker)
 
     @Transaction

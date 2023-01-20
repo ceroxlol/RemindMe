@@ -7,6 +7,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.ceroxlol.remindme.utils.isValidForPersistence
+import com.google.android.gms.maps.model.LatLng
 
 @Entity
 data class LocationMarker(
@@ -19,7 +20,10 @@ data class LocationMarker(
         return name.isValidForPersistence()
     }
 
-    fun isInRange(currentLocation : Location, preferenceDistance: Float) : Boolean{
+    fun isEntryValid(): Boolean =
+        this.name.isNotBlank()
+
+    fun isInRange(currentLocation: Location, preferenceDistance: Float): Boolean {
         val distance = FloatArray(1)
         Location.distanceBetween(
             currentLocation.latitude,

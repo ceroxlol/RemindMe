@@ -45,13 +45,6 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
         return locationMarkerDao.getById(id).asLiveData()
     }
 
-    fun isEntryValid(name: String, latLng: LatLng?): Boolean {
-        if (name.isBlank() || latLng == null) {
-            return false
-        }
-        return true
-    }
-
     fun updateLocationMarker(
         id: Int,
         name: String,
@@ -87,6 +80,15 @@ class LocationMarkerViewModel(private val locationMarkerDao: LocationMarkerDao) 
             locationMarkerDao.delete(locationMarker)
         }
     }
+
+    fun upsertLocationMarker(
+        locationMarker: LocationMarker
+    ) {
+        viewModelScope.launch {
+            locationMarkerDao.insert(locationMarker)
+        }
+    }
+
 }
 
 class LocationMarkerViewModelFactory(private val locationMarkerDao: LocationMarkerDao) :

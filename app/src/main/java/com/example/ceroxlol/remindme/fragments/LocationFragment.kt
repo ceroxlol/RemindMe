@@ -6,16 +6,18 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -46,8 +48,10 @@ import com.google.maps.android.ui.IconGenerator
 import java.util.*
 
 const val NO_LOCATION_TO_EDIT = -10
+private const val CLOSE_ZOOM = 18F
+private const val TAG = "LocationFragment"
 
-
+//TODO: Reiterate flow
 class LocationFragment : Fragment() {
 
     private val permissionManager: PermissionManager = PermissionManager.from(this)
@@ -64,10 +68,15 @@ class LocationFragment : Fragment() {
 
     private val navigationArgs: LocationFragmentArgs by navArgs()
 
+    private var mapIsReady = false
+    private var locationMarkerIsReady = false
+
+    private val _allReady = MutableLiveData(false)
+    private val allReady: LiveData<Boolean> = _allReady
+
     private var locationMarker: LocationMarker? = null
-    private var lastKnownLocation: Location? = null
-    private var currentLatLng: LatLng? = null
-    private lateinit var iconFactory : IconGenerator
+    private var deviceLocation: Location? = null
+    private lateinit var iconFactory: IconGenerator
 
     private val _addresses = MutableLiveData<List<Address>>()
     private val addresses: LiveData<List<Address>> = _addresses
@@ -79,12 +88,6 @@ class LocationFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val callback = OnMapReadyCallback { googleMap ->
-        map = googleMap
-        map.clear()
-
-        map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isMapToolbarEnabled = false
-
         val mapView = childFragmentManager.findFragmentById(R.id.map)!!.view
         val locationButton = mapView!!.findViewById<ImageView>(Integer.parseInt("2"))
         val layoutParams = locationButton?.layoutParams as RelativeLayout.LayoutParams
@@ -94,16 +97,36 @@ class LocationFragment : Fragment() {
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
         layoutParams.setMargins(0, 0, 30, 300)
 
-        map.setOnMapClickListener {
-            map.clear()
-            map.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(""))).position(it))
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
-            currentLatLng = it
+        with(googleMap){
+            map = this
+            this.clear()
+
+            this.uiSettings.isZoomControlsEnabled = true
+            this.uiSettings.isMapToolbarEnabled = false
+
+            this.setOnMapClickListener {
+                this.clear()
+                this.addMarker(
+                    MarkerOptions().icon(
+                        BitmapDescriptorFactory.fromBitmap(
+                            iconFactory.makeIcon(
+                                ""
+                            )
+                        )
+                    ).position(it)
+                )
+                this.animateCamera(CameraUpdateFactory.newLatLngZoom(it, CLOSE_ZOOM))
+                if(locationMarker == null){
+                    locationMarker = LocationMarker(
+                        location = DbLocation(it),
+                        name = ""
+                    )
+                }
+            }
         }
 
-        updateLocationUI()
-
-        getDeviceLocation()
+        mapIsReady = true
+        updateReadiness()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +134,8 @@ class LocationFragment : Fragment() {
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        getDeviceLocation()
     }
 
 
@@ -126,20 +151,32 @@ class LocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        modifyMenuBar()
+
         iconFactory = IconGenerator(requireContext())
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(callback)
 
+        //Try loading the location from the database
+        //If it's successful,
         locationMarkerViewModel.getLocationMarker(navigationArgs.locationMarkerId)
             .observe(this.viewLifecycleOwner) { locationMarker ->
                 this.locationMarker = locationMarker
 
-                if (locationMarker != null) {
-                    //bind()
+                locationMarker?.let {
                     moveCameraToLocationMarker()
-                    map.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(locationMarker.name))).position(this.locationMarker?.location!!.toLatLng()))
+                    map.addMarker(
+                        MarkerOptions().icon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                iconFactory.makeIcon(it.name)
+                            )
+                        ).position(it.location.toLatLng())
+                    )
                 }
+
+                locationMarkerIsReady = true
+                updateReadiness()
             }
 
         addresses.observe(this.viewLifecycleOwner) { addressList ->
@@ -160,10 +197,6 @@ class LocationFragment : Fragment() {
         }
 
         val geocoder = Geocoder(requireActivity(), Locale.GERMANY)
-
-        binding.saveButton.setOnClickListener {
-            showSaveDialog()
-        }
 
         binding.svLocation.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
@@ -202,7 +235,51 @@ class LocationFragment : Fragment() {
             }
         )
 
-        bind()
+        crateAllReadyObserver()
+    }
+
+    private fun modifyMenuBar() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
+                menuInflater.inflate(R.menu.save_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.action_save_element -> {
+                        if (locationMarker != null) {
+                            showSaveDialog()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Please select a point on the map first",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun updateReadiness() {
+        _allReady.value =
+            mapIsReady && locationMarkerIsReady
+    }
+
+    private fun crateAllReadyObserver() {
+        allReady.observe(this.viewLifecycleOwner) { allIsPresent ->
+            if (allIsPresent) {
+                attemptMoveCamera()
+                bindUi()
+            }
+        }
     }
 
     private fun clearAdapterData() {
@@ -223,17 +300,9 @@ class LocationFragment : Fragment() {
                 CLOSE_ZOOM
             )
         )
-
-        locationMarker = LocationMarker(
-            location = DbLocation(
-                latitude = latLng.latitude,
-                longitude = latLng.longitude
-            ),
-            name = address.getHumanReadableAddress()
-        )
     }
 
-    private fun bind() {
+    private fun bindUi() {
         binding.apply {
             this.svLocation.setQuery(locationMarker?.name ?: "", false)
         }
@@ -251,8 +320,7 @@ class LocationFragment : Fragment() {
                     ) { task ->
                         if (task.isSuccessful) {
                             // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.result
-                            attemptMoveCamera()
+                            deviceLocation = task.result
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.")
                             Log.e(TAG, "Exception: %s", task.exception)
@@ -262,16 +330,16 @@ class LocationFragment : Fragment() {
             }
     }
 
-    private fun attemptMoveCamera(){
-        if(locationMarker != null){
+    private fun attemptMoveCamera() {
+        if (locationMarker != null) {
             moveCameraToLocationMarker()
-        } else{
-            moveCameraToLastKnownLocation()
+        } else {
+            moveCameraToDeviceLocation()
         }
     }
 
-    private fun moveCameraToLastKnownLocation() {
-        lastKnownLocation?.let {
+    private fun moveCameraToDeviceLocation() {
+        deviceLocation?.let {
             map.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
@@ -297,68 +365,35 @@ class LocationFragment : Fragment() {
         }
     }
 
-    private fun updateLocationUI() {
-        permissionManager
-            .request(Permission.Location)
-            .rationale("Needs permission to access the location")
-            .checkPermission { granted: Boolean ->
-                if (granted) {
-                    Log.i(TAG, "location permission granted")
-                    map.isMyLocationEnabled = true
-                    map.uiSettings.isMyLocationButtonEnabled = true
-                } else {
-                    map.isMyLocationEnabled = false
-                    map.uiSettings.isMyLocationButtonEnabled = false
-                }
-            }
-    }
-
     private fun showSaveDialog() {
-        if (locationMarker == null) {
-            Log.e(TAG, "locationMaker is null. This should not happen!")
-            return
-        }
-        if (currentLatLng == null) {
-            currentLatLng = locationMarker!!.location.toLatLng()
-        }
-        val locationId = locationMarker!!.id
-        val editTextLocationName =
-            EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle("Add Location")
         alertDialog.setMessage("Add a name for your location:")
 
+        val editTextLocationName =
+            EditText(requireActivity()).also { it.setText(locationMarker!!.name) }
         alertDialog.setView(editTextLocationName)
-        val locationName = editTextLocationName.text.toString()
 
         alertDialog.setPositiveButton("Save") { _, _ ->
-            if (locationMarkerViewModel.isEntryValid(locationName, currentLatLng)) {
-                locationMarkerViewModel.updateLocationMarker(
-                    id = locationId,
-                    name = locationName,
-                    longitude = currentLatLng!!.longitude,
-                    latitude = currentLatLng!!.latitude
+            locationMarkerViewModel.upsertLocationMarker(
+                locationMarker!!.copy(
+                    name = editTextLocationName.text.toString()
                 )
+            )
 
-                //Navigate back
-                val navController = findNavController()
-                if (navController.previousBackStackEntry?.id?.toInt() == R.id.appointmentFragment) {
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "locationMarker",
-                        locationId
-                    )
-                }
-                findNavController().popBackStack()
-            }
+            //Navigate back
+            val navController = findNavController()
+/*            if (navController.previousBackStackEntry?.id?.toInt() == R.id.appointmentFragment) {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    "locationMarker",
+                    locationMarker!!.id
+                )
+            }*/
+            findNavController().popBackStack()
         }
 
         alertDialog.setNegativeButton("Cancel", null)
 
         alertDialog.show()
-    }
-
-    companion object {
-        private const val CLOSE_ZOOM = 18F
-        private const val TAG = "LocationFragment"
     }
 }
